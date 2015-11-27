@@ -1,5 +1,5 @@
 % Computational Economics Slides Index
-% Sciences Po Paris
+% [Department of Economics @ Sciences Po](http://econ.sciences-po.fr)
 % Florian Oswald
 
 
