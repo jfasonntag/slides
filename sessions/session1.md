@@ -2,7 +2,17 @@
 % Florian Oswald
 % Sciences Po, Spring 2016
 
+# Work in Progress
+
+## These slides are work in progress.
+
+Please check back in Spring 2016!
+
+-----------------------
+
 # Outline
+
+
 
 ## Objectives
 
