@@ -568,7 +568,7 @@ end
 
 # Debugging with Julia
 
-* The [https://github.com/toivoh/Debug.jl](Debug.jl) package.
+* The [Debug.jl](https://github.com/toivoh/Debug.jl) package.
 
 
 ----------------

@@ -87,7 +87,7 @@ Florian Oswald
 </ul>
 <div class="incremental">
 <div class="center" style="width: auto; margin-left: auto; margin-right: auto;">
-<img src="figs/picnic.jpeg" alt="" />
+<img src="figs/picnic.jpeg" />
 </div>
 <ul>
 <li>In this session, we will look at some very basic computer structure, and see some common pitfalls in numerical analysis.</li>
@@ -101,44 +101,42 @@ Florian Oswald
 </div>
 <div id="julia-why-julia" class="slide section level1">
 <h1>Julia? Why Julia?</h1>
-<ul class="incremental">
-<li>The <em>best</em> software doesn't exist. All of the following statements depend on:
-<ol class="incremental" style="list-style-type: decimal">
-<li>The problem at hand.
-<ul class="incremental">
+<blockquote>
+<ul>
+<li>The <em>best</em> software doesn't exist. All of the following statements depend on:</li>
+</ul>
+<ol style="list-style-type: decimal">
+<li>The problem at hand.</li>
+</ol>
+<ul>
 <li>You are fine with Stata if you need to run a probit.</li>
 <li>Languages have different comparative advantages with regards to different tasks.</li>
-</ul></li>
+</ul>
+<ol style="list-style-type: decimal">
 <li>Preferences of the analyst. Some people just <em>love</em> their software.</li>
-</ol></li>
+</ol>
+<ul>
 <li>That said, there are some general themes we should keep in mind when choosing a software.</li>
 <li><a href="https://github.com/stevengj/julia-mit">Stephen Johnson at MIT has a good pitch.</a></li>
-<li>High-level languages for technical computing: Matlab, Python, R, ...
-<ul class="incremental">
+<li>High-level languages for technical computing: Matlab, Python, R, ...</li>
 <li>you get going immediately</li>
 <li>very important for exploratory coding or data analysis</li>
 <li>You don't want to worry about type declarations and compilers at the exploratory stage</li>
-</ul></li>
-<li>High-level languages are slow.
-<ul class="incremental">
+<li>High-level languages are slow.</li>
 <li>Traditional Solutions to this: Passing the high-speed threshold.</li>
 <li>Using <code>Rcpp</code> or <code>Cython</code> etc is a bit like <a href="https://en.wikipedia.org/wiki/Stargate_SG-1">Stargate</a>. You loose control the moment you pass the barrier to <code>C++</code> for a little bit. (Even though those are great solutions.) If the <code>C++</code> part of your code becomes large, testing this code becomes increasingly difficult.</li>
 <li>You end up spending your time coding <code>C++</code>. But that has it's own drawbacks.</li>
-</ul></li>
-<li>Julia is <a href="http://julialang.org/benchmarks/">fast</a>.
-<ul class="incremental">
+<li>Julia is <a href="http://julialang.org/benchmarks/">fast</a>.</li>
 <li>But julia is also a high-level dynamic language. How come?</li>
 <li>The JIT compiler.</li>
 <li>The <a href="https://en.wikipedia.org/wiki/LLVM">LLVM project</a>.</li>
-</ul></li>
-<li>Julia is open source (and it's for free)
-<ul class="incremental">
+<li>Julia is open source (and it's for free)</li>
 <li>It's for free. Did I say that it's for free?</li>
 <li>You will never again worry about licenses. Want to run 1000 instances of julia? Do it.</li>
 <li>The entire standard library of julia is written in julia (and not in <code>C</code>, e.g., as is the case in R, matlab or python). It's easy to look and understand at how things work.</li>
-</ul></li>
 <li>Julia is a very modern language, combining the best features of many other languages.</li>
 </ul>
+</blockquote>
 <div class="incremental">
 <h2 id="why-not-julia">Why not julia?</h2>
 <ul>
@@ -362,7 +360,7 @@ domath(pi)</code></pre></div>
 <li>From the <a href="https://en.wikibooks.org/wiki/Introducing_Julia/Types">wikibook on julia</a>, here is a representation of the numeric type graph:</li>
 </ul>
 <div class="figure">
-<img src="https://upload.wikimedia.org/wikipedia/commons/4/40/Type-hierarchy-for-julia-numbers.png" alt="" />
+<img src="https://upload.wikimedia.org/wikipedia/commons/4/40/Type-hierarchy-for-julia-numbers.png" />
 
 </div>
 </div>
@@ -489,7 +487,7 @@ do_your_thing(c)</code></pre></div>
 <div id="unit-testing-and-code-quality" class="slide section level1">
 <h1>Unit Testing and Code Quality</h1>
 <div class="center" style="width: auto; margin-left: auto; margin-right: auto;">
-<img src="http://www.phdcomics.com/comics/archive/phd033114s.gif" alt="" />
+<img src="http://www.phdcomics.com/comics/archive/phd033114s.gif" />
 </div>
 <div class="incremental">
 <h2 id="what-is-unit-testing-why-should-you-test-you-code">What is Unit Testing? Why should you test you code?</h2>
@@ -622,7 +620,7 @@ do_your_thing(c)</code></pre></div>
 <div id="debugging-with-julia" class="slide section level1">
 <h1>Debugging with Julia</h1>
 <ul>
-<li>The <a href="Debug.jl">https://github.com/toivoh/Debug.jl</a> package.</li>
+<li>The <a href="https://github.com/toivoh/Debug.jl">Debug.jl</a> package.</li>
 </ul>
 </div>
 <div id="plotting-with-julia" class="slide section level1">
@@ -887,7 +885,7 @@ plot(p[:,<span class="fl">1</span>], p[:,<span class="fl">2</span>], <span class
 <p>Judd, K. L. (1998). <em>Numerical methods in economics</em>. The MIT Press.</p>
 </div>
 <div id="ref-maliar-maliar">
-<p>Maliar, L., &amp; Maliar, S. (2013). Numerical methods for large scale dynamic economic models. <em>Handbook of Computational Economics</em>, <em>3</em>, 325. doi:<a href="http://doi.org/http://dx.doi.org/10.1016/B978-0-444-52980-0.00007-4">http://dx.doi.org/10.1016/B978-0-444-52980-0.00007-4</a></p>
+<p>Maliar, L., &amp; Maliar, S. (2013). Numerical methods for large scale dynamic economic models. <em>Handbook of Computational Economics</em>, <em>3</em>, 325. doi:<a href="https://doi.org/http://dx.doi.org/10.1016/B978-0-444-52980-0.00007-4">http://dx.doi.org/10.1016/B978-0-444-52980-0.00007-4</a></p>
 </div>
 </div>
 </div>
