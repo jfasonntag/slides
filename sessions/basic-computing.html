@@ -1,0 +1,895 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Florian Oswald" />
+  <title>Computational Economics: Computer Basics</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" type="text/css" media="screen, projection, print"
+    href="http://www.w3.org/Talks/Tools/Slidy2/styles/slidy.css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+  <script src="http://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js"
+    charset="utf-8" type="text/javascript"></script>
+</head>
+<body>
+<div class="slide titlepage">
+  <h1 class="title">Computational Economics: Computer Basics</h1>
+  <p class="author">
+Florian Oswald
+  </p>
+  <p class="date">Sciences Po, 2016</p>
+</div>
+<div id="introduction" class="slide section level1">
+<h1>Introduction</h1>
+<ul>
+<li>This lecture has two parts:</li>
+</ul>
+<ol style="list-style-type: decimal">
+<li>An introduction to some computing basics.</li>
+<li>Numerical approximation of Integrals and Derivatives.</li>
+</ol>
+</div>
+<div id="this-set-of-slides" class="slide section level1">
+<h1>This set of slides</h1>
+<ul>
+<li>These slides are visible as long as you are online. It's a website ;-)</li>
+<li>You can hit <code>c</code> on your keyboard to see a table of contents. clickable.</li>
+<li>There will be working code on those slides. I invite you to copy and paste this into a julia session and try it out.</li>
+</ul>
+</div>
+<div id="computing-basics" class="slide section level1">
+<h1>Computing Basics</h1>
+<ul>
+<li>It is important that we understand some basics about computers.</li>
+<li>Even though software (and computers) always get more and more sophisticated, there is still a considerable margin for &quot;human error&quot;. This doesn't mean necessarily that there is something wrong, but certain ways of doing things may have severe performance implications.</li>
+<li>Whatever else happens, <em>you</em> write the code, and one way of writing code is different from another.</li>
+</ul>
+<div class="incremental">
+<div class="center" style="width: auto; margin-left: auto; margin-right: auto;">
+<img src="figs/picnic.jpeg" alt="" />
+</div>
+<ul>
+<li>In this session, we will look at some very basic computer structure, and see some common pitfalls in numerical analysis.</li>
+<li>We will take advantage to introduce the julia computing language.
+<ol style="list-style-type: decimal">
+<li>Step Number 1: <a href="http://julialang.org/downloads/">install julia</a>!</li>
+<li>Step Number 2: Why Julia?</li>
+</ol></li>
+</ul>
+</div>
+</div>
+<div id="julia-why-julia" class="slide section level1">
+<h1>Julia? Why Julia?</h1>
+<ul class="incremental">
+<li>The <em>best</em> software doesn't exist. All of the following statements depend on:
+<ol class="incremental" style="list-style-type: decimal">
+<li>The problem at hand.
+<ul class="incremental">
+<li>You are fine with Stata if you need to run a probit.</li>
+<li>Languages have different comparative advantages with regards to different tasks.</li>
+</ul></li>
+<li>Preferences of the analyst. Some people just <em>love</em> their software.</li>
+</ol></li>
+<li>That said, there are some general themes we should keep in mind when choosing a software.</li>
+<li><a href="https://github.com/stevengj/julia-mit">Stephen Johnson at MIT has a good pitch.</a></li>
+<li>High-level languages for technical computing: Matlab, Python, R, ...
+<ul class="incremental">
+<li>you get going immediately</li>
+<li>very important for exploratory coding or data analysis</li>
+<li>You don't want to worry about type declarations and compilers at the exploratory stage</li>
+</ul></li>
+<li>High-level languages are slow.
+<ul class="incremental">
+<li>Traditional Solutions to this: Passing the high-speed threshold.</li>
+<li>Using <code>Rcpp</code> or <code>Cython</code> etc is a bit like <a href="https://en.wikipedia.org/wiki/Stargate_SG-1">Stargate</a>. You loose control the moment you pass the barrier to <code>C++</code> for a little bit. (Even though those are great solutions.) If the <code>C++</code> part of your code becomes large, testing this code becomes increasingly difficult.</li>
+<li>You end up spending your time coding <code>C++</code>. But that has it's own drawbacks.</li>
+</ul></li>
+<li>Julia is <a href="http://julialang.org/benchmarks/">fast</a>.
+<ul class="incremental">
+<li>But julia is also a high-level dynamic language. How come?</li>
+<li>The JIT compiler.</li>
+<li>The <a href="https://en.wikipedia.org/wiki/LLVM">LLVM project</a>.</li>
+</ul></li>
+<li>Julia is open source (and it's for free)
+<ul class="incremental">
+<li>It's for free. Did I say that it's for free?</li>
+<li>You will never again worry about licenses. Want to run 1000 instances of julia? Do it.</li>
+<li>The entire standard library of julia is written in julia (and not in <code>C</code>, e.g., as is the case in R, matlab or python). It's easy to look and understand at how things work.</li>
+</ul></li>
+<li>Julia is a very modern language, combining the best features of many other languages.</li>
+</ul>
+<div class="incremental">
+<h2 id="why-not-julia">Why not julia?</h2>
+<ul>
+<li>Julia is still in version <code>0.4.0</code>. There may be language changes in future releases.</li>
+<li>There are way fewer packages for certain tasks than for, say, R.</li>
+<li>Relatively few people know it. Your supervisor almost surely doesn't know it.</li>
+</ul>
+</div>
+</div>
+<div id="economists-and-their-software" class="slide section level1">
+<h1>Economists and Their Software</h1>
+<ul>
+<li><span class="citation">(Aruoba and Fernandez-Villaverde 2014)</span>, in <a href="http://economics.sas.upenn.edu/~jesusfv/comparison_languages.pdf"><em>A Comparison of Programming Languages in Economics</em></a>, compare some widely used languages on a close to <a href="https://github.com/jesusfv/Comparison-Programming-Languages-Economics">identical piece of code</a>.</li>
+<li>It can be quite contentious to talk about Software to Economists.
+<ul>
+<li>Religious War.</li>
+<li>Look at the <a href="http://marginalrevolution.com/marginalrevolution/2014/07/a-comparison-of-programming-languages-in-economics.html">comments on this blog post regarding the paper</a>.</li>
+<li>There <em>are</em> switching costs from one language to another.</li>
+<li>Network effects (Seniors handing down their software to juniors etc)</li>
+</ul></li>
+<li>Takeaway from that paper:
+<ul>
+<li>There are some very good alternatives to <code>fortran</code></li>
+<li><code>fortran</code> is <strong>not</strong> faster than <code>C++</code></li>
+<li>It seems pointless to invest either money or time in <code>matlab</code>, given the many good options that are available for free.</li>
+</ul></li>
+<li>Let's briefly look at the timings table.</li>
+<li>However you feel about the question of software choice, given your particular situation, there is one <strong>fundamental</strong> thing you should always keep in mind:</li>
+</ul>
+</div>
+<div id="the-fundamental-tradeoff" class="slide section level1">
+<h1>The Fundamental Tradeoff</h1>
+<h2 id="developer-time-your-time-is-much-more-expensive-than-computing-time">Developer Time (Your Time) is Much More Expensive than Computing Time</h2>
+<ul>
+<li>It may well be that the runtime of a fortran program is one third of the time it takes to run the program in julia, or anything else for that matter.</li>
+<li>However, the time it takes to <strong>develop</strong> that program is very likely to be (much) longer in fortran.</li>
+<li>Particularly if you want to hold your program to the same quality standards.</li>
+</ul>
+<h2 id="takeaway">Takeaway</h2>
+<ul>
+<li>Given my personal experience with many of the above languagues, I think <code>julia</code> is a very good tool for economists with non-trivial computational tasks.</li>
+<li>This is why I am using it for demonstrations in this course.</li>
+</ul>
+</div>
+<div id="a-second-fundamental-tradeoff" class="slide section level1">
+<h1>A Second Fundamental Tradeoff</h1>
+<ul>
+<li>Regardless of the software you use, there is one main problem with computation.</li>
+<li>It concerns <strong>speed vs accuracy</strong>.</li>
+<li>You may be able to do something very fast, but at very small accuracy (i.e. with a high numerical margin of error)</li>
+<li>On the other hand, you may be able to get a very accurate solution, but it may take you an irrealistic amount of time to get there.</li>
+<li>You have to face that tradeoff and decide for yourself what's best.</li>
+</ul>
+<h2 id="a-warning">A Warning</h2>
+<blockquote>
+<p>In Donald Knuth's paper &quot;Structured Programming With GoTo Statements&quot;, he wrote: &quot;Programmers waste enormous amounts of time thinking about, or worrying about, the speed of noncritical parts of their programs, and these attempts at efficiency actually have a strong negative impact when debugging and maintenance are considered. We should forget about small efficiencies, say about 97% of the time: <strong>premature optimization is the root of all evil</strong>. Yet we should not pass up our opportunities in that critical 3%.&quot;</p>
+</blockquote>
+</div>
+<div id="computers" class="slide section level1">
+<h1>Computers</h1>
+<ul>
+<li>At a high level, computers execute instructions.</li>
+<li>Most of the actual <em>computation</em> is performed on the Central Processing Unit (CPU). The CPU does
+<ul>
+<li>Addition</li>
+<li>substraction</li>
+<li>multiplication</li>
+<li>division</li>
+<li>maybe also (depends on Chipset)
+<ul>
+<li>exponentiation</li>
+<li>logarithm</li>
+<li>trogonometric operations</li>
+</ul></li>
+<li>Everything else is a combination of those.</li>
+<li>The speed of those operations varies a lot. Exponentiation is about 10 times slower than multiplication.</li>
+</ul></li>
+</ul>
+</div>
+<div id="motivational-example" class="slide section level1">
+<h1>Motivational Example</h1>
+<ul>
+<li>Suppose we want to compute <span class="math display">\[ u(c,l) = \frac{\left(c^\alpha l^{1-\alpha} \right)^{1-\gamma}}{1-\gamma} \]</span></li>
+<li>Let's take <span class="math inline">\(c=1.1,l=0.8\)</span> and compute this.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">alpha = <span class="fl">0.7</span>
+gamma = <span class="fl">2.1</span>
+<span class="co"># naive approach</span>
+u(c,l) = ((c^alpha * l^(<span class="fl">1</span>-alpha))^(<span class="fl">1</span>-gamma)) / (<span class="fl">1</span>-gamma)</code></pre></div>
+<div class="incremental">
+<h2 id="more-sophisticated-approach">more sophisticated approach</h2>
+<ul>
+<li>Note that <span class="math inline">\(x^\alpha = \exp(\alpha \log(x))\)</span>.</li>
+<li>(particularly non-integer) exponentiation is expensive. let's see if we can do better:</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">u2(c,l)      = exp( alpha*(<span class="fl">1</span>-gamma) * log(c) + (<span class="fl">1</span>-alpha)*(<span class="fl">1</span>-gamma) * log(l) )/(<span class="fl">1</span>-gamma)
+<span class="co"># benchmark</span>
+<span class="co"># 1) same result?</span>
+using Base.Test
+@test_approx_eq u(<span class="fl">1.1</span>,<span class="fl">0.8</span>) u2(<span class="fl">1.1</span>,<span class="fl">0.8</span>)
+<span class="co"># 2) timing?</span>
+n = <span class="fl">1e7</span>     <span class="co"># get a reasonable sample size</span>
+t1 = @elapsed <span class="kw">for</span> i <span class="kw">in</span> <span class="fl">1</span>:n u(<span class="fl">1.1</span>,<span class="fl">0.8</span>) <span class="kw">end</span>
+t2 = @elapsed <span class="kw">for</span> i <span class="kw">in</span> <span class="fl">1</span>:n u2(<span class="fl">1.1</span>,<span class="fl">0.8</span>) <span class="kw">end</span>
+println(<span class="st">&quot;u1 takes $(round(t1/t2,2)) times longer than u2&quot;</span>)</code></pre></div>
+<h2 id="even-more-sophisticated-approach">even more sophisticated approach</h2>
+<ul>
+<li>Now realise that there is a lot of precomputation that could be done.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">mgamma        = (<span class="fl">1</span>-gamma)
+alpha_mgamma  = alpha*mgamma
+malpha_mgamma = (<span class="fl">1</span>-alpha)*mgamma
+u3(c,l)       = exp( alpha_mgamma * log(c) + malpha_mgamma * log(l) ) / mgamma
+@test_approx_eq u(<span class="fl">1.1</span>,<span class="fl">0.8</span>) u3(<span class="fl">1.1</span>,<span class="fl">0.8</span>)
+t3 = @elapsed <span class="kw">for</span> i <span class="kw">in</span> <span class="fl">1</span>:n u3(<span class="fl">1.1</span>,<span class="fl">0.8</span>) <span class="kw">end</span>
+println(<span class="st">&quot;u1 takes $(round(t1/t3,2)) times longer than u3&quot;</span>)</code></pre></div>
+</div>
+</div>
+<div id="some-numerical-concepts-and-julia" class="slide section level1">
+<h1>Some Numerical Concepts and <code>Julia</code></h1>
+<ul>
+<li>Machine epsilon: The smallest number that your computer can represent, type <code>eps()</code>.</li>
+<li>Infinity: A number greater than all representable numbers on your computer. <a href="http://docs.julialang.org/en/release-0.4/manual/integers-and-floating-point-numbers/?highlight=infinity#special-floating-point-values">Obeys some arithmethmic rules</a>
+<ul>
+<li>Overflow: If you perform an operation where the result is greater than the largest representable number.</li>
+<li>Underflow: You take two (very small) representable numbers, but the result is smaller than <code>eps()</code>.</li>
+<li><p>In Julia, you are wrapped around the end of your representable space:</p>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">x = typemax(<span class="dt">Int64</span>)
+x + <span class="fl">1</span></code></pre></div></li>
+</ul></li>
+<li>Integers and Floating Point Numbers.</li>
+<li>Single and Double Precision.</li>
+<li>In Julia, all of these are different <a href="http://docs.julialang.org/en/release-0.4/manual/integers-and-floating-point-numbers/"><em>numeric primitive types (head over to julia manual for a second)</em></a>.</li>
+<li>Julia also supports <em>Arbitrary Precision Arithmetic</em>. Thus, overflow shouldn't become an issue anymore.</li>
+<li>See min and max for different types:</li>
+</ul>
+<pre class=".{julia}"><code>for T in [Int8,Int16,Int32,Int64,Int128,UInt8,UInt16,UInt32,
+          UInt64,UInt128,Float32,Float64]
+         println(&quot;$(lpad(T,7)): [$(typemin(T)),$(typemax(T))]&quot;)
+end</code></pre>
+</div>
+<div id="interacting-with-the-julia-repl" class="slide section level1">
+<h1>Interacting with the <code>Julia REPL</code></h1>
+<ul>
+<li>REPL?</li>
+<li>different modes.</li>
+<li>incremental search with <code>CTRL r</code></li>
+<li>documented in the <a href="http://docs.julialang.org/en/release-0.4/manual/interacting-with-julia">manual</a></li>
+</ul>
+</div>
+<div id="julia-primer-what-is-a-module" class="slide section level1">
+<h1><code>Julia</code> Primer: What is a <code>module</code>?</h1>
+<ul>
+<li>A separate <code>namespace</code>: variable names inside a module are not visible from outside, unless exported.</li>
+<li>If you use somebody else's code that contains the object <code>model</code>, and you have code that also defines <code>model</code>, you have a name conflict.</li>
+<li>Using modules avoids this conflict.</li>
+<li>Julia packages are provided as <code>module</code>s.</li>
+<li>You should adapt <code>module</code>s as the best workflow practice with julia.</li>
+<li>Let's try this out.
+<ol style="list-style-type: decimal">
+<li>Create a folder somewhere called <code>modTest</code></li>
+<li>inside that folder create another folder called <code>src</code>. this will contain our <code>source code</code>.</li>
+<li>inside <code>src</code>, create a file called <code>tmodule.jl</code> as in <em>test module</em>.</li>
+<li><p>In your terminal you would do</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">cd</span>   <span class="co"># go home</span>
+<span class="kw">mkdir</span> modTest
+<span class="kw">cd</span> modTest
+<span class="kw">mkdir</span> src
+<span class="kw">cd</span> src
+<span class="kw">touch</span> tmodule.jl</code></pre></div></li>
+</ol></li>
+<li>Open that file in your text editor. I recommend <a href="http://www.sublimetext.com" class="uri">http://www.sublimetext.com</a></li>
+</ul>
+</div>
+<div id="julia-primer-working-with-modules" class="slide section level1">
+<h1><code>Julia</code> Primer: Working with modules</h1>
+<ul>
+<li>We will create a module called <em>Example</em>.</li>
+<li>Into your file write and save</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia"><span class="kw">module</span> Example
+
+    hello(who::AbstractString) = <span class="st">&quot;Hello, $who&quot;</span>
+    domath(x::<span class="dt">Number</span>) = (x + <span class="fl">5</span>)
+
+<span class="kw">end</span></code></pre></div>
+<ul>
+<li>open julia, and go to folder <code>modTest</code> with <code>cd(&quot;path/to/modTest&quot;)</code>.</li>
+<li>we need to <code>include</code> the code of the package/module with <code>include(&quot;src/tmodule.jl&quot;)</code>.</li>
+<li>type <code>hello(&quot;Bond. James Bond.&quot;)</code></li>
+</ul>
+<ul class="incremental">
+<li>you get an error.</li>
+<li>function <code>hello</code> is unknown.</li>
+<li>We need to either <code>export</code> it from the module, or tell the REPL that it's in module <code>Example</code>. Type <code>Example.hello(&quot;Bond. James Bond.&quot;)</code></li>
+</ul>
+<ul class="incremental">
+<li>Alternatively go back to your editor and change the module to:</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia"><span class="kw">module</span> Example
+    <span class="kw">export</span> hello, domath
+
+    hello(who::AbstractString) = <span class="st">&quot;Hello, $who&quot;</span>
+    domath(x::<span class="dt">Number</span>) = (x + <span class="fl">5</span>)
+
+<span class="kw">end</span></code></pre></div>
+<ul class="incremental">
+<li>After that we can do</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">using Example
+hello(<span class="st">&quot;Bond. James Bond.&quot;</span>)
+domath(pi)</code></pre></div>
+</div>
+<div id="julia-primer-types" class="slide section level1">
+<h1><code>Julia</code> Primer: Types</h1>
+<ul>
+<li>Types are at the core of what makes julia a great language.</li>
+<li><em>Everything</em> in julia is represented as a datatype.</li>
+<li>Remember the different numeric <em>types</em> from before? Those are types.</li>
+<li>The <a href="http://docs.julialang.org/en/release-0.4/manual/types/">manual</a>, as usual, is very informative on this.</li>
+<li>From the <a href="https://en.wikibooks.org/wiki/Introducing_Julia/Types">wikibook on julia</a>, here is a representation of the numeric type graph:</li>
+</ul>
+<div class="figure">
+<img src="https://upload.wikimedia.org/wikipedia/commons/4/40/Type-hierarchy-for-julia-numbers.png" alt="" />
+
+</div>
+</div>
+<div id="julia-primer-custom-types" class="slide section level1">
+<h1><code>Julia</code> Primer: Custom Types</h1>
+<ul>
+<li>The great thing is that you can create you own types.</li>
+<li>Going with the example from the wikibook, we could have types <code>Jaguar</code> and <code>Pussycat</code> as being subtypes of <code>feline</code>:</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia"><span class="kw">abstract</span> Feline
+<span class="kw">type</span> Jaguar &lt;: Feline
+    weight::<span class="dt">Float64</span>
+    sound::AbstractString
+<span class="kw">end</span>
+<span class="kw">type</span> Pussycat &lt;: Feline
+    weight::<span class="dt">Float64</span>
+    sound::AbstractString
+<span class="kw">end</span></code></pre></div>
+<ul>
+<li>This means both jaguar and pusscat are subtypes of <code>Feline</code>,</li>
+<li>They have common fields <code>weight</code> and <code>sound</code>.</li>
+<li>but there could be different functions. We call function specific to a type 'methods'</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia"><span class="kw">function</span> do_your_thing(j::Jaguar)
+    println(j.sound)
+    println(<span class="st">&quot;I am going to throw my entire $(j.weight) kg at you, I&#39;ll catch, kill and eat you!&quot;</span>)
+    println(<span class="st">&quot;I am a $(typeof(j))!!!!&quot;</span>)
+<span class="kw">end</span>
+<span class="kw">function</span> do_your_thing(c::Pussycat)
+    println(c.sound)
+    println(<span class="st">&quot;I should watch my line, $(c.weight) is enough for a $(typeof(c))&quot;</span>)
+    println(c.sound)
+<span class="kw">end</span></code></pre></div>
+</div>
+<div id="julia-primer-multiple-dispatch" class="slide section level1">
+<h1>Julia Primer: Multiple Dispatch</h1>
+<ul>
+<li>You have just learned <code>multiple dispatch</code>. The same function name dispatches to different functions, depending on the input argument type.</li>
+<li>Add all of the above code into the module <code>Example</code></li>
+<li>Add Jaguar, Pussycat, and <code>do_your_thing</code> to <code>export</code> and save the file.</li>
+</ul>
+<div class="incremental">
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia"><span class="kw">module</span> Example
+    <span class="co"># exports</span>
+    <span class="kw">export</span> hello, domath, Jaguar, Pussycat, do_your_thing
+
+    <span class="co"># types</span>
+    <span class="kw">abstract</span> Feline
+    <span class="kw">type</span> Jaguar &lt;: Feline
+        weight::<span class="dt">Float64</span>
+        sound::AbstractString
+    <span class="kw">end</span>
+    <span class="kw">type</span> Pussycat &lt;: Feline
+        weight::<span class="dt">Float64</span>
+        sound::AbstractString
+    <span class="kw">end</span>
+
+    <span class="co"># methods</span>
+    hello(who::AbstractString) = <span class="st">&quot;Hello, $who&quot;</span>
+    domath(x::<span class="dt">Number</span>) = (x + <span class="fl">5</span>)
+    
+    <span class="st">&quot;&quot;&quot;</span>
+    makes a jaguar <span class="kw">do</span> their thing. 
+    <span class="st">&quot;&quot;&quot;</span>
+    <span class="kw">function</span> do_your_thing(j::Jaguar)
+        println(j.sound)
+        println(<span class="st">&quot;I am going to throw my entire $(j.weight) kg at you, I&#39;ll catch, kill and eat you!&quot;</span>)
+        println(<span class="st">&quot;I am a $(typeof(j))!!!!&quot;</span>)
+    <span class="kw">end</span>
+
+    <span class="st">&quot;&quot;&quot;</span>
+    makes a pussycat <span class="kw">do</span> their thing. 
+    <span class="st">&quot;&quot;&quot;</span>
+    <span class="kw">function</span> do_your_thing(c::Pussycat)
+        println(c.sound)
+        println(<span class="st">&quot;I should watch my weight, $(c.weight) is enough for a $(typeof(c))&quot;</span>)
+        println(c.sound)
+    <span class="kw">end</span>
+<span class="kw">end</span></code></pre></div>
+<ul>
+<li>reload the module: <code>include(&quot;src/tmodule.jl&quot;)</code></li>
+<li>Let's create a cat or a panther via</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">using Example
+j = Jaguar(<span class="fl">130.1</span>,<span class="st">&quot;roaaarrrrrrr&quot;</span>)
+c = Pussycat(<span class="fl">9.8</span>,<span class="st">&quot;miauuu&quot;</span>)</code></pre></div>
+<ul>
+<li>and make them <code>do_their_thing</code>:</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">do_your_thing(j)
+do_your_thing(c)</code></pre></div>
+<ul>
+<li>of course we can also use the other functions in <code>Example</code>:</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">Example.hello(string(typeof(j)))</code></pre></div>
+</div>
+</div>
+<div id="julia-primer-important-performance-lesson---type-stability" class="slide section level1">
+<h1>Julia Primer: Important performance lesson - Type Stability</h1>
+<ul>
+<li>If you don't declare types, julia will try to infer them for you.</li>
+<li>DANGER: don't change types along the way.
+<ul>
+<li>julia optimizes your code for a specific type configuration.</li>
+<li>it's not the same CPU operation to add two <code>Int</code>s and two <code>Float</code>s. The difference matters.</li>
+</ul></li>
+<li>Example</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia"><span class="kw">function</span> t1(n)
+    s  = <span class="fl">0</span>  <span class="co"># typeof(s) = Int</span>
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fl">1</span>:n
+        s += s/i
+    <span class="kw">end</span>
+<span class="kw">end</span>
+<span class="kw">function</span> t2(n)
+    s  = <span class="fl">0.0</span>   <span class="co"># typeof(s) = Float64</span>
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fl">1</span>:n
+        s += s/i
+    <span class="kw">end</span>
+<span class="kw">end</span>
+@time t1(<span class="fl">10000000</span>)
+@time t2(<span class="fl">10000000</span>)</code></pre></div>
+</div>
+<div id="unit-testing-and-code-quality" class="slide section level1">
+<h1>Unit Testing and Code Quality</h1>
+<div class="center" style="width: auto; margin-left: auto; margin-right: auto;">
+<img src="http://www.phdcomics.com/comics/archive/phd033114s.gif" alt="" />
+</div>
+<div class="incremental">
+<h2 id="what-is-unit-testing-why-should-you-test-you-code">What is Unit Testing? Why should you test you code?</h2>
+<ul>
+<li>Bugs are very hard to find just by <em>looking</em> at your code.</li>
+<li>Bugs hide.</li>
+<li>From this very instructive <a href="http://web.mit.edu/6.005/www/fa15/classes/03-testing/#unit_testing_and_stubs">MIT software construction class</a>:</li>
+</ul>
+<blockquote>
+<p>Even with the best validation, it’s very hard to achieve perfect quality in software. Here are some typical residual defect rates (bugs left over after the software has shipped) per kloc (one thousand lines of source code):</p>
+<ul>
+<li>1 - 10 defects/kloc: Typical industry software.</li>
+<li>0.1 - 1 defects/kloc: High-quality validation. The Java libraries might achieve this level of correctness.</li>
+<li>0.01 - 0.1 defects/kloc: The very best, safety-critical validation. NASA and companies like Praxis can achieve this level.</li>
+</ul>
+<p>This can be discouraging for large systems. For example, if you have shipped a million lines of typical industry source code (1 defect/kloc), it means you missed 1000 bugs!</p>
+</blockquote>
+<ul>
+<li>One widely-used way to prevent your code from having too many errors, is to continuously test it.</li>
+<li>This issue is widely neglected in Economics as well as other sciences.
+<ul>
+<li>If the resulting graph looks right, the code should be alright, shouldn't it?</li>
+<li>Well, should it?</li>
+</ul></li>
+<li>It is regrettable that so little effort is put into verifying the proper functioning of scientific code.
+<ul>
+<li>Referees in general don't have access to the computing code for paper that is submitted to a journal for publication.</li>
+<li>How should they be able to tell whether what they see in black on white on paper is the result of the actual computation that was proposed, rather than the result of chance (a.k.a. a bug)?
+<ul>
+<li>Increasingly papers do post the source code <em>after</em> publication.</li>
+</ul></li>
+<li>The scientific method is based on the principle of <strong>reproduciblity</strong> of results.
+<ul>
+<li>Notice that having something reproducible is only a first step, since you can reproduce with your buggy code the same nice graph.</li>
+<li>But from where we are right now, it's an important first step.</li>
+</ul></li>
+<li>This is an issue that is detrimental to credibility of Economics, and Science, as a whole.</li>
+</ul></li>
+<li>Extensively testing your code will guard you against this.</li>
+</ul>
+<h2 id="best-practice">Best Practice</h2>
+<ul>
+<li>You want to be in <strong>maximum control</strong> over your code at all times:
+<ul>
+<li>You want to be <strong>as sure as possible</strong> that a certain piece of code is doing, what it actually meant to do.</li>
+<li>This sounds trivial (and it is), yet very few people engage in unit testing.</li>
+</ul></li>
+<li>Things are slowly changing. See <a href="http://www.runmycode.org" class="uri">http://www.runmycode.org</a> for example.</li>
+<li><strong>You</strong> are the generation that is going to change this. Do it.</li>
+<li>Let's look at some real world Examples.</li>
+</ul>
+</div>
+</div>
+<div id="examples" class="slide section level1">
+<h1>Examples</h1>
+<h2 id="ariane-5-blows-up-because-of-a-bug">Ariane 5 blows up because of a bug</h2>
+<blockquote>
+<p>It took the European Space Agency 10 years and $7 billion to produce Ariane 5, a giant rocket capable of hurling a pair of three-ton satellites into orbit with each launch and intended to give Europe overwhelming supremacy in the commercial space business.</p>
+</blockquote>
+<blockquote>
+<p>All it took to explode that rocket less than a minute into its maiden voyage last June, scattering fiery rubble across the mangrove swamps of French Guiana, was a small computer program trying to stuff a 64-bit number into a 16-bit space.</p>
+</blockquote>
+<blockquote>
+<p>This shutdown occurred 36.7 seconds after launch, when the guidance system's own computer tried to convert one piece of data -- the sideways velocity of the rocket -- from a 64-bit format to a 16-bit format. The number was too big, and an overflow error resulted. When the guidance system shut down, it passed control to an identical, redundant unit, which was there to provide backup in case of just such a failure. But the second unit had failed in the identical manner a few milliseconds before. And why not? It was running the same software.</p>
+</blockquote>
+<h2 id="nasa-mars-orbiter-crashes-because-of-a-bug">NASA Mars Orbiter crashes because of a bug</h2>
+<blockquote>
+<p>For nine months, the Mars Climate Orbiter was speeding through space and speaking to NASA in metric. But the engineers on the ground were replying in non-metric English. It was a mathematical mismatch that was not caught until after the $125-million spacecraft, a key part of NASA's Mars exploration program, was sent crashing too low and too fast into the Martian atmosphere. The craft has not been heard from since. Noel Henners of Lockheed Martin Astronautics, the prime contractor for the Mars craft, said at a news conference it was up to his company's engineers to assure the metric systems used in one computer program were compatible with the English system used in another program. The simple conversion check was not done, he said.</p>
+</blockquote>
+<h2 id="la-airport-air-traffic-control-shuts-down-because-of-a-bug">LA Airport Air Traffic Control shuts down because of a bug</h2>
+<blockquote>
+<p>(IEEE Spectrum) -- It was an air traffic controller's worst nightmare. Without warning, on Tuesday, 14 September, at about 5 p.m. Pacific daylight time, air traffic controllers lost voice contact with 400 airplanes they were tracking over the southwestern United States. Planes started to head toward one another, something that occurs routinely under careful control of the air traffic controllers, who keep airplanes safely apart. But now the controllers had no way to redirect the planes' courses.</p>
+</blockquote>
+<blockquote>
+<p>The controllers lost contact with the planes when the main voice communications system shut down unexpectedly. To make matters worse, a backup system that was supposed to take over in such an event crashed within a minute after it was turned on. The outage disrupted about 800 flights across the country.</p>
+</blockquote>
+<blockquote>
+<p>Inside the control system unit is a countdown timer that ticks off time in milliseconds. The VCSU uses the timer as a pulse to send out periodic queries to the VSCS. It starts out at the highest possible number that the system's server and its software can handle—232. It's a number just over 4 billion milliseconds. When the counter reaches zero, the system runs out of ticks and can no longer time itself. So it shuts down.</p>
+</blockquote>
+<blockquote>
+<p>Counting down from 232 to zero in milliseconds takes just under 50 days. The FAA procedure of having a technician reboot the VSCS every 30 days resets the timer to 232 almost three weeks before it runs out of digits.</p>
+</blockquote>
+</div>
+<div id="automated-testing" class="slide section level1">
+<h1>Automated Testing</h1>
+<ul>
+<li>You should try to minimize the effort of writing tests.</li>
+<li>Using an automated test suite is very helpful here.</li>
+<li>In Julia, we have got <code>Base.Test</code> in the Base package, and <code>FactCheck</code> as a package.</li>
+<li>Let's add some tests to your Example module.</li>
+<li>create a folder <code>test</code> in <code>modTest</code></li>
+<li>inside that folder, open a file <code>runtests.jl</code></li>
+</ul>
+</div>
+<div id="automated-testing-1" class="slide section level1">
+<h1>Automated Testing</h1>
+<ul>
+<li>Let us create a test module for our <code>Example</code> module.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia"><span class="kw">module</span> TestExample
+    using Example
+    using FactCheck
+
+    facts(<span class="st">&quot;testing constructors&quot;</span>) <span class="kw">do</span>
+        @fact typeof(Pussycat(<span class="fl">9.8</span>,<span class="st">&quot;miauuu&quot;</span>)) --&gt; Pussycat
+        @fact typeof(Jaguar(<span class="fl">9.8</span>,<span class="st">&quot;miauuu&quot;</span>)) --&gt; Jaguar
+    <span class="kw">end</span>
+
+    facts(<span class="st">&quot;testing domath&quot;</span>) <span class="kw">do</span>
+        @fact domath(<span class="fl">10</span>) --&gt; <span class="fl">15.0</span>
+        @fact domath(-<span class="fl">5</span>) == <span class="fl">0.0</span> --&gt; true
+    <span class="kw">end</span>
+<span class="kw">end</span></code></pre></div>
+<ul>
+<li>There are many more assertions. Checkout the <a href="https://github.com/JuliaLang/FactCheck.jl">FactCheck website</a>.</li>
+<li>now run the tests with <code>include(&quot;test/runtests.jl&quot;)</code></li>
+</ul>
+</div>
+<div id="automated-testing-on-travis" class="slide section level1">
+<h1>Automated Testing on Travis</h1>
+<ul>
+<li><a href="https://travis-ci.org" class="uri">https://travis-ci.org</a> is a continuous integration service.</li>
+<li>It runs your test on their machines and notifies you of the result.</li>
+<li>Every time you push a commit to github.</li>
+<li>If the repository is public on github, the service is for free.</li>
+<li>Many julia packages are testing on Travis.</li>
+<li>You should look out for that green badge.</li>
+</ul>
+</div>
+<div id="debugging-with-julia" class="slide section level1">
+<h1>Debugging with Julia</h1>
+<ul>
+<li>The <a href="Debug.jl">https://github.com/toivoh/Debug.jl</a> package.</li>
+</ul>
+</div>
+<div id="plotting-with-julia" class="slide section level1">
+<h1>Plotting with Julia</h1>
+<ul>
+<li><a href="http://mth229.github.io/graphing.html" class="uri">http://mth229.github.io/graphing.html</a> has a nice intro using the package <code>Gadfly</code></li>
+<li>See <a href="http://quant-econ.net/jl/julia_libraries.html#plotting">quant-econ.net website</a> for good intro to PyPlot plotting.</li>
+</ul>
+</div>
+<div id="numerical-differentiation-and-integration" class="slide section level1">
+<h1>Numerical Differentiation and Integration</h1>
+<h2 id="derivatives">Derivatives</h2>
+<ol style="list-style-type: decimal">
+<li>Finite Differencing: a numerical approximation
+<ul>
+<li>Based on Taylor's Theorem</li>
+<li>Observe variation in function values from evaluating it at &quot;close&quot; points.</li>
+<li>Forward Differencing and Central Differencing</li>
+</ul></li>
+<li>Automatic Differentiation
+<ul>
+<li>Breaks down the actual <code>code</code> that defines a function and performs elementary differentiation rules, after disecting expressions via the chain rule.</li>
+<li>This produces <strong>analytic</strong> derivatives, i.e. there is <strong>no</strong> approximation error.</li>
+<li>This is the future.</li>
+</ul></li>
+<li>Symbolic Differentiation
+<ul>
+<li>Some languages (most notably Mathematica) support symbolic algebra. Very useful sometimes if one needs to work through complicated expressions.</li>
+<li>Not very useful for high computational demands, i.e. repeated computation of derivatives in an optimization routine.</li>
+</ul></li>
+</ol>
+</div>
+<div id="finite-differences" class="slide section level1">
+<h1>Finite Differences</h1>
+<ul>
+<li>Consider the definition of the derivative of <span class="math inline">\(f\)</span> at point <span class="math inline">\(x\)</span>: <span class="math display">\[ f&#39;(x) = \lim_{h\to0}\frac{f(x+h)-f(x)}{h} \]</span></li>
+<li>The simplest way to calculate a numerical derivative is to replicate this computation for small <span class="math inline">\(h\)</span> with: <span class="math display">\[ f&#39;(x) \approx \frac{f(x+h)-f(x)}{h},\quad h\text{ small.} \]</span></li>
+<li>This is known as the Forward Difference approach.</li>
+<li>There are different approaches, e.g. the central difference approach does <span class="math display">\[ f&#39;(x) \approx \frac{f(x+h)-f(x-h)}{2h},\quad h\text{ small.} \]</span></li>
+<li>How does this perform?</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">using Gadfly
+f(x) = <span class="fl">2</span> - x^<span class="fl">2</span>
+c = -<span class="fl">0.75</span>
+sec_line(h) = x -&gt; f(c) + (f(c + h) - f(c))/h * (x - c)
+plot([f, sec_line(<span class="fl">1</span>), sec_line(<span class="fl">.5</span>), sec_line(<span class="fl">.25</span>), sec_line(<span class="fl">.05</span>)], -<span class="fl">1</span>, <span class="fl">1</span>)</code></pre></div>
+<ul>
+<li>What's the problem? Well, what is <em>small</em>?</li>
+</ul>
+</div>
+<div id="finite-differences-whats-the-right-step-size-h" class="slide section level1">
+<h1>Finite Differences: what's the right step size <span class="math inline">\(h\)</span>?</h1>
+<ul>
+<li>Theoretically, we would like to have <span class="math inline">\(h\)</span> as small as possible, since we want to approximate the limit at zero.</li>
+<li>In practice, on a computer, there is a limit to this. There is a smallest representable number, as we know.</li>
+<li><code>eps()</code>.</li>
+<li>One can show that the optimal step size is <span class="math inline">\(h=\sqrt{\texttt{eps()}}\)</span></li>
+</ul>
+</div>
+<div id="automatic-differentiation-ad" class="slide section level1">
+<h1> Automatic Differentiation (AD)</h1>
+<ul>
+<li>2 modes: Forward and Reverse Mode.</li>
+<li>The basic idea is that the derivative of any function can be decomposed into some basic algebraic operations.</li>
+<li><p>The <a href="https://en.wikipedia.org/wiki/Automatic_differentiation">wikipedia page is informative</a></p>
+<div class="figure">
+<img src="figs/wikipedia-AD.png" alt="By Berland at en.wikipedia [Public domain], from Wikimedia Commons" />
+<p class="caption"><a href="https://commons.wikimedia.org/wiki/File%3AAutomaticDifferentiation.png">By Berland at en.wikipedia [Public domain], from Wikimedia Commons</a></p>
+</div></li>
+</ul>
+<h2 id="example">Example</h2>
+<ul>
+<li>Suppose we want to differentiate <span class="math inline">\(f(x_1,x_2) = x_1 x_2 + \sin x_1\)</span></li>
+<li>We label subexpressions by <span class="math inline">\(w_i\)</span> as follows: <span class="math display">\[ \begin{array}{cl}
+f(x_1,x_2) &amp;= x_1 x_2 + \sin x_1 \\
+&amp;= w_1 w_2 + sin w_1 \\
+&amp;= w_3  + w_4 \\
+&amp;= w_5 
+\end{array} 
+\]</span></li>
+<li>Computation of the partial derivative starts with the seed value, i.e. <span class="math inline">\(\dot{w}_1 = \frac{\partial x_1}{\partial x_1} = 1\)</span>.</li>
+<li>We store for each subexpression both the value and the derivative, i.e. <span class="math inline">\((w_i,\dot{w}_i)\)</span></li>
+<li><p>We then sweep through the expression tree as in this picture:</p>
+<div class="figure">
+<img src="figs/wikipedia-AD-example.png" alt="By Berland at en.wikipedia [Public domain], from Wikimedia Commons" />
+<p class="caption"><a href="https://commons.wikimedia.org/wiki/File%3AForwardAccumulationAutomaticDifferentiation.png">By Berland at en.wikipedia [Public domain], from Wikimedia Commons</a></p>
+</div></li>
+</ul>
+</div>
+<div id="ad-in-julia" class="slide section level1">
+<h1>AD in Julia</h1>
+<ul>
+<li>The organisation here is <a href="http://www.juliadiff.org" class="uri">http://www.juliadiff.org</a></li>
+<li>There are many packages to perform differentiation with Julia here.</li>
+<li>Many packages rely on the machinery here.</li>
+<li>Let's quickly look at <a href="https://github.com/JuliaDiff/ForwardDiff.jl" class="uri">https://github.com/JuliaDiff/ForwardDiff.jl</a></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia"><span class="co"># from ForwardDiff&#39;s readme:</span>
+using ForwardDiff
+f(x::<span class="dt">Vector</span>) = sum(sin, x) + prod(tan, x) * sum(sqrt, x)
+x = rand(<span class="fl">5</span>); <span class="co"># get 5 random points</span>
+g = ForwardDiff.gradient(f); <span class="co"># g = ∇f</span>
+j = ForwardDiff.jacobian(g); <span class="co"># j = J(∇f)</span>
+ForwardDiff.hessian(f, x) <span class="co"># H(f)(x) == J(∇f)(x), as expected</span></code></pre></div>
+<ul>
+<li>The authors provide some benchmarks. Let's run those:</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">include(joinpath(Pkg.dir(<span class="st">&quot;ForwardDiff&quot;</span>),<span class="st">&quot;benchmarks&quot;</span>,<span class="st">&quot;run_all_benchmarks(ForwardDiffBenchmarks.Rosenbrock)&quot;</span>))</code></pre></div>
+</div>
+<div id="numerical-approximation-of-integrals" class="slide section level1">
+<h1>Numerical Approximation of Integrals</h1>
+<ul>
+<li>We will focus on methods that represent integrals as weighted sums.</li>
+<li>The typical representation will look like: <span class="math display">\[ E[G(\epsilon)] = \int_{\mathbb{R}^N} G(\epsilon) w(\epsilon) d\epsilon \approx \sum_{j=1}^J \omega_j G(\epsilon_j) \]</span>
+<ul>
+<li><span class="math inline">\(N\)</span> is the dimensionality of the integration problem.</li>
+<li><span class="math inline">\(G:\mathbb{R}^N \mapsto \mathbb{R}\)</span> is the function we want to integrate wrt <span class="math inline">\(\epsilon \in \mathbb{R}^N\)</span>.</li>
+<li><span class="math inline">\(w\)</span> is a density function s.t. <span class="math inline">\(\int_{\mathbb{R}^n} w(\epsilon) d\epsilon = 1\)</span>.</li>
+<li><span class="math inline">\(\omega\)</span> are weights such that (most of the time) <span class="math inline">\(\sum_{j=1}^J \omega_j = 1\)</span>. <!-- * We will look at normal shocks $\epsilon \sim N(0_N,I_N)$
+* in that case, $w(\epsilon) = (2\pi)^{-N/2} \exp \left(-\frac{1}{2}\epsilon^T \epsilon \right)$
+* $I_N$ is the n by n identity matrix, i.e. there is no correlation among the shocks for now.
+* Other random processes will require different weighting functions, but the principle is identical.
+ --></li>
+</ul></li>
+<li>For now, let's say that <span class="math inline">\(N=1\)</span></li>
+</ul>
+</div>
+<div id="quadrature-rules" class="slide section level1">
+<h1>Quadrature Rules</h1>
+<ul>
+<li>We focus exclusively on those and leave Simpson and Newton Cowtes formulas out.
+<ul>
+<li>This is because Quadrature is the method that in many situations gives highes accuracy with lowest computational cost.</li>
+</ul></li>
+<li>Quadrature provides a rule to compute weights <span class="math inline">\(w_j\)</span> and nodes <span class="math inline">\(\epsilon_j\)</span>.</li>
+<li>There are many different quadrature rules.</li>
+<li>They differ in their domain and weighting function.</li>
+<li><a href="https://en.wikipedia.org/wiki/Gaussian_quadrature" class="uri">https://en.wikipedia.org/wiki/Gaussian_quadrature</a></li>
+<li>In general, we can convert our function domain to a rule-specific domain with change of variables.</li>
+</ul>
+</div>
+<div id="gauss-hermite-expectation-of-a-normally-distributed-variable" class="slide section level1">
+<h1>Gauss-Hermite: Expectation of a Normally Distributed Variable</h1>
+<ul>
+<li>There are many different rules, all specific to a certain random process.</li>
+<li>Gauss-Hermite is designed for an integral of the form <span class="math display">\[ \int_{-\infty}^{+\infty} e^{-x^2} G(x) dx \]</span> and where we would approximate <span class="math display">\[ \int_{-\infty}^{+\infty} e^{-x^2} f(x) dx \approx \sum_{i=1}^n \omega_i G(x_i) \]</span></li>
+<li>Now, let's say we want to approximate the expected value of function <span class="math inline">\(f\)</span> when it's argument <span class="math inline">\(z\sim N(\mu,\sigma^2)\)</span>: <span class="math display">\[ E[f(z)] = \int_{-\infty}^{+\infty} \frac{1}{\sigma \sqrt{2\pi}} \exp \left( -\frac{(z-\mu)^2}{2\sigma^2} \right) f(z) dz \]</span></li>
+</ul>
+</div>
+<div id="gauss-hermite-expectation-of-a-normally-distributed-variable-1" class="slide section level1">
+<h1>Gauss-Hermite: Expectation of a Normally Distributed Variable</h1>
+<ul>
+<li>The rule is defined for <span class="math inline">\(x\)</span> however. We need to transform <span class="math inline">\(z\)</span>: <span class="math display">\[ x = \frac{(z-\mu)^2}{2\sigma^2} \Rightarrow z = \sqrt{2} \sigma x + \mu \]</span></li>
+<li>This gives us now (just plug in for <span class="math inline">\(z\)</span>) <span class="math display">\[ E[f(z)] = \int_{-\infty}^{+\infty} \frac{1}{ \sqrt{\pi}} \exp \left( -x^2 \right) f(\sqrt{2} \sigma x + \mu) dx \]</span></li>
+<li>And thus, our approximation to this, using weights <span class="math inline">\(\omega_i\)</span> and nodes <span class="math inline">\(x_i\)</span> is <span class="math display">\[ E[f(z)] \approx \sum_{j=1}^J \frac{1}{\sqrt{\pi}} \omega_j f(\sqrt{2} \sigma x_j + \mu)\]</span></li>
+</ul>
+</div>
+<div id="using-quadrature-in-julia" class="slide section level1">
+<h1> Using Quadrature in Julia</h1>
+<ul>
+<li><a href="https://github.com/ajt60gaibb/FastGaussQuadrature.jl" class="uri">https://github.com/ajt60gaibb/FastGaussQuadrature.jl</a></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">Pkg.add(<span class="st">&quot;FastGaussQuadrature&quot;</span>)
+
+using FastGaussQuadrature
+
+np = <span class="fl">3</span>
+
+rules = <span class="dt">Dict</span>(<span class="st">&quot;hermite&quot;</span> =&gt; gausshermite(np),
+             <span class="st">&quot;chebyshev&quot;</span> =&gt; gausschebyshev(np),
+             <span class="st">&quot;legendre&quot;</span> =&gt; gausslegendre(np),
+             <span class="st">&quot;lobatto&quot;</span> =&gt; gausslobatto(np))
+
+
+using DataFrames
+
+nodes = DataFrame([x[<span class="fl">1</span>] <span class="kw">for</span> x <span class="kw">in</span> values(rules)],<span class="dt">Symbol</span>[symbol(x) <span class="kw">for</span> x <span class="kw">in</span> keys(rules)])
+weights = DataFrame([x[<span class="fl">2</span>] <span class="kw">for</span> x <span class="kw">in</span> values(rules)],<span class="dt">Symbol</span>[symbol(x) <span class="kw">for</span> x <span class="kw">in</span> keys(rules)])</code></pre></div>
+</div>
+<div id="quadrature-in-more-dimensions-product-rule" class="slide section level1">
+<h1> Quadrature in more dimensions: Product Rule</h1>
+<ul>
+<li>If we have <span class="math inline">\(N&gt;1\)</span>, we can use the product rule: this just takes the kronecker product of all univariate rules.</li>
+<li>This works well as long as <span class="math inline">\(N\)</span> is not too large. The number of required function evaluations grows exponentially. <span class="math display">\[ E[G(\epsilon)] = \int_{\mathbb{R}^N} G(\epsilon) w(\epsilon) d\epsilon \approx \sum_{j_1=1}^{J_1} \cdots \sum_{j_N=1}^{J_N} \omega_{j_1}^1 \cdots \omega_{j_N}^N G(\epsilon_{j_1}^1,\dots,\epsilon_{j_N}^N) \]</span> where <span class="math inline">\(\omega_{j_1}^1\)</span> stands for weight index <span class="math inline">\(j_1\)</span> in dimension 1, same for <span class="math inline">\(\epsilon\)</span>.</li>
+<li>Total number of nodes: <span class="math inline">\(J=J_1 J_2 \cdots J_N\)</span>, and <span class="math inline">\(J_i\)</span> can differ from <span class="math inline">\(J_k\)</span>.</li>
+</ul>
+<h2 id="example-for-n3">Example for <span class="math inline">\(N=3\)</span></h2>
+<ul>
+<li>Suppose we have <span class="math inline">\(\epsilon^i \sim N(0,1),i=1,2,3\)</span> as three uncorrelated random variables.</li>
+<li>Let's take <span class="math inline">\(J=3\)</span> points in all dimensions, so that in total we have <span class="math inline">\(J^N=27\)</span> points.</li>
+<li>We have the nodes and weights from before in <code>rules[&quot;hermite&quot;]</code>.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">nodes = <span class="dt">Any</span>[]
+push!(nodes,repeat(rules[<span class="st">&quot;hermite&quot;</span>][<span class="fl">1</span>],inner=[<span class="fl">1</span>],outer=[<span class="fl">9</span>]))
+push!(nodes,repeat(rules[<span class="st">&quot;hermite&quot;</span>][<span class="fl">1</span>],inner=[<span class="fl">3</span>],outer=[<span class="fl">3</span>]))
+push!(nodes,repeat(rules[<span class="st">&quot;hermite&quot;</span>][<span class="fl">1</span>],inner=[<span class="fl">9</span>],outer=[<span class="fl">1</span>]))
+weights = kron(rules[<span class="st">&quot;hermite&quot;</span>][<span class="fl">2</span>],kron(rules[<span class="st">&quot;hermite&quot;</span>][<span class="fl">2</span>],rules[<span class="st">&quot;hermite&quot;</span>][<span class="fl">2</span>]))
+df = hcat(DataFrame(weights=weights),DataFrame(nodes,[:dim1,:dim2,:dim3]))</code></pre></div>
+<ul>
+<li>Imagine you had a function <span class="math inline">\(g\)</span> defined on those 3 dims: in order to approximate the integral, you would have to evaluate <span class="math inline">\(g\)</span> at all combinations of <code>dimx</code>, multiply with the corresponding weight, and sum.</li>
+</ul>
+</div>
+<div id="alternatives-to-the-product-rule" class="slide section level1">
+<h1>Alternatives to the Product Rule</h1>
+<ul>
+<li>Monomial Rules: They grow only linearly.</li>
+<li>Please refer to <span class="citation">(Judd 1998)</span> for more details.</li>
+</ul>
+</div>
+<div id="monte-carlo-integration" class="slide section level1">
+<h1>Monte Carlo Integration</h1>
+<ul>
+<li>A widely used method is to just draw <span class="math inline">\(N\)</span> points randomly from the space of the shock <span class="math inline">\(\epsilon\)</span>, and to assign equal weights <span class="math inline">\(\omega_j=\frac{1}{N}\)</span> to all of them.</li>
+<li>The expectation is then <span class="math display">\[ E[G(\epsilon)] \approx \frac{1}{N} \sum_{j=1}^N  G(\epsilon_j) \]</span></li>
+<li>This in general a very inefficient method.</li>
+<li>Particularly in more than 1 dimensions, the number of points needed for good accuracy is very large.</li>
+</ul>
+<h2 id="quasi-monte-carlo-integration">Quasi Monte Carlo Integration</h2>
+<ul>
+<li>Uses non-product techniques to construct a grid of uniformly spaced points.</li>
+<li>The researcher controlls the number of points.</li>
+<li>We need to construct equidistributed points.</li>
+<li>Typically one uses a low-discrepancy sequence of points, e.g. the Weyl sequence:</li>
+<li><span class="math inline">\(x_n = {n v}\)</span> where <span class="math inline">\(v\)</span> is an irrational number and <code>{}</code> stands for the fractional part of a number. for <span class="math inline">\(v=\sqrt{2}\)</span>, <span class="math display">\[ x_1 = \{1 \sqrt{2}\} = \{1.4142\} = 0.4142, x_2 = \{2 \sqrt{2}\} = \{2.8242\} = 0.8242,... \]</span></li>
+<li>Other low-discrepancy sequences are Niederreiter, Haber, Baker or Sobol.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">Pkg.add(<span class="st">&quot;Sobol&quot;</span>)
+using Sobol
+using PyPlot
+s = SobolSeq(<span class="fl">2</span>)
+p = hcat([next(s) <span class="kw">for</span> i = <span class="fl">1</span>:<span class="fl">1024</span>]...)&#39;
+subplot(<span class="fl">111</span>, aspect=<span class="st">&quot;equal&quot;</span>)
+plot(p[:,<span class="fl">1</span>], p[:,<span class="fl">2</span>], <span class="st">&quot;r.&quot;</span>)</code></pre></div>
+<div class="figure">
+<img src="figs/Sobol.png" alt="Sobol Sequences in [0,1]^2" />
+<p class="caption">Sobol Sequences in [0,1]^2</p>
+</div>
+</div>
+<div id="correlated-shocks" class="slide section level1">
+<h1>Correlated Shocks</h1>
+<ul>
+<li>We often face situations where the shocks are in fact correlated. <span class="math display">\[ E[G(\epsilon)] = \int_{\mathbb{R}^N} G(\epsilon) w(\epsilon) d\epsilon \approx \sum_{j_1=1}^{J_1} \cdots \sum_{j_N=1}^{J_N} \omega_{j_1}^1 \cdots \omega_{j_N}^N G(\epsilon_{j_1}^1,\dots,\epsilon_{j_N}^N) \]</span></li>
+<li>Now <span class="math inline">\(\epsilon \sim N(\mu,\Sigma)\)</span> where <span class="math inline">\(\Sigma\)</span> is an N by N variance-covariance matrix.</li>
+<li>The multivariate density is <span class="math display">\[w(\epsilon) = (2\pi)^{-N/2} det(\Sigma)^{-1/2} \exp \left(-\frac{1}{2}(\epsilon - \mu)^T (\epsilon - \mu) \right)\]</span></li>
+<li>We need to perform a change of variables before we can integrate this.</li>
+<li>Given <span class="math inline">\(\Sigma\)</span> is symmetric and positive semi-definite, it has a Cholesky decomposition, <span class="math display">\[ \Sigma = \Omega \Omega^T \]</span> where <span class="math inline">\(\Omega\)</span> is a lower-triangular with strictly positive entries.</li>
+<li>The linear change of variables is then <span class="math display">\[ v = \Omega^{-1} (\epsilon - \mu)  \]</span></li>
+<li>Plugging this in gives <span class="math display">\[ \sum_{j=1}^J \omega_j  G(\Omega v_j + \mu) \equiv \sum_{j=1}^J \omega_j  G(\epsilon_j) \]</span> where <span class="math inline">\(v\sim N(0,I_N)\)</span>.</li>
+<li>So, we can follow the exact same steps as with the uncorrelated shocks, but need to adapt the nodes.</li>
+</ul>
+</div>
+<div id="references" class="slide section level1">
+<h1>References</h1>
+<ul>
+<li>The Integration part of these slides are based on <span class="citation">(L. Maliar and Maliar 2013)</span> chapter 5</li>
+</ul>
+<div id="refs" class="references">
+<div id="ref-jesus-computing">
+<p>Aruoba, S. B., &amp; Fernandez-Villaverde, J. (2014). <em>A comparison of programming languages in economics</em>. National Bureau of Economic Research. <a href="http://economics.sas.upenn.edu/~jesusfv/comparison_languages.pdf" class="uri">http://economics.sas.upenn.edu/~jesusfv/comparison_languages.pdf</a></p>
+</div>
+<div id="ref-judd-book">
+<p>Judd, K. L. (1998). <em>Numerical methods in economics</em>. The MIT Press.</p>
+</div>
+<div id="ref-maliar-maliar">
+<p>Maliar, L., &amp; Maliar, S. (2013). Numerical methods for large scale dynamic economic models. <em>Handbook of Computational Economics</em>, <em>3</em>, 325. doi:<a href="http://doi.org/http://dx.doi.org/10.1016/B978-0-444-52980-0.00007-4">http://dx.doi.org/10.1016/B978-0-444-52980-0.00007-4</a></p>
+</div>
+</div>
+</div>
+</body>
+</html>

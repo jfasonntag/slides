@@ -6,4 +6,4 @@
 Slides
 ======
 
-1. [Session 1](sessions/session1.html)
+1. [Session 1](sessions/basic-computing.html)
