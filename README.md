@@ -3,7 +3,7 @@
 
 ## View Slides
 
-The presentation is online at [ScPo-CompEcon.github.io/slides](ScPo-CompEcon.github.io/slides).
+The presentation is online at [ScPo-CompEcon.github.io/slides](https://ScPo-CompEcon.github.io/slides).
 
 ## License
 
