@@ -1,18 +1,72 @@
-% Eating Habits
-% John Doe
-% March 22, 2005
+% Computational Economics
+% Florian Oswald
+% Sciences Po, Spring 2016
 
-# In the morning
+# Work in Progress
 
-- Eat eggs
-- Drink coffee
+## These slides are work in progress.
 
-# In the evening
+Please check back in Spring 2016!
 
-- Eat spaghetti
-- Drink wine
+-----------------------
 
-# Conclusion
+# Outline
 
-- And the answer is...
-- $f(x)=\sum_{n=0}^\infty\frac{f^{(n)}(a)}{n!}(x-a)^n$    
+
+
+## Objectives
+
+0. zero
+1. one
+2. two
+3. three
+
+## tasks
+
+* do it
+* do it
+
+------------------------
+
+
+# Evaluation
+
+>I'm going to quote you!
+
+
+-----------------------
+
+# What next?
+
+* maybe some *maths*?
+	* you mean like $\alpha + \xi = \eta$?
+	* yep.
+* cool!
+
+## Bibliography
+
+Here is what Jesus [@jesus-computing] said.
+And of course [@judd-su] are very important here.
+
+-----------------
+
+# Obviously: Code!
+
+~~~~~~~~~~~~ {.julia}
+# a type
+type Param
+	beta::Float64
+	V::Array
+	options::Dict
+end
+
+# a method for Param
+function doit(p::Param)
+	# do stuff with p
+end
+~~~~~~~~~~~~
+
+------------------
+
+
+# References

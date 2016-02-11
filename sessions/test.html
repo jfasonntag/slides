@@ -6,10 +6,46 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
-  <meta name="author" content="John Doe" />
-  <meta name="date" content="2005-03-22" />
-  <title>Eating Habits</title>
+  <meta name="author" content="Florian Oswald" />
+  <title>Computational Economics</title>
   <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
   <link rel="stylesheet" type="text/css" media="screen, projection, print"
     href="http://www.w3.org/Talks/Tools/Slidy2/styles/slidy.css" />
   <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
@@ -18,32 +54,75 @@
 </head>
 <body>
 <div class="slide titlepage">
-  <h1 class="title">Eating Habits</h1>
+  <h1 class="title">Computational Economics</h1>
   <p class="author">
-John Doe
+Florian Oswald
   </p>
-  <p class="date">March 22, 2005</p>
+  <p class="date">Sciences Po, Spring 2016</p>
 </div>
-<div id="in-the-morning" class="slide section level1">
-<h1>In the morning</h1>
+<div id="work-in-progress" class="slide section level1">
+<h1>Work in Progress</h1>
+<h2 id="these-slides-are-work-in-progress.">These slides are work in progress.</h2>
+<p>Please check back in Spring 2016!</p>
+</div>
+<div id="outline" class="slide section level1">
+<h1>Outline</h1>
+<h2 id="objectives">Objectives</h2>
+<ol start="0" style="list-style-type: decimal">
+<li>zero</li>
+<li>one</li>
+<li>two</li>
+<li>three</li>
+</ol>
+<h2 id="tasks">tasks</h2>
 <ul>
-<li>Eat eggs</li>
-<li>Drink coffee</li>
+<li>do it</li>
+<li>do it</li>
 </ul>
 </div>
-<div id="in-the-evening" class="slide section level1">
-<h1>In the evening</h1>
-<ul>
-<li>Eat spaghetti</li>
-<li>Drink wine</li>
-</ul>
+<div id="evaluation" class="slide section level1">
+<h1>Evaluation</h1>
+<blockquote>
+<p>I'm going to quote you!</p>
+</blockquote>
 </div>
-<div id="conclusion" class="slide section level1">
-<h1>Conclusion</h1>
+<div id="what-next" class="slide section level1">
+<h1>What next?</h1>
 <ul>
-<li>And the answer is...</li>
-<li><span class="math inline">\(f(x)=\sum_{n=0}^\infty\frac{f^{(n)}(a)}{n!}(x-a)^n\)</span></li>
+<li>maybe some <em>maths</em>?
+<ul>
+<li>you mean like <span class="math inline">\(\alpha + \xi = \eta\)</span>?</li>
+<li>yep.</li>
+</ul></li>
+<li>cool!</li>
 </ul>
+<h2 id="bibliography">Bibliography</h2>
+<p>Here is what Jesus <span class="citation">(Aruoba and Fernandez-Villaverde 2014)</span> said. And of course <span class="citation">(Su and Judd 2012)</span> are very important here.</p>
+</div>
+<div id="obviously-code" class="slide section level1">
+<h1>Obviously: Code!</h1>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia"><span class="co"># a type</span>
+<span class="kw">type</span> Param
+    beta::<span class="dt">Float64</span>
+    V::<span class="dt">Array</span>
+    options::<span class="dt">Dict</span>
+<span class="kw">end</span>
+
+<span class="co"># a method for Param</span>
+<span class="kw">function</span> doit(p::Param)
+    <span class="co"># do stuff with p</span>
+<span class="kw">end</span></code></pre></div>
+</div>
+<div id="references" class="slide section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references">
+<div id="ref-jesus-computing">
+<p>Aruoba, S. B., &amp; Fernandez-Villaverde, J. (2014). <em>A comparison of programming languages in economics</em>. National Bureau of Economic Research. <a href="http://economics.sas.upenn.edu/~jesusfv/comparison_languages.pdf" class="uri">http://economics.sas.upenn.edu/~jesusfv/comparison_languages.pdf</a></p>
+</div>
+<div id="ref-judd-su">
+<p>Su, C.-L., &amp; Judd, K. L. (2012). Constrained optimization approaches to estimation of structural models. <em>Econometrica</em>, <em>80</em>(5), 2213–2230. doi:<a href="http://doi.org/10.3982/ECTA7925">10.3982/ECTA7925</a></p>
+</div>
+</div>
 </div>
 </body>
 </html>

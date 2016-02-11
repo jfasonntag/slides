@@ -842,6 +842,9 @@ plot(p[:,1], p[:,2], "r.")
 # Correlated Shocks
 
 * We often face situations where the shocks are in fact correlated.
+	* One very typical case is an AR1 process:
+	$$ z_{t+1} = \rho z_t + \varepsilon_t, \varepsilon \sim N(0,\sigma^2) $$
+* The general case is again:
 	$$ E[G(\epsilon)] = \int_{\mathbb{R}^N} G(\epsilon) w(\epsilon) d\epsilon \approx \sum_{j_1=1}^{J_1} \cdots \sum_{j_N=1}^{J_N} \omega_{j_1}^1 \cdots \omega_{j_N}^N G(\epsilon_{j_1}^1,\dots,\epsilon_{j_N}^N) $$
 * Now $\epsilon \sim N(\mu,\Sigma)$ where $\Sigma$ is an N by N variance-covariance matrix.
 * The multivariate density is

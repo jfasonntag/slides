@@ -862,7 +862,11 @@ plot(p[:,<span class="fl">1</span>], p[:,<span class="fl">2</span>], <span class
 <div id="correlated-shocks" class="slide section level1">
 <h1>Correlated Shocks</h1>
 <ul>
-<li>We often face situations where the shocks are in fact correlated. <span class="math display">\[ E[G(\epsilon)] = \int_{\mathbb{R}^N} G(\epsilon) w(\epsilon) d\epsilon \approx \sum_{j_1=1}^{J_1} \cdots \sum_{j_N=1}^{J_N} \omega_{j_1}^1 \cdots \omega_{j_N}^N G(\epsilon_{j_1}^1,\dots,\epsilon_{j_N}^N) \]</span></li>
+<li>We often face situations where the shocks are in fact correlated.
+<ul>
+<li>One very typical case is an AR1 process: <span class="math display">\[ z_{t+1} = \rho z_t + \varepsilon_t, \varepsilon \sim N(0,\sigma^2) \]</span></li>
+</ul></li>
+<li>The general case is again: <span class="math display">\[ E[G(\epsilon)] = \int_{\mathbb{R}^N} G(\epsilon) w(\epsilon) d\epsilon \approx \sum_{j_1=1}^{J_1} \cdots \sum_{j_N=1}^{J_N} \omega_{j_1}^1 \cdots \omega_{j_N}^N G(\epsilon_{j_1}^1,\dots,\epsilon_{j_N}^N) \]</span></li>
 <li>Now <span class="math inline">\(\epsilon \sim N(\mu,\Sigma)\)</span> where <span class="math inline">\(\Sigma\)</span> is an N by N variance-covariance matrix.</li>
 <li>The multivariate density is <span class="math display">\[w(\epsilon) = (2\pi)^{-N/2} det(\Sigma)^{-1/2} \exp \left(-\frac{1}{2}(\epsilon - \mu)^T (\epsilon - \mu) \right)\]</span></li>
 <li>We need to perform a change of variables before we can integrate this.</li>
