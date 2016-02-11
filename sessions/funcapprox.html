@@ -1,0 +1,739 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Florian Oswald" />
+  <title>Computational Economics: Function Approximation</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" type="text/css" media="screen, projection, print"
+    href="http://www.w3.org/Talks/Tools/Slidy2/styles/slidy.css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+  <script src="http://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js"
+    charset="utf-8" type="text/javascript"></script>
+</head>
+<body>
+<div class="slide titlepage">
+  <h1 class="title">Computational Economics: Function Approximation</h1>
+  <p class="author">
+Florian Oswald
+  </p>
+  <p class="date">Sciences Po, Spring 2016</p>
+</div>
+<div id="outline" class="slide section level1">
+<h1>Outline</h1>
+<ol style="list-style-type: decimal">
+<li>Overview of Approximation Methods
+<ol style="list-style-type: decimal">
+<li>Interpolation</li>
+<li>Regression</li>
+</ol></li>
+<li>Polynomial Interpolation</li>
+<li>Spline Interpolation</li>
+<li>Multidimensional Approximation</li>
+</ol>
+</div>
+<div id="approximation-methods" class="slide section level1">
+<h1>Approximation Methods</h1>
+<ul>
+<li>Confronted with a non-analytic function <span class="math inline">\(f\)</span> (i.e. something not like <span class="math inline">\(log(x)\)</span>), we need a way to numerically represent <span class="math inline">\(f\)</span> in a computer.
+<ul>
+<li>If your problem is to compute a value function in a dynamic problem, you don't have an analytic representation of <span class="math inline">\(V\)</span>.</li>
+<li>If you need to compute an equilibrium distribution for your model, you probably can't tell it's from one parametric family or another.</li>
+</ul></li>
+<li>Approximations use <em>data</em> of some kind which informs us about <span class="math inline">\(f\)</span>. Most commonly, we know the function values <span class="math inline">\(f(x_i)\)</span> at a corresponding finite set of points <span class="math inline">\(X = \{x_i\}_{i=1}^N\)</span>.</li>
+<li>The task of approximation is to take that data and tell us what the function value is at <span class="math inline">\(f(y),y\not \in X\)</span>.</li>
+<li>To an economist this should sound very familiar: take a dataset, learn it's structure, and make predictions.</li>
+<li>The only difference is that we can do much better here, because we have more degree's of freedom (we can choose our <span class="math inline">\(X\)</span> in <span class="math inline">\(Y=\beta X + \epsilon\)</span>)</li>
+</ul>
+</div>
+<div id="some-classification" class="slide section level1">
+<h1>Some Classification</h1>
+<ul>
+<li>Local Approximations: approximate function and it's derivative <span class="math inline">\(f,f&#39;\)</span> at a <em>single</em> point <span class="math inline">\(x_0\)</span>. Taylor Series: <span class="math display">\[ f(x) = f(x_0) + (x-x_0)f&#39;(x_0) + \frac{(x-x_0)^2}{2}f&#39;&#39;(x_0) + \dots + \frac{(x-x_0)^n}{n!}f^{n}(x_0) \]</span></li>
+<li>Interpolation or <em>Colocation</em>: find a function <span class="math inline">\(\hat{f}\)</span> that is a good fit to <span class="math inline">\(f\)</span>, and require that <span class="math inline">\(\hat{f}\)</span> <em>passes through</em> the points. If we think of there being a <em>residual</em> <span class="math inline">\(\epsilon_i = f(x_i) - \hat{f}(x_i)\)</span> at each grid point <span class="math inline">\(i\)</span>, this methods succeeds in setting <span class="math inline">\(\epsilon_i=0,\forall i\)</span>.</li>
+<li>Regression: Minimize some notion of distance (squared) between <span class="math inline">\(\hat{f}\)</span> and <span class="math inline">\(f\)</span>, without the requirement of pass through.</li>
+</ul>
+</div>
+<div id="doing-interpolation-in-julia" class="slide section level1">
+<h1>Doing Interpolation in Julia</h1>
+<ul>
+<li>In practice, you will make heavy use of high-quality interpolation packages in julia.</li>
+<li>List in the end.</li>
+<li>Nevertheless, function approximation is <em>extremely</em> problem-specific, so sometimes a certain approach does not work for your problem.</li>
+<li>This is why we will go through the mechanics of some common methods.</li>
+<li>I would like you to know where to start drilling if you need to go and hack somebody elses code.</li>
+</ul>
+</div>
+<div id="interpolation-basics" class="slide section level1">
+<h1>Interpolation Basics</h1>
+<ul>
+<li>Let <span class="math inline">\(f\)</span> be a smooth function mapping <span class="math inline">\(\mathbb{R}^d \mapsto \mathbb{R}\)</span>, and define <span class="math inline">\(\hat{f}(\cdot;c)\)</span> to be our parametric approximation function. We generically define this as <span class="math display">\[  \hat{f}(x;c) = \sum_{j=1}^J c_j \phi_j(x) \]</span> where
+<ul>
+<li><span class="math inline">\(\phi_j : \mathbb{R}^d \mapsto \mathbb{R}\)</span> is called a <strong>basis function</strong>,</li>
+<li><span class="math inline">\(c={c_1,c_2,\dots,c_J}\)</span> is a coefficient vector</li>
+</ul></li>
+<li>The integer <span class="math inline">\(J\)</span> is the <em>order</em> of the interpolation.</li>
+<li>Our problem is to choose <span class="math inline">\((\phi_i,c)\)</span> in some way.</li>
+<li>We will construct a <em>grid</em> of <span class="math inline">\(M\geq J\)</span> points <span class="math inline">\({x_1,\dots,x_M}\)</span> within the domain <span class="math inline">\(\mathbb{R}^d\)</span>, and we will denote the <em>residuals</em> at each grid point by <span class="math inline">\(\epsilon = {\epsilon_1,\dots,\epsilon_M}\)</span>: <span class="math display">\[ \left[\begin{array}{c}
+    \epsilon_1 \\
+     \vdots \\
+    \epsilon_M \\ \end{array} \right]  = \left[\begin{array}{c} f(x_1) \\ \vdots \\ f(x_M)  \end{array} \right] - \left[\begin{array}{ccc} 
+    \phi_1(x_1) &amp; \dots &amp; \phi_J(x_1) \\   
+    \vdots      &amp; \ddots &amp; \vdots \\   
+    \phi_1(x_M) &amp; \dots &amp; \phi_J(x_M)    
+    \end{array} \right]  \cdot 
+    \left[\begin{array}{c} c_1 \\ \vdots \\ c_J  \end{array} \right]
+    \]</span></li>
+<li><em>Interpolation</em> or colocation occurs when <span class="math inline">\(J=M\)</span>, i.e. we have a square matrix of basis functions, and can exactly solve this.</li>
+<li>We basically need to solve the system <span class="math display">\[ \begin{align} \sum_{j=1}^n c_j \phi_j(x_i) &amp;= f(x_i),\forall i=1,2,\dots,n \\
+                  \mathbf{\Phi c}&amp;= \mathbf{y}
+    \end{align}
+ \]</span> where the second line uses vector notation, and <span class="math inline">\(\mathbf{y}\)</span> has all values of <span class="math inline">\(f\)</span>.</li>
+<li>Solution: <span class="math inline">\(\mathbf{c}= \mathbf{\Phi}^{-1}y\)</span>.</li>
+</ul>
+</div>
+<div id="regression-basics" class="slide section level1">
+<h1>Regression Basics</h1>
+<ul>
+<li>Clearly, on the previous slide we required that there are as many interpolation nodes as there are basis functions - we had <span class="math inline">\(J\)</span> equations for <span class="math inline">\(M\)</span> unknowns, so there exists a unique solution for <span class="math inline">\(c\)</span>.</li>
+<li>We needed to <em>invert</em> <span class="math inline">\(\mathbf{\Phi}\)</span>.</li>
+<li>If we have more, <span class="math inline">\(M&gt;J\)</span> say, interpolation nodes than basis functions, we cannot do that. Instead we can define a loss function, and minimize it.</li>
+<li>In the case of squared loss, of course, this leads to the least squares solution: <span class="math display">\[ \begin{align} e_i &amp;= f(x_i) - \sum_{j=1}^n c_j \phi_j(x_i) \\
+        \min_c e_i^2 &amp; \implies \\
+        c            &amp;= (\Phi&#39;\Phi)^{-1} \Phi&#39;y
+    \end{align}
+ \]</span></li>
+</ul>
+</div>
+<div id="spectral-and-finite-element-methods" class="slide section level1">
+<h1>Spectral and Finite Element Methods</h1>
+<ul>
+<li>Spectral Methods are such that the basis functions are non-zero over the entire domain of <span class="math inline">\(f\)</span>.
+<ul>
+<li>Polynomial interpolation</li>
+<li>Chebychev interpolation</li>
+</ul></li>
+<li>Finite Element methods are such that basis functions are non-zero only on a subset of the domain.
+<ul>
+<li>Splines
+<ul>
+<li>Linear splines, i.e. splines of degree 1, a.k.a. <em>linear approximation</em></li>
+<li>Higher order splines, mainly the <em>cubic spline</em>.</li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="incremental">
+<h3 id="what-makes-a-good-approximation">What makes a good Approximation?</h3>
+<ul>
+<li>Should be arbitrarily accurate as we increase <span class="math inline">\(n\)</span>.</li>
+<li><span class="math inline">\(\Phi\)</span> Should be efficiently (fast) computable. If <span class="math inline">\(\Phi\)</span> were differentiable, we could easily get e.g. <span class="math inline">\(\hat{f}&#39;(x) = \sum_{j=1}^J c_j \phi_j&#39;(x_i)\)</span></li>
+<li><span class="math inline">\(c\)</span> Should be efficiently (fast) computable.</li>
+</ul>
+</div>
+</div>
+<div id="polynomial-interpolation" class="slide section level1">
+<h1>Polynomial Interpolation</h1>
+<ul>
+<li>For any continuous real-valued function <span class="math inline">\(f\)</span> on interval <span class="math inline">\([a,b]\)</span>, and an <span class="math inline">\(\epsilon&gt;0\)</span>, there is a polynomial <span class="math inline">\(p\)</span>, such that <span class="math display">\[ || f - p ||_\infty \equiv \sup_{x\in[a,b]} |f(x)-p(x)| &lt; \epsilon \]</span></li>
+<li>However, the choice of <span class="math inline">\(p\)</span> is critical. <em>Orthogonal Polynomials</em> have been shown to perform very well.</li>
+</ul>
+<blockquote>
+<p><span style="color:red">Definition - Orthogonal Polynomials</span>: an orthogonal polynomial sequence is a family of polynomials such that any two different polynomials in the sequence are orthogonal to each other under some inner product.</p>
+</blockquote>
+<ul>
+<li>There are many families that satisfy this. See <span class="citation">(Kenneth L. Judd 1998)</span> table 6.3 for an overview.</li>
+<li>We will now look at a widely used family, the Chebyshev polynomial.</li>
+</ul>
+</div>
+<div id="chebyshev-nodes" class="slide section level1">
+<h1>Chebyshev Nodes</h1>
+<ul>
+<li><em>Chebyshev Nodes</em> are defined in the interval <span class="math inline">\([-1,1]\)</span> as <span class="math display">\[ x_i = \cos\left(\frac{2k-1}{2n} \pi\right), k=1,\dots,n \]</span></li>
+<li>Which maps to general interval <span class="math inline">\([a,b]\)</span> as <span class="math display">\[ x_i = \frac{1}{2} (a+b) + \frac{1}{2} (b-a) \cos\left(\frac{2k-1}{2n} \pi\right) , k=1,\dots,n \]</span></li>
+<li>Chebyshev nodes are <strong>not</strong> evenly spaced: there are more points towards the boundaries.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">using PyPlot
+using FastGaussQuadrature: gausschebyshev
+nodes = gausschebyshev(<span class="fl">11</span>)  <span class="co"># generate 11 Chebyshev Nodes</span>
+fig = figure(figsize=(<span class="fl">10</span>,<span class="fl">4</span>))
+title(L<span class="st">&quot;Chebyshev Nodes $x \in [-1,1]$&quot;</span>)
+ax = axes()
+ax[:plot](nodes[<span class="fl">1</span>], ones(<span class="fl">11</span>), <span class="st">&quot;+r&quot;</span>)
+ax[:yaxis][:set_visible](false)
+fig[:canvas][:draw]()  <span class="co"># update figure</span></code></pre></div>
+</div>
+<div id="chebyshev-nodes-1" class="slide section level1">
+<h1>Chebyshev Nodes</h1>
+<div class="center" style="width: auto; margin-left: auto; margin-right: auto;">
+<img src="figs/cheby-nodes.png" alt="Chebyshev Nodes" />
+</div>
+</div>
+<div id="what-polynomial-to-use-what-form-for-phi" class="slide section level1">
+<h1>What Polynomial to use? What form for <span class="math inline">\(\Phi\)</span>?</h1>
+<ul>
+<li>In principle the <em>monomial basis</em> could be used. It is just the power functions of <span class="math inline">\(x\)</span>: <span class="math inline">\(1,x,x^2,x^3,\dots\)</span></li>
+<li>Stacking this up for each evaluation node (Chebyshev, or any other), gives the <em>Vandermonde Matrix</em>: <span class="math display">\[ V = \left[\begin{matrix} 
+        1 &amp; x_1 &amp; \dots &amp; x_1^{n-2} &amp; x_1^{n-1} \\ 
+        1 &amp; x_2 &amp; \dots &amp; x_2^{n-2} &amp; x_2^{n-1} \\ 
+        \vdots &amp; \vdots &amp; \ddots &amp;  &amp; \vdots \\ 
+        1 &amp; x_m &amp; \dots &amp; x_m^{n-2} &amp; x_m^{n-1} 
+        \end{matrix} \right]
+        \]</span> for the case with <span class="math inline">\(m\)</span> evaluation nodes for <span class="math inline">\(x\)</span>, and <span class="math inline">\(n\)</span> basis functions for each <span class="math inline">\(x_i\)</span>.</li>
+<li><span class="math inline">\(V\)</span> is ill-conditioned and thus a bad choice.</li>
+<li>A much better polynomial basis is - surprise, surprise - the <em>Chebyshev Polynomial basis</em>.</li>
+</ul>
+</div>
+<div id="evaluating-the-chebyshev-polynomial-and-basis-function" class="slide section level1">
+<h1>Evaluating the Chebyshev Polynomial and Basis Function</h1>
+<ul>
+<li>As before, this Basis is defined in <span class="math inline">\([-1,1]\)</span>, so for general <span class="math inline">\(x\in[a,b]\)</span> we normalize <span class="math inline">\(x\)</span> to <span class="math display">\[ z_i = 2\frac{x_i-a}{b-a} -1 \]</span></li>
+<li>There are several ways to obtain the value of the order <span class="math inline">\(j\)</span> Chebyshev polynomial at <span class="math inline">\(z\)</span>, e.g. to get <span class="math inline">\(\sum_{i=0}^n a_i T_i(z)\)</span>.
+<ol style="list-style-type: decimal">
+<li>use definition <span class="math inline">\(T_j(z) = \cos(\arccos(z)j)\)</span>. Or</li>
+<li>Recursively we have that <span class="math inline">\(\phi_j(x) = T_{j-1}(z)\)</span>, and <span class="math display">\[ \begin{align}
+    T_0(z) =&amp; 1 \\
+    T_1(z) =&amp; z \\
+    T_{i+1}(z) =&amp; 2zT_i(z) - T_{i-1}(z),i=1,\dots,n
+    \end{align}
+    \]</span></li>
+</ol></li>
+</ul>
+<div class="incremental">
+<h3 id="constructing-phi-as-t-evaluated-at-the-chebyshev-nodes">Constructing <span class="math inline">\(\Phi\)</span> as <span class="math inline">\(T\)</span> evaluated <em>at</em> the Chebyshev Nodes</h3>
+<ul>
+<li>Combining Chebyshev nodes evaluated at <span class="math inline">\(T\)</span> to construct <span class="math inline">\(\Phi\)</span> is a particularly good idea.</li>
+<li>Doing so, we obtain an interpolation matrix <span class="math inline">\(\Phi\)</span> with typical element <span class="math display">\[ \phi_{ij} = \cos\left( \frac{(n-i+0.5)(j-1)\pi}{n}\right)  \]</span></li>
+<li>And we obtain that <span class="math inline">\(\Phi\)</span> is indeed orthogonal <span class="math display">\[ \Phi^T \Phi = \text{diag}\{n,n/2,n/2,\dots,n/2\}  \]</span></li>
+</ul>
+</div>
+</div>
+<div id="chebyshev-interpolation-proceedure" class="slide section level1">
+<h1>(Chebyshev) Interpolation Proceedure</h1>
+<ul>
+<li>Let's summarize this proceedure.</li>
+<li>Instead of Chebyshev polynomials we could be using any other suitable family of polynomials.</li>
+<li>To obtain a Polynomial interpolant <span class="math inline">\(\hat{f}\)</span>, we need:
+<ol style="list-style-type: decimal">
+<li>a function to <span class="math inline">\(f\)</span> interpolate. We need to be able to get the function values somehow.</li>
+<li>A set of (Chebyshev) interpolation nodes at which to compute <span class="math inline">\(f\)</span></li>
+<li>An interpolation matrix <span class="math inline">\(\Phi\)</span> that corresponds to the nodes we have chosen.</li>
+<li>A resulting coefficient vector <span class="math inline">\(c\)</span></li>
+</ol></li>
+<li>To obtain the value of the interpolation at <span class="math inline">\(x&#39;\)</span> off our grid, we also need a way to evaluate <span class="math inline">\(\Phi(x&#39;)\)</span> .
+<ol style="list-style-type: decimal">
+<li>Evaluate the Basis function <span class="math inline">\(\Phi\)</span> at <span class="math inline">\(x&#39;\)</span></li>
+<li>obtain new values as <span class="math inline">\(y = \Phi c\)</span>.</li>
+</ol></li>
+</ul>
+</div>
+<div id="polynomial-interpolation-with-julia-approxfun.jl" class="slide section level1">
+<h1>Polynomial Interpolation with <code>Julia</code>: <code>ApproxFun.jl</code></h1>
+<ul>
+<li><a href="https://github.com/ApproxFun/ApproxFun.jl"><code>ApproxFun.jl</code></a> is a Julia package based on the Matlab package <a href="http://www.chebfun.org"><code>chebfun</code></a>. It is quite amazing.</li>
+<li>More than just <em>function approximation</em>. This is a toolbox to actually <em>work</em> with functions.</li>
+<li>given 2 functions <span class="math inline">\(f,g\)</span>, we can do algebra with them, i.e. <span class="math inline">\(h(x) = f(x) + g(x)^2\)</span></li>
+<li>We can differentiate and integrate</li>
+<li>Solve ODE's and PDE's</li>
+<li>represent period functions</li>
+<li>Head over to the website and look at the readme.</li>
+</ul>
+</div>
+<div id="polynomial-interpolation-with-julia-approxfun.jl-1" class="slide section level1">
+<h1>Polynomial Interpolation with <code>Julia</code>: <code>ApproxFun.jl</code></h1>
+<ul>
+<li>This even works with discontinuities:</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">using ApproxFun
+ff = x-&gt;sign(x-<span class="fl">0.1</span>)/<span class="fl">2</span> + cos(<span class="fl">4</span>*x);  <span class="co"># sign introduces a jump at 0.1</span>
+x  = Fun(identity)  <span class="co"># set up a function space</span>
+space(x)
+f  = ff(x)  <span class="co"># define ff on that space</span>
+ApproxFun.plot(f)   <span class="co"># plot</span>
+
+<span class="co"># whats the first deriv at 0.785?</span>
+f&#39;(<span class="fl">0.785</span>)
+<span class="co"># integral of f?</span>
+g = cumsum(f)
+g = g + f(-<span class="fl">1</span>)
+integral = norm(f-g)</code></pre></div>
+</div>
+<div id="polynomial-interpolation-with-julia-approxfun.jl-2" class="slide section level1">
+<h1>Polynomial Interpolation with <code>Julia</code>: <code>ApproxFun.jl</code></h1>
+<ul>
+<li>The main purpose of this package is to manipulate analytic functions, i.e. function with an algebraic representation.</li>
+<li>There is the possibility to supply a set of data points and fit a polynomial:</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">S=Chebyshev([-<span class="fl">1</span>,<span class="fl">1</span>])
+x=points(S,<span class="fl">20</span>)  <span class="co"># Get 20 points from that space</span>
+v=cos(cos(<span class="fl">4</span>*x))
+f=Fun(ApproxFun.transform(S,v),S)
+setplotter(<span class="st">&quot;PyPlot&quot;</span>)
+figure()
+subplot(<span class="fl">121</span>) <span class="co">#create first axis of 1x2 plot array</span>
+ApproxFun.plot(f)
+title(L<span class="st">&quot;$f(x)=\cos(4x)$&quot;</span>)
+<span class="co"># what about some random data?</span>
+v2=rand(<span class="fl">20</span>)
+f2=Fun(ApproxFun.transform(S,v2),S)
+subplot(<span class="fl">122</span>) <span class="co">#create second axis of 1x2 plot array</span>
+title(<span class="st">&quot;x = rand(20)&quot;</span>)
+ApproxFun.plot(f2,linewidth=<span class="fl">1.5</span>)
+ApproxFun.plot(x,v2,marker=<span class="st">&quot;o&quot;</span>,color=<span class="st">&quot;red&quot;</span>)</code></pre></div>
+<ul>
+<li>Check out more examples with <a href="https://github.com/ApproxFun/ApproxFun.jl/issues/275">my conversation with one of the package authors</a></li>
+</ul>
+</div>
+<div id="approxfun.jl-fitting-some-random-data" class="slide section level1">
+<h1><code>ApproxFun.jl</code> fitting some (random) data</h1>
+<div class="center" style="width: auto; margin-left: auto; margin-right: auto;">
+<img src="figs/approxFun-data.png" alt="ApproxFun.jl data fitting" />
+</div>
+</div>
+<div id="splines-piecewise-polynomial-approximation" class="slide section level1">
+<h1>Splines: Piecewise Polynomial Approximation</h1>
+<ul>
+<li>Splines are a finite element method, i.e. there are regions of the function domain where some basis functions are zero.</li>
+<li>As such, they provide a very flexible framework for approximation instead of high-order polynomials.
+<ul>
+<li>Keep in mind that Polynomials basis functions are non-zero on the entire domain. Remember the Vandermonde matrix.</li>
+</ul></li>
+<li>They bring some element of local approximation back into our framework. What happens at one end of the domain to the function is not important to what happens at the other end.</li>
+<li>Looking back at the previous plot of random data: we are searching for <strong>one</strong> polynomial to fit <strong>all</strong> those wiggles. A spline will allow us to design <strong>different</strong> polynomials in different parts of the domain.</li>
+</ul>
+<div class="incremental">
+<h2 id="splines-basic-setup">Splines: Basic Setup</h2>
+<ul>
+<li>The fundamental building block is the <em>knot vector</em>, or the <em>breakpoints vector</em> <span class="math inline">\(\mathbf{z}\)</span> of length <span class="math inline">\(p\)</span>. An element of <span class="math inline">\(\mathbf{z}\)</span> is <span class="math inline">\(z_i\)</span>.</li>
+<li><span class="math inline">\(\mathbf{z}\)</span> is ordered in ascending order.</li>
+<li><span class="math inline">\(\mathbf{z}\)</span> spans the domain <span class="math inline">\([a,b]\)</span> of our function, and we have that <span class="math inline">\(a=z_1,b=z_p\)</span></li>
+<li>A spline is of <em>order k</em> if the polynomial segments are k-th order polynomials.</li>
+<li>Literature: <span class="citation">(De Boor 1978)</span> is the definitive reference for splines.</li>
+</ul>
+</div>
+</div>
+<div id="splines-characterization" class="slide section level1">
+<h1>Splines: Characterization</h1>
+<ul>
+<li>Given <span class="math inline">\(p\)</span> knots, there are <span class="math inline">\(p-1\)</span> polynomial segments of order <span class="math inline">\(k\)</span>, each characterized by <span class="math inline">\(k+1\)</span> coefficients, i.e. a total of <span class="math inline">\((p-1)(k+1)\)</span> parameters.</li>
+<li>However, we also require the spline to be continuous and differentiable of degree <span class="math inline">\(k-1\)</span> at the <span class="math inline">\(p-2\)</span> interior breakpoints.</li>
+<li>Imposing that uses up an additional <span class="math inline">\(k(p-2)\)</span> conditions.</li>
+<li>We are left with <span class="math inline">\(n = (p-1)(k+1) - k(p-2) = p+k-1\)</span> free parameters.</li>
+<li>A Spline of order <span class="math inline">\(k\)</span> and <span class="math inline">\(p\)</span> knots can thus be written as a linear combination of it's <span class="math inline">\(n = p+k-1\)</span> basis functions.</li>
+</ul>
+</div>
+<div id="splines-show-some-basis-functions" class="slide section level1">
+<h1>Splines: Show some Basis Functions</h1>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">using ApproXD   
+<span class="co"># Pkg.clone(&quot;https://github.com/floswald/ApproXD.jl&quot;)</span>
+using PyPlot
+bs = BSpline(<span class="fl">7</span>,<span class="fl">3</span>,<span class="fl">0</span>,<span class="fl">1</span>) <span class="co">#7 knots, degree 3 in [0,1]</span>
+<span class="co"># how many basis functions? (go back 1 slide.)</span>
+<span class="co"># getNumCoefs(bs)</span>
+B = full(getBasis(collect(linspace(<span class="fl">0</span>,<span class="fl">1.0</span>,<span class="fl">500</span>)),bs))
+<span class="co"># setup the plot</span>
+fig,axes = subplots(<span class="fl">3</span>,<span class="fl">3</span>,figsize=(<span class="fl">10</span>,<span class="fl">5</span>))
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fl">1</span>:<span class="fl">3</span>
+    <span class="kw">for</span> j <span class="kw">in</span> <span class="fl">1</span>:<span class="fl">3</span>
+        ax = axes[j,i]
+        count = i+(j-<span class="fl">1</span>)*<span class="fl">3</span>
+        ax[:plot](B[:,count])
+        ax[:grid]()
+        ax[:set_title](<span class="st">&quot;Basis $(count-1)&quot;</span>)
+        ax[:xaxis][:set_visible](false)
+        ax[:set_ylim](-<span class="fl">0.1</span>,<span class="fl">1.1</span>)
+        ax[:xaxis][:set_major_locator]=matplotlib[:ticker][:MultipleLocator](<span class="fl">1</span>)
+        ax[:yaxis][:set_major_locator]=matplotlib[:ticker][:MultipleLocator](<span class="fl">1</span>)
+    <span class="kw">end</span>
+<span class="kw">end</span>
+fig[:canvas][:draw]()</code></pre></div>
+</div>
+<div id="splines-show-some-basis-functions-1" class="slide section level1">
+<h1>Splines: Show some Basis Functions</h1>
+<div class="center" style="width: auto; margin-left: auto; margin-right: auto;">
+<img src="figs/cubic-bspline.png" alt="Cubic Spline Basis of degree 3" />
+</div>
+<ul>
+<li>Notice that placing each of those panels on top of each other generates a sparse matrix!</li>
+</ul>
+</div>
+<div id="b-splines-definition" class="slide section level1">
+<h1>B-Splines: Definition</h1>
+<ul>
+<li>We mostly use Basis Splines, or <strong>B-Splines</strong>.</li>
+<li>Here is a recursive definition of a B-Spline (and what is used in <code>ApproXD</code>):</li>
+<li>Denote the <span class="math inline">\(j\)</span>-th basis function of degree <span class="math inline">\(k\)</span> with knot vector <span class="math inline">\(\mathbf{z}\)</span> at <span class="math inline">\(x\)</span> as <span class="math inline">\(B_j^{k,\mathbf{z}} (x)\)</span></li>
+<li>Again, there are <span class="math inline">\(n = k + p - 1\)</span> <span class="math inline">\(B\)</span>'s (where <span class="math inline">\(p\)</span><code>= length(z)</code>)</li>
+<li>We can define <span class="math inline">\(B_j^{k,\mathbf{z}} (x)\)</span> recursively like this: <span class="math display">\[  B_j^{k,\mathbf{z}} (x) = \frac{x-z_{j-k}}{z_j - z_{j-k}} B_{j-1}^{k-1,\mathbf{z}} (x)  + \frac{z_{j+1}-x}{z_{j+1} - z_{j+1-k}} B_{j}^{k-1,\mathbf{z}} (x), j=1,\dots,n\]</span></li>
+</ul>
+<div class="incremental">
+<ul>
+<li>The recursion starts with <span class="math display">\[ B_j^{0,\mathbf{z}} (x) = \begin{cases}
+    1 &amp; \text{if }z_j \leq x &lt;  z_{j+1}\\
+    0 &amp; \text{otherwise.}
+    \end{cases}
+    \]</span></li>
+<li>For this formulation to work, we need to extend the knot vector for <span class="math inline">\(j&lt;1,j&gt;p\)</span>: <span class="math display">\[ z_j = \begin{cases}
+    a &amp; \text{if }j \leq 1\\
+    b &amp; \text{if }j \geq p
+    \end{cases} \]</span></li>
+<li>And we need to set the endpoints <span class="math display">\[ B_0^{k-1,\mathbf{z}} = B_n^{k-1,\mathbf{z}} =0 \]</span></li>
+<li>You may see that this gives rise to a triangular computation strategy, as pointed out <a href="http://www.cs.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/B-spline/bspline-basis.html">here</a>.</li>
+</ul>
+</div>
+</div>
+<div id="b-splines-derivatives-and-integrals" class="slide section level1">
+<h1>B-Splines: Derivatives and Integrals</h1>
+<ul>
+<li>This is another very nice thing about B-Splines.</li>
+<li>The derivative wrt to it's argument <span class="math inline">\(x\)</span> is <span class="math display">\[ \frac{d B_j^{k,\mathbf{z}} (x)}{dx} = \frac{k}{z_j - z_{j-k}} B_{j-1}^{k-1,\mathbf{z}} (x)  + \frac{k}{z_{j+1} - z_{j+1-k}} B_{j}^{k-1,\mathbf{z}} (x), j=1,\dots,n\]</span></li>
+<li>Similarly, the Integral is just the sum over the basis functions: <span class="math display">\[ \int_a^x B_j^{k,\mathbf{z}} (y) dy = \sum_{i=j}^n \frac{z_i - z_{i-k}}{k} B_{i+1}^{k+1,\mathbf{z}} (x)  \]</span></li>
+</ul>
+</div>
+<div id="linear-b-spline-a-useful-special-case" class="slide section level1">
+<h1>Linear B-Spline: A useful special case</h1>
+<ul>
+<li>This is <em>connecting the dots with a straight line</em></li>
+<li>This may incur some approximation error if the underlying function is very curved between the dots.</li>
+<li>However, it has some benefits:
+<ul>
+<li>it is shape-preserving,</li>
+<li>it is fast,</li>
+<li>it is easy to build.</li>
+</ul></li>
+<li>For a linear spline with evenly spaced breakpoints, this becomes almost trivial.
+<ul>
+<li>Let's define <span class="math inline">\(h = \frac{b-a}{n-1}\)</span> as the distance between breakpoints.</li>
+<li>Our basis function becomes very simple, giving us a measure of how far <span class="math inline">\(x\)</span> is from the next knot: <span class="math display">\[ \phi_j (x) = \begin{cases}
+    1 - \frac{|x-z_j|}{h} &amp; \text{if } |x-z_j| \leq h \\
+    0                    &amp; \text{otherwise}
+    \end{cases} \]</span></li>
+<li>Notice that each interior basis function (i.e. not 0 and not <span class="math inline">\(n\)</span>) has witdth <span class="math inline">\(2h\)</span>.</li>
+</ul></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">using ApproXD
+bs = BSpline(<span class="fl">9</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">1</span>) <span class="co">#9 knots, degree 1 in [0,1]</span>
+<span class="co"># how many basis functions? (go back 1 slide.)</span>
+<span class="co"># getNumCoefs(bs)</span>
+B = full(getBasis(collect(linspace(<span class="fl">0</span>,<span class="fl">1.0</span>,<span class="fl">500</span>)),bs))
+<span class="co"># setup the plot</span>
+fig,axes = subplots(<span class="fl">3</span>,<span class="fl">3</span>,figsize=(<span class="fl">10</span>,<span class="fl">5</span>))
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fl">1</span>:<span class="fl">3</span>
+    <span class="kw">for</span> j <span class="kw">in</span> <span class="fl">1</span>:<span class="fl">3</span>
+        ax = axes[j,i]
+        count = i+(j-<span class="fl">1</span>)*<span class="fl">3</span>
+        ax[:plot](B[:,count])
+        ax[:grid]()
+        ax[:set_title](<span class="st">&quot;Basis $(count-1)&quot;</span>)
+        ax[:xaxis][:set_visible](false)
+        ax[:set_ylim](-<span class="fl">0.1</span>,<span class="fl">1.1</span>)
+        ax[:xaxis][:set_major_locator]=matplotlib[:ticker][:MultipleLocator](<span class="fl">1</span>)
+        ax[:yaxis][:set_major_locator]=matplotlib[:ticker][:MultipleLocator](<span class="fl">1</span>)
+    <span class="kw">end</span>
+<span class="kw">end</span>
+fig[:canvas][:draw]()</code></pre></div>
+</div>
+<div id="splines-linear-spline-plot" class="slide section level1">
+<h1>Splines: Linear Spline Plot</h1>
+<div class="center" style="width: auto; margin-left: auto; margin-right: auto;">
+<img src="figs/linear-bspline.png" alt="Spline Basis of degree 1" />
+</div>
+</div>
+<div id="linear-b-spline-evaluation" class="slide section level1">
+<h1>Linear B-Spline: Evaluation</h1>
+<ul>
+<li>In order to evaluate the linear interpolator, we need to know only one thing: Which knot span is active, i.e. what is <span class="math inline">\(j\)</span> s.t. <span class="math inline">\(x\in [z_j, z_{j+1}]\)</span>?</li>
+<li>This is a classic problem in computer science. Binary search.</li>
+<li><code>julia</code> implements <a href="http://docs.julialang.org/en/release-0.4/stdlib/sort/#Base.searchsortedlast"><code>searchsortedlast</code></a>.</li>
+<li>Once we know <span class="math inline">\(j\)</span>, it's easy to get the interpolated value as <span class="math display">\[ \hat{f}(x) = \frac{x-z_j}{h}  f(z_{j+1}) + \frac{z_{j+1}-x}{h}  f(z_{j}) \]</span></li>
+</ul>
+</div>
+<div id="the-importance-of-knot-placement" class="slide section level1">
+<h1>The Importance of Knot Placement</h1>
+<ul>
+<li>We just talked about <em>equally spaced knots</em>. This is just a special case.</li>
+<li>B-Splines give us the flexibility to place the knots where we want.</li>
+<li>Contrary to Polynomial interpolations (where we cannot choose the evaluation nodes), this is very helpful in cases where we know that a function is very curved in a particular region.</li>
+<li>Canonical Example: Runge's function: <span class="math inline">\(f(x) = (1+25x^2)^{-1}\)</span>.</li>
+<li>Also: If you know that your function has a kink (i.e. a discontinuous first derivative) at <span class="math inline">\(\hat{x}\)</span>, then you can stack breakpoints on top of each other <em>at</em> <span class="math inline">\(\hat{x}\)</span></li>
+</ul>
+</div>
+<div id="b-spline-approximation-with-interpolations.jl" class="slide section level1">
+<h1>B-Spline Approximation with <a href="https://github.com/tlycken/Interpolations.jl"><code>Interpolations.jl</code></a></h1>
+<ul>
+<li>Let's go the readme page and give it a look!</li>
+</ul>
+</div>
+<div id="the-compecon-toolbox-of-miranda-and-fackler" class="slide section level1">
+<h1>The CompEcon Toolbox of Miranda and Fackler</h1>
+<ul>
+<li><a href="https://github.com/spencerlyon2/CompEcon.jl">CompEcon.jl</a></li>
+</ul>
+</div>
+<div id="mulitidimensional-approximation" class="slide section level1">
+<h1>Mulitidimensional Approximation</h1>
+<ul>
+<li>Up to now, everything we did was in one dimesion.</li>
+<li>Economic problems <em>often</em> have more dimension than that.
+<ul>
+<li>The number of state variables in your value functions are the number of dimensions.</li>
+</ul></li>
+<li>We can readily extend what we learned into more dimensions.</li>
+<li>However, we will quickly run into feasibility problems: hello <em>curse of dimensionality</em>.</li>
+</ul>
+</div>
+<div id="tensor-product-of-univariate-basis-functions-product-rule" class="slide section level1">
+<h1>Tensor Product of univariate Basis Functions: Product Rule</h1>
+<ul>
+<li>One possibility is to approximate e.g. the 2D function <span class="math inline">\(f(x,y)\)</span> by <span class="math display">\[ \hat{f}(x,y) = \sum_{i=1}^n \sum_{j=1}^m c_{i,j} \phi_i^x(x) \phi_j^y(y)  \]</span>
+<ul>
+<li>here <span class="math inline">\(\phi_i^x\)</span> is the basis function in <span class="math inline">\(x\)</span> space,</li>
+<li>you can see that the coefficient vector <span class="math inline">\(c_{i,j}\)</span> is indexed in two dimensions now.</li>
+<li>Notice that our initial notation was general enough to encompass this case, as we defined the basis functions as <span class="math inline">\(\mathbb{R}^d \mapsto \mathbb{R}\)</span>. So with the product rule, this mapping is just given by <span class="math inline">\(\phi_i^x(x) \phi_j^y(y)\)</span>.</li>
+</ul></li>
+<li>This formulation requires that we take the product of <span class="math inline">\(\phi_i^x(x), \phi_j^y(y)\)</span> at <em>all</em> combinations of their indices, as is clear from the summations.</li>
+<li>This is equivalent to the tensor product between <span class="math inline">\(\phi_i^x\)</span> and <span class="math inline">\(\phi_j^y\)</span>.</li>
+</ul>
+<h2 id="compute-c">Computing Coefficients from Tensor Product Spaces</h2>
+<ul>
+<li>Extending this into <span class="math inline">\(D\)</span> dimensions, where in each dim <span class="math inline">\(i\)</span> we have <span class="math inline">\(n_i\)</span> basis functions, we get <span class="math display">\[ \hat{f}(x_1,x_2,\dots,x_D) = \sum_{i_1=1}^{n_1} \sum_{i_2=1}^{n_2} \dots  \sum_{i_D=1}^{n_D} c_{i_1,i_2,\dots,i_D} \phi_{i_1}(x_1) \phi_{i_2}(x_2) \dots \phi_{i_D}(x_D)  \]</span></li>
+<li>In Vector notation <span class="math display">\[ 
+\hat{f}(x_1,x_2,\dots,x_D) =  \left[ \phi_{D}(x_D) \otimes \phi_{D-1}(x_{D-1})  \otimes \dots  \otimes  \phi_{1}(x_1) \right]  c \]</span> where <span class="math inline">\(c\)</span> is is an <span class="math inline">\(n=\Pi_{i=1}^D n_i\)</span> column vector</li>
+<li>The solution is the interpolation equation as before, <span class="math display">\[ \begin{align}\Phi c =&amp; y \\
+                \Phi   =&amp; \Phi_D \otimes \Phi_{D-1} \otimes \dots \otimes \Phi_{1} \end{align} \]</span></li>
+</ul>
+</div>
+<div id="the-problem-with-tensor-product-of-univariate-basis-functions" class="slide section level1">
+<h1>The Problem with Tensor Product of univariate Basis Functions</h1>
+<ul>
+<li>What's the problem?</li>
+<li>Well, solving <span class="math inline">\(\Phi c = y\)</span> is hard.</li>
+<li>If we have as many evaluation points as basis functions in each dimension, i.e. if each single <span class="math inline">\(\Phi_i\)</span> is a square matrix, <span class="math inline">\(\Phi\)</span> is of size (n,n).</li>
+<li>Inverting this is <em>extremely</em> hard even for moderately sized problems.</li>
+<li>Sometimes it's not even possible to allocate <span class="math inline">\(\Phi\)</span> in memory.</li>
+<li>Here it's important to remember the sparsity structure of a spline basis function.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">using PyPlot
+fig = figure()
+ax = axes()
+ax[:imshow](B)  <span class="co"># B was the BSpline basis from before</span>
+ax[:set_aspect](<span class="st">&quot;auto&quot;</span>)
+fig[:canvas][:draw]()</code></pre></div>
+</div>
+<div id="sparseness-of-b-spline-basis" class="slide section level1">
+<h1>Sparseness of B-Spline Basis</h1>
+<div class="center" style="width: auto; margin-left: auto; margin-right: auto;">
+<img src="figs/spline-basis-sparse.png" alt="BSpline basis functions are sparse." />
+</div>
+<ul>
+<li>Blue is zero.</li>
+<li>the y axis lists 500 equispaced points in [0,1]</li>
+<li>the x axis shows the value of all basis functions
+<ul>
+<li>i.e. each row is all basis functions evaluated at <span class="math inline">\(x_i\)</span></li>
+</ul></li>
+<li>This is a cubic spline basis. at most <span class="math inline">\(k+1=3\)</span> basis are non-zero for any <span class="math inline">\(x\)</span>.</li>
+</ul>
+</div>
+<div id="using-sparsity-of-splines" class="slide section level1">
+<h1>Using Sparsity of Splines</h1>
+<ul>
+<li>It may be better to store the splines in sparse format.</li>
+<li>Look at object <code>B</code> by typing <code>B</code> and <code>typeof(B)</code></li>
+<li>There are sparse system solvers available.</li>
+<li>Creating and storing the inverse of <span class="math inline">\(\Phi\)</span> destroys the sparsity structure (inverse of a sparse matrix is not sparse), and may not be a good idea.</li>
+<li>Look back at <a href="#compute-c">Computing coefficients form the tensor product</a></li>
+<li>We only have to sum over the non-zero entries! Every other operation is pure cost.</li>
+<li><p>This is implemented in <code>ApproXD.jl</code> for example via</p>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia"><span class="kw">function</span> evalTensor2{T}(mat1::SparseMatrixCSC{T,<span class="dt">Int64</span>},
+                        mat2::SparseMatrixCSC{T,<span class="dt">Int64</span>},
+                        c::<span class="dt">Vector</span>{T})</code></pre></div></li>
+</ul>
+</div>
+<div id="high-dimensional-functions-introducing-the-smolyak-grid" class="slide section level1">
+<h1>High Dimensional Functions: Introducing the Smolyak Grid</h1>
+<ul>
+<li>This is a modification of the Tensor product rule.</li>
+<li>It elemininates points from the full tensor product according to their <em>importance</em> for the quality of approximation.</li>
+<li>The user controls this quality parameter, thereby increasing/decreasing the size of the grid.</li>
+<li><span class="citation">(Kenneth L Judd et al. 2014)</span> is a complete technical reference for this method.</li>
+<li><span class="citation">(Maliar and Maliar 2013)</span> chapter 4 is very good overview of this topic, and the basis of this part of the lecture.</li>
+</ul>
+</div>
+<div id="the-smolyak-grid-in-2-dimensions" class="slide section level1">
+<h1>The Smolyak Grid in 2 Dimensions</h1>
+<ul>
+<li>Approximation level <span class="math inline">\(\mu \in \mathbb{N}\)</span> governs the quality of the approximation.</li>
+<li>Start with a unidimensional grid of points <span class="math inline">\(x\)</span>: <span class="math display">\[ x=\left\{-1,\frac{-1}{\sqrt{2}},0,\frac{1}{\sqrt{2}},1\right\} \]</span> which are 5 Chebyshev nodes (it's not important that those are Chebyshev nodes, any grid will work).</li>
+<li>A 2D tensor product <span class="math inline">\(x\otimes x\)</span> gives 25 grid points <span class="math display">\[ x\otimes x=\left\{(-1,-1),(-1,\frac{-1}{\sqrt{2}}),\dots,(1,1)\right\} \]</span></li>
+<li>The Smolyak method proceeds differently.</li>
+<li>We construct three nested sets: <span class="math display">\[ \begin{array}{l}
+    i=1 : S_1 = \{0\} \\
+    i=2 : S_2 = \{0,-1,1\} \\
+    i=3 : S_3 = \left\{-1,\frac{-1}{\sqrt{2}},0,\frac{1}{\sqrt{2}},1\right\}  \end{array} \]</span></li>
+<li>Then, we construct all possible 2D tensor products using elements from these nested sets in a table (next slide).</li>
+<li>Finally, we select only those elements of the table, that satisfy the Smolyak rule: <span class="math display">\[ i_1 + i_2 \leq d + \mu \]</span> where <span class="math inline">\(i_1,i_2\)</span> are column and row index, respectively, and <span class="math inline">\(d,\mu\)</span> are the number of dimensions and the quality of approximation.</li>
+</ul>
+</div>
+<div id="the-smolyak-grid-in-2d-tensor-table" class="slide section level1">
+<h1>The Smolyak Grid in 2D: Tensor Table</h1>
+<div class="figure">
+<img src="figs/smolyak-tensortab.png" alt="(Maliar and Maliar 2013) table 3: All Tensor Products" />
+<p class="caption"><span class="citation">(Maliar and Maliar 2013)</span> table 3: All Tensor Products</p>
+</div>
+<h2 id="selecting-elements">Selecting Elements</h2>
+<ul>
+<li>Denote the Smolyak grid for <span class="math inline">\(d\)</span> dimensions at level <span class="math inline">\(\mu\)</span> by <span class="math inline">\(\mathcal{H}^{d,\mu}\)</span>.</li>
+<li>if <span class="math inline">\(\mu=0\)</span> we have <span class="math inline">\(i_1+i_2\leq 2\)</span>. Only one point satisfies this, and <span class="math display">\[ \mathcal{H}^{2,0} = \{(0,0)\} \]</span></li>
+<li>if <span class="math inline">\(\mu=1\)</span> we have <span class="math inline">\(i_1+i_2\leq 3\)</span>. Three cases satisfy this:
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(i_1 = 1, i_2=1 \rightarrow (0,0)\)</span></li>
+<li><span class="math inline">\(i_1 = 1, i_2=2 \rightarrow (0,0),(0,-1),(0,1)\)</span></li>
+<li><span class="math inline">\(i_1 = 2, i_2=1 \rightarrow (0,0),(-1,0),(1,0)\)</span></li>
+</ol>
+<ul>
+<li>Therefore, the unique elements from the union of all of those is <span class="math display">\[ \mathcal{H}^{2,1} = \{(0,0),(-1,0),(1,0),(0,-1),(0,1)\} \]</span></li>
+</ul></li>
+<li>if <span class="math inline">\(\mu=2\)</span> we have <span class="math inline">\(i_1+i_2\leq 4\)</span>. Six cases satisfy this:
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(i_1 = 1, i_2=1\)</span></li>
+<li><span class="math inline">\(i_1 = 1, i_2=2\)</span></li>
+<li><span class="math inline">\(i_1 = 2, i_2=1\)</span></li>
+<li><span class="math inline">\(i_1 = 1, i_2=3\)</span></li>
+<li><span class="math inline">\(i_1 = 2, i_2=2\)</span></li>
+<li><span class="math inline">\(i_1 = 3, i_2=1\)</span></li>
+</ol>
+<ul>
+<li>Therefore, the unique elements from the union of all of those is <span class="math display">\[ \mathcal{H}^{2,2} = \left\{(-1,1),(0,1),(1,1),(-1,0),(0,0),(1,0),(-1,-1),(0,-1),(1,-1),\left(\frac{-1}{\sqrt{2}},0\right),\left(\frac{1}{\sqrt{2}},0\right),\left(0,\frac{-1}{\sqrt{2}}\right),\left(0,\frac{1}{\sqrt{2}}\right)\right\} \]</span></li>
+</ul></li>
+<li>Note that those elements are on the diagonal from top left to bottom right expanding through all the tensor products on table 3.</li>
+</ul>
+</div>
+<div id="size-of-smolyak-grids" class="slide section level1">
+<h1>Size of Smolyak Grids</h1>
+<ul>
+<li>The Smolyak grid grows much slower (at order <span class="math inline">\(d\)</span> to a power of <span class="math inline">\(\mu\)</span>) than the Tensor grid (exponential growth)</li>
+</ul>
+<div class="figure">
+<img src="figs/smolyak-vs-tensor.png" alt="(Maliar and Maliar 2013) figure 2: Tensor vs Smolyak in 2D" />
+<p class="caption"><span class="citation">(Maliar and Maliar 2013)</span> figure 2: Tensor vs Smolyak in 2D</p>
+</div>
+<div class="figure">
+<img src="figs/smolyak-tensor-points.png" alt="(Maliar and Maliar 2013) figure 4: Tensor vs Smolyak in 2D, number of grid points" />
+<p class="caption"><span class="citation">(Maliar and Maliar 2013)</span> figure 4: Tensor vs Smolyak in 2D, number of grid points</p>
+</div>
+</div>
+<div id="smolyak-polynomials" class="slide section level1">
+<h1>Smolyak Polynomials</h1>
+<ul>
+<li>Corresponding to the construction of grid points, there is the Smolyak way of constructing polynomials.</li>
+<li>This works exactly as before. We start with a one-dimensional set of basis functions (again Chebyshev here, again irrelevant): <span class="math display">\[ \right\{1,x,2x^2-1,4x^3-3x,8x^4-8x^2+1\right\} \]</span></li>
+<li>Three nested sets: <span class="math display">\[ \begin{array}{l}
+    i=1 : S_1 = \{1\} \\
+    i=2 : S_2 = \{1,x,2x^2-1\} \\
+    i=3 : S_3 = \left\{1,x,2x^2-1,4x^3-3x,8x^4-8x^2+1\right\}  \end{array} \]</span></li>
+<li>Denoting <span class="math inline">\(\mathcal{P}^{d,\mu}\)</span> the Smolyak polynomial, we follow exactly the same steps as for the grids to select elements of the full tensor product table 5:</li>
+</ul>
+<div class="figure">
+<img src="figs/smolyak-polynomial.png" alt="(Maliar and Maliar 2013) figure 5: All Smolyak Polynomials in 2D" />
+<p class="caption"><span class="citation">(Maliar and Maliar 2013)</span> figure 5: All Smolyak Polynomials in 2D</p>
+</div>
+</div>
+<div id="smolyak-interpolation" class="slide section level1">
+<h1>Smolyak Interpolation</h1>
+<p>This proceeds as in the previouses cases:</p>
+<ol style="list-style-type: decimal">
+<li>Evaluate <span class="math inline">\(f\)</span> at all grid points <span class="math inline">\(\mathcal{H}^{d,\mu}\)</span>.</li>
+<li>Evaluate the set of basis functions given by <span class="math inline">\(\mathcal{P}^{d,\mu}\)</span>f$ at all grid points <span class="math inline">\(\mathcal{H}^{d,\mu}\)</span>.</li>
+<li>Solve for the interpolating coefficients by inverting the Basis function matrix.</li>
+</ol>
+<h2 id="extensions">Extensions</h2>
+<ul>
+<li>There is a lot of redundancy in computing the grids the way we did it.</li>
+<li>More sophisticated approaches take care not to compute repeated elements.</li>
+</ul>
+</div>
+<div id="smolyak-grids-in-julia" class="slide section level1">
+<h1>Smolyak Grids in Julia</h1>
+<ul>
+<li>There are at least 2 julia packages that implement this idea:
+<ul>
+<li><a href="https://github.com/EconForge/Smolyak" class="uri">https://github.com/EconForge/Smolyak</a></li>
+<li><a href="https://github.com/alancrawford/Smolyak" class="uri">https://github.com/alancrawford/Smolyak</a></li>
+</ul></li>
+</ul>
+</div>
+<div class="slide section level1">
+
+<h2 id="bibliography">Bibliography</h2>
+<ul>
+<li><span class="citation">(Fackler and Miranda 2004)</span> is the main reference for this lecture.</li>
+<li><span class="citation">(Kenneth L. Judd 1998)</span> is the classic reference. A bit more difficult.</li>
+<li><span class="citation">(Aruoba and Fernandez-Villaverde 2014)</span> gives an overview over computing languages widely used in Economics.</li>
+</ul>
+</div>
+<div id="references" class="slide section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references">
+<div id="ref-jesus-computing">
+<p>Aruoba, S. B., &amp; Fernandez-Villaverde, J. (2014). <em>A comparison of programming languages in economics</em>. National Bureau of Economic Research. <a href="http://economics.sas.upenn.edu/~jesusfv/comparison_languages.pdf" class="uri">http://economics.sas.upenn.edu/~jesusfv/comparison_languages.pdf</a></p>
+</div>
+<div id="ref-deboor">
+<p>De Boor, C. (1978). A practical guide to splines. <em>Mathematics of Computation</em>.</p>
+</div>
+<div id="ref-fackler-miranda">
+<p>Fackler, Paul L, &amp; Miranda, M. J. (2004). <em>Applied computational economics and finance</em>. MIT press.</p>
+</div>
+<div id="ref-judd-book">
+<p>Judd, K. L. (1998). <em>Numerical methods in economics</em>. The MIT Press.</p>
+</div>
+<div id="ref-jmmv">
+<p>Judd, K. L., Maliar, L., Maliar, S., &amp; Valero, R. (2014). Smolyak method for solving dynamic economic models: Lagrange interpolation, anisotropic grid and adaptive domain. <em>Journal of Economic Dynamics and Control</em>, <em>44</em>, 92–123.</p>
+</div>
+<div id="ref-maliar-maliar">
+<p>Maliar, L., &amp; Maliar, S. (2013). Numerical methods for large scale dynamic economic models. <em>Handbook of Computational Economics</em>, <em>3</em>, 325. doi:<a href="https://doi.org/http://dx.doi.org/10.1016/B978-0-444-52980-0.00007-4">http://dx.doi.org/10.1016/B978-0-444-52980-0.00007-4</a></p>
+</div>
+</div>
+</div>
+</body>
+</html>
