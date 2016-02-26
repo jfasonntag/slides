@@ -604,7 +604,7 @@ fig[:canvas][:draw]()</code></pre></div>
 <h1>The Smolyak Grid in 2 Dimensions</h1>
 <ul>
 <li>Approximation level <span class="math inline">\(\mu \in \mathbb{N}\)</span> governs the quality of the approximation.</li>
-<li>Start with a unidimensional grid of points <span class="math inline">\(x\)</span>: <span class="math display">\[ x=\left\{-1,\frac{-1}{\sqrt{2}},0,\frac{1}{\sqrt{2}},1\right\} \]</span> which are 5 Chebyshev nodes (it's not important that those are Chebyshev nodes, any grid will work).</li>
+<li>Start with a unidimensional grid of points <span class="math inline">\(x\)</span>: <span class="math display">\[ x = \left\{-1,\frac{-1}{\sqrt{2}},0,\frac{1}{\sqrt{2}},1\right\} \]</span> which are 5 Chebyshev nodes (it's not important that those are Chebyshev nodes, any grid will work).</li>
 <li>A 2D tensor product <span class="math inline">\(x\otimes x\)</span> gives 25 grid points <span class="math display">\[ x\otimes x=\left\{(-1,-1),(-1,\frac{-1}{\sqrt{2}}),\dots,(1,1)\right\} \]</span></li>
 <li>The Smolyak method proceeds differently.</li>
 <li>We construct three nested sets: <span class="math display">\[ \begin{array}{l}
@@ -667,7 +667,7 @@ fig[:canvas][:draw]()</code></pre></div>
 <h1>Smolyak Polynomials</h1>
 <ul>
 <li>Corresponding to the construction of grid points, there is the Smolyak way of constructing polynomials.</li>
-<li>This works exactly as before. We start with a one-dimensional set of basis functions (again Chebyshev here, again irrelevant): <span class="math display">\[ \right\{1,x,2x^2-1,4x^3-3x,8x^4-8x^2+1\right\} \]</span></li>
+<li>This works exactly as before. We start with a one-dimensional set of basis functions (again Chebyshev here, again irrelevant): <span class="math display">\[ \left\{1,x,2x^2-1,4x^3-3x,8x^4-8x^2+1\right\} \]</span></li>
 <li>Three nested sets: <span class="math display">\[ \begin{array}{l}
     i=1 : S_1 = \{1\} \\
     i=2 : S_2 = \{1,x,2x^2-1\} \\
@@ -702,6 +702,49 @@ fig[:canvas][:draw]()</code></pre></div>
 <li><a href="https://github.com/alancrawford/Smolyak" class="uri">https://github.com/alancrawford/Smolyak</a></li>
 </ul></li>
 </ul>
+</div>
+<div id="using-alancrawfordsmolyak" class="slide section level1">
+<h1>Using <code>alancrawford/Smolyak</code></h1>
+<p>From the unit tests of that package:</p>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">    Pkg.clone(<span class="st">&quot;https://github.com/alancrawford/Smolyak.git&quot;</span>)
+
+    <span class="co"># here is the true function</span>
+    <span class="co"># in a real world application, evaluating this is the biggest cost</span>
+    <span class="co"># we would like to evaluate only a few times.</span>
+
+    slopes = rand(<span class="fl">4</span>)    
+    truefun(x) = <span class="fl">1.1</span> + slopes[<span class="fl">1</span>]*x[<span class="fl">1</span>] - slopes[<span class="fl">2</span>]*x[<span class="fl">2</span>]^<span class="fl">2</span> + (slopes[<span class="fl">3</span>]*x[<span class="fl">3</span>])^<span class="fl">3</span> * slopes[<span class="fl">4</span>] * x[<span class="fl">4</span>]
+
+    <span class="co"># choose approx level in each dim</span>
+    mu = [<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">2</span>,<span class="fl">1</span>]
+    D = length(mu)
+    lb = -<span class="fl">2</span>*ones(length(mu))
+    ub = <span class="fl">12</span>*ones(length(mu))
+    sg = SmolyakGrid(mu,lb,ub)
+    sb = SmolyakBasis(sg)
+    makeBasis!(sb)
+    sp = SmolyakPoly(sb)
+
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fl">1</span>:sb.NumPts
+        sp.Value[i] = truefun(sg.xGrid[i])  <span class="co"># Assign true fvals to poly</span>
+    <span class="kw">end</span>
+    make_pinvBFt!(sp,sb)        
+    Smolyak.MakeCoef!(sp)       
+
+    <span class="co"># make basis on random point</span>
+    NumObs = <span class="fl">50</span>
+    X = <span class="dt">Vector</span>{<span class="dt">Float64</span>}[ <span class="dt">Float64</span>[lb[d]+( ub[d]- lb[d])*rand() <span class="kw">for</span> d <span class="kw">in</span> <span class="fl">1</span>:D] <span class="kw">for</span> i <span class="kw">in</span> <span class="fl">1</span>:NumObs]
+    sbX = SmolyakBasis(X,mu,lb,ub,<span class="fl">0</span>,<span class="fl">0</span>)
+    makeBasis!(sbX)
+    spX = SmolyakPoly(sbX)
+    copy!(spX.Coef,sp.Coef)   <span class="co"># assign precomputed coefs</span>
+    ynew = makeValue!(spX,sbX) <span class="co"># Interpolated Values</span>
+    valsnew = [truefun(i) <span class="kw">for</span> i <span class="kw">in</span> X]
+    using PyPlot
+    scatter(ynew,valsnew)
+    ylabel(<span class="st">&quot;truth&quot;</span>)
+    xlabel(<span class="st">&quot;approx&quot;</span>)
+    grid()</code></pre></div>
 </div>
 <div class="slide section level1">
 
