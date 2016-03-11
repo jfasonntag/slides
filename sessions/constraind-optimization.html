@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Florian Oswald" />
+  <title>Computational Economics: Constrained Optimization</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" type="text/css" media="screen, projection, print"
+    href="http://www.w3.org/Talks/Tools/Slidy2/styles/slidy.css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+  <script src="http://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js"
+    charset="utf-8" type="text/javascript"></script>
+</head>
+<body>
+<div class="slide titlepage">
+  <h1 class="title">Computational Economics: Constrained Optimization</h1>
+  <p class="author">
+Florian Oswald
+  </p>
+  <p class="date">Sciences Po, 2016</p>
+</div>
+<div id="constrained-optimisation" class="slide section level1">
+<h1>Constrained Optimisation</h1>
+<ul>
+<li>Recall our generic definition of an optimization problem: <span class="math display">\[ \min_{x\in\mathbb{R}^n} f(x)  \quad  s.t.\quad \begin{array} c_i(x) = 0, &amp; i\in E \\
+                                                          c_i(x) \geq 0, &amp; i\in I \end{array}
+                                                          \]</span></li>
+<li>E is the set of <em>equality constraints</em> and I is the set of <em>inequality constraints</em>.</li>
+<li><strong>Defintion: The Feasible Set</strong>: Let <span class="math inline">\(\Omega\)</span> be the set of points <span class="math inline">\(x\)</span> that satisfy the constraints, i.e. <span class="math display">\[ \Omega = {x|c_i(x)=0,i\in E; c_i(x)\geq 0, i\in I} \]</span></li>
+<li>Then, a different way of writign our problem is <span class="math display">\[ \min_{x\in \Omega} f(x)  \]</span></li>
+<li>A vector <span class="math inline">\(x^*\)</span> is a <em>local solution</em> to this problem if <span class="math inline">\(x^* \in \Omega\)</span> and there is a neighborhood <span class="math inline">\(\mathcal{N}\)</span> s.t. <span class="math inline">\(f(x)\geq f(x^*),\forall x\in \mathcal{N} \cap \Omega\)</span>.</li>
+<li><strong>Definition: The Active Set</strong>: Active set <span class="math inline">\(\mathcal{A}(x)\)</span> at any feasible <span class="math inline">\(x\)</span> consists of the equality constraint indices from E together with the indices of the inequality constraints for <span class="math inline">\(i\)</span> for which <span class="math inline">\(c_i(x) = 0\)</span>; that is, <span class="math display">\[ \matcal{A}(x) = E \cup {i\in I|c_i(x) = 0} \]</span> At a feasible point <span class="math inline">\(x\)</span>, the inequality constraint <span class="math inline">\(i \in I\)</span> is said to be <em>active</em> if <span class="math inline">\(c_i(x)=0\)</span>, and <em>inactive</em> if <span class="math inline">\(c_i(x)&gt;0\)</span></li>
+</ul>
+<h2 id="nonlinear-constraints">Nonlinear Constraints</h2>
+<ul>
+<li>Consider the following problem $$ _{x ^2} s.t. \begin{array}{c} \ x_2 0 \ x_2 (a_1 x_1 + b_1)^3 \ x_2 (a_2 x_1 + b_2)^3 \end{array} $</li>
+<li>This configuration of constraints leads to the following feasible region for parameters <span class="math inline">\(a_1=2,b_1=0,a_2=-1,b_2=1\)</span>. <img src="figs/NLopt-example-constraints.png" width="800" height="600" /></li>
+</ul>
+</div>
+<div id="example-1-equality-constraint" class="slide section level1">
+<h1>Example: 1 equality constraint</h1>
+<ul>
+<li>consider <span class="math display">\[ \min x_1 + x_2  \quad s.t. \quad x_1^2 + x_2^2 - 2 = 0 \]</span></li>
+<li>constraint is a circle with radius <span class="math inline">\(\sqrt{2}\)</span> centered at 0. The solution must lie <em>on</em> that circle.</li>
+<li>Solution: <span class="math inline">\((-1,-1)\)</span>. Consider any other point on circle, like <span class="math inline">\((\sqrt{2},0)\)</span>.</li>
+</ul>
+<div class="figure">
+<img src="figs-restricted/constrained-example.png" alt="Figure 12.3 in (Nocedal and Wright 2006)" />
+<p class="caption">Figure 12.3 in <span class="citation">(Nocedal and Wright 2006)</span></p>
+</div>
+</div>
+<div id="example-1-inequality-constraint" class="slide section level1">
+<h1>Example: 1 inequality constraint</h1>
+<ul>
+<li>Let's modify this example to <span class="math display">\[ \min x_1 + x_2  \quad s.t. \quad 2- x_1^2 - x_2^2 \geq 0 \]</span></li>
+<li>constraint is the region inside a circle with radius <span class="math inline">\(\sqrt{2}\)</span> centered at 0. The solution must lie <em>on or inside</em> that circle.</li>
+<li>Solution: <span class="math inline">\((-1,-1)\)</span>. Consider any other point on circle, like <span class="math inline">\((\sqrt{2},0)\)</span>.</li>
+<li>Two cases:
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(x\)</span> lies strictly inside the circle, and <span class="math inline">\(c_1(x) &gt; 0\)</span></li>
+<li><span class="math inline">\(x\)</span> lies strictly on the circle, and <span class="math inline">\(c_1(x) = 0\)</span></li>
+</ol></li>
+<li>Complementarity condition.</li>
+</ul>
+</div>
+<div id="first-order-optimality-conditions" class="slide section level1">
+<h1>First Order Optimality Conditions</h1>
+</div>
+<div id="some-methods" class="slide section level1">
+<h1>Some Methods</h1>
+<ul>
+<li>Penalty Function and Augmented Lagrangian Methods</li>
+<li>Sequential Quadratic Method</li>
+<li>Interior Point Method</li>
+</ul>
+</div>
+<div id="penalty-function-and-augmented-lagrangian-methods" class="slide section level1">
+<h1>Penalty Function and Augmented Lagrangian Methods</h1>
+</div>
+<div id="first-order-optimality-conditions-1" class="slide section level1">
+<h1>First Order Optimality Conditions</h1>
+</div>
+<div id="constrained-optimisation-with-nlopt.jl" class="slide section level1">
+<h1>Constrained Optimisation with <a href="https://github.com/JuliaOpt/NLopt.jl"><code>NLopt.jl</code></a></h1>
+<ul>
+<li>We need to specify one function for each objective and constraint.</li>
+<li>Both of those functions need to compute the function value (i.e. objective or constraint) <em>and</em> it's respective gradient.</li>
+<li>Notice that we can disregard <span class="math inline">\(x_2\geq0\)</span> here.</li>
+<li><code>NLopt</code> expects contraints <strong>always</strong> to be formulated in the format <span class="math display">\[
+\texttt{constraint_function}(x) \leq 0 \]</span></li>
+<li>The constraint function is formulated for each constraint at <span class="math inline">\(x\)</span>. it returns a number (the value of the constraint at <span class="math inline">\(x\)</span>), and it fills out the gradient vector, which is the partial derivative of the current constraint wrt <span class="math inline">\(x\)</span>.</li>
+<li>There is also the option to have vector valued constraints, see the documentation.</li>
+<li>We set this up as follows:</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia"><span class="kw">function</span> myfunc(x::<span class="dt">Vector</span>, grad::<span class="dt">Vector</span>)
+    <span class="kw">if</span> length(grad) &gt; <span class="fl">0</span>
+        grad[<span class="fl">1</span>] = <span class="fl">0</span>
+        grad[<span class="fl">2</span>] = <span class="fl">0.5</span>/sqrt(x[<span class="fl">2</span>])
+    <span class="kw">end</span>
+    <span class="kw">return</span> sqrt(x[<span class="fl">2</span>])
+<span class="kw">end</span>
+
+<span class="kw">function</span> constraint(x::<span class="dt">Vector</span>, grad::<span class="dt">Vector</span>, a, b)
+    <span class="kw">if</span> length(grad) &gt; <span class="fl">0</span>
+        <span class="co"># modifies grad in place</span>
+        grad[<span class="fl">1</span>] = <span class="fl">3</span>a * (a*x[<span class="fl">1</span>] + b)^<span class="fl">2</span>
+        grad[<span class="fl">2</span>] = -<span class="fl">1</span>
+    <span class="kw">end</span>
+    <span class="kw">return</span> (a*x[<span class="fl">1</span>] + b)^<span class="fl">3</span> - x[<span class="fl">2</span>]
+<span class="kw">end</span>
+using NLopt
+<span class="co"># define an Opt object: which algorithm, how many dims of choice</span>
+opt = Opt(:LD_MMA, <span class="fl">2</span>)
+<span class="co"># set bounds and tolerance</span>
+lower_bounds!(opt, [-Inf, <span class="fl">0</span>.])
+xtol_rel!(opt,<span class="fl">1e-4</span>)
+
+<span class="co"># define objective function</span>
+min_objective!(opt, myfunc)
+<span class="co"># define constraints</span>
+<span class="co"># notice the anonymous function</span>
+inequality_constraint!(opt, (x,g) -&gt; constraint(x,g,<span class="fl">2</span>,<span class="fl">0</span>), <span class="fl">1e-8</span>)
+inequality_constraint!(opt, (x,g) -&gt; constraint(x,g,-<span class="fl">1</span>,<span class="fl">1</span>), <span class="fl">1e-8</span>)
+
+<span class="co"># call optimize</span>
+(minf,minx,ret) = optimize(opt, [<span class="fl">1.234</span>, <span class="fl">5.678</span>])</code></pre></div>
+</div>
+<div id="nlopt-rosenbrock" class="slide section level1">
+<h1>NLopt: Rosenbrock</h1>
+<ul>
+<li>Let's tackle the rosenbrock example.</li>
+<li>To make it more interesting, let's add an inequality constraint. <span class="math display">\[ \min_{x\in \mathbb{R}^2} (1-x_1)^2  + 100(x_2-x_1^2)^2  \quad s.t. \quad 0.8 - x_1^2 -x_2^2 \geq 0 \]</span></li>
+<li>in <code>NLopt</code> format, the constraint is <span class="math inline">\(x_1 + x_2 - 0.8 \leq 0\)</span></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia"><span class="kw">function</span> rosenbrock(x::<span class="dt">Vector</span>,grad::<span class="dt">Vector</span>)
+    <span class="kw">if</span> length(grad) &gt; <span class="fl">0</span>
+        grad[<span class="fl">1</span>] = -<span class="fl">2.0</span> * (<span class="fl">1.0</span> - x[<span class="fl">1</span>]) - <span class="fl">400.0</span> * (x[<span class="fl">2</span>] - x[<span class="fl">1</span>]^<span class="fl">2</span>) * x[<span class="fl">1</span>]
+        grad[<span class="fl">2</span>] = <span class="fl">200.0</span> * (x[<span class="fl">2</span>] - x[<span class="fl">1</span>]^<span class="fl">2</span>)
+    <span class="kw">end</span>
+    <span class="kw">return</span> (<span class="fl">1.0</span> - x[<span class="fl">1</span>])^<span class="fl">2</span> + <span class="fl">100.0</span> * (x[<span class="fl">2</span>] - x[<span class="fl">1</span>]^<span class="fl">2</span>)^<span class="fl">2</span>
+<span class="kw">end</span>
+<span class="kw">function</span> r_constraint(x::<span class="dt">Vector</span>, grad::<span class="dt">Vector</span>)
+    <span class="kw">if</span> length(grad) &gt; <span class="fl">0</span>
+    grad[<span class="fl">1</span>] = <span class="fl">2</span>*x[<span class="fl">1</span>]
+    grad[<span class="fl">2</span>] = <span class="fl">2</span>*x[<span class="fl">2</span>]
+    <span class="kw">end</span>
+    <span class="kw">return</span> x[<span class="fl">1</span>]^<span class="fl">2</span> + x[<span class="fl">2</span>]^<span class="fl">2</span> - <span class="fl">0.8</span>
+<span class="kw">end</span>
+opt = Opt(:LD_MMA, <span class="fl">2</span>)
+lower_bounds!(opt, [-<span class="fl">5</span>, -<span class="fl">5.0</span>])
+min_objective!(opt,(x,g) -&gt; rosenbrock(x,g))
+inequality_constraint!(opt, (x,g) -&gt; r_constraint(x,g))
+ftol_rel!(opt,<span class="fl">1e-9</span>)
+(minf,minx,ret) = optimize(opt, [-<span class="fl">1.0</span>,<span class="fl">0.0</span>])</code></pre></div>
+</div>
+<div id="jump" class="slide section level1">
+<h1>JuMP</h1>
+<ul>
+<li>Introduce <a href="https://github.com/JuliaOpt/JuMP.jl"><code>JuMP.jl</code></a></li>
+<li>JuMP is a mathematical programming interface for Julia. It is like AMPL, but for free and with a decent programming language.</li>
+<li>The main highlights are:
+<ul>
+<li>It uses automatic differentiation to compute derivatives from your expression.</li>
+<li>It supplies this information, as well as the sparsity structure of the Hessian to your preferred solver.</li>
+<li>It decouples your problem completely from the type of solver you are using. This is great, since you don't have to worry about different solvers having different interfaces.</li>
+<li>In order to achieve this, <code>JuMP</code> uses <a href="https://github.com/JuliaOpt/MathProgBase.jl"><code>MathProgBase.jl</code></a>, which converts your problem formulation into a standard representation of an optimization problem.</li>
+</ul></li>
+<li>Let's look at the readme.</li>
+</ul>
+</div>
+<div id="jump-example" class="slide section level1">
+<h1>JuMP: Example</h1>
+<ul>
+<li>Instead of hand-coding first and second derivatives, you only have to give <code>JuMP</code> expressions for objective and constraints.</li>
+<li>Here is an example.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">using JuMP
+
+<span class="kw">let</span>
+
+    m = Model()
+
+    @defVar(m, x)
+    @defVar(m, y)
+
+    @setNLObjective(m, Min, (<span class="fl">1</span>-x)^<span class="fl">2</span> + <span class="fl">100</span>(y-x^<span class="fl">2</span>)^<span class="fl">2</span>)
+
+    solve(m)
+
+    println(<span class="st">&quot;x = &quot;</span>, getValue(x), <span class="st">&quot; y = &quot;</span>, getValue(y))
+
+<span class="kw">end</span></code></pre></div>
+<ul>
+<li>not bad, right?</li>
+<li>adding the constraint from before:</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia"><span class="kw">let</span>
+
+    m = Model()
+
+    @defVar(m, x)
+    @defVar(m, y)
+
+    @setNLObjective(m, Min, (<span class="fl">1</span>-x)^<span class="fl">2</span> + <span class="fl">100</span>(y-x^<span class="fl">2</span>)^<span class="fl">2</span>)
+    @addNLConstraint(m,x^<span class="fl">2</span> + y^<span class="fl">2</span> &lt;= <span class="fl">0.8</span>)
+
+    solve(m)
+
+    println(<span class="st">&quot;x = &quot;</span>, getValue(x), <span class="st">&quot; y = &quot;</span>, getValue(y))
+
+<span class="kw">end</span></code></pre></div>
+<p>= 0</p>
+</div>
+<div id="jump-maximium-likelihood" class="slide section level1">
+<h1>JuMP: Maximium Likelihood</h1>
+<ul>
+<li>Let's redo the maximum likelihood example in JuMP.</li>
+<li>Let <span class="math inline">\(\mu,\sigma^2\)</span> be the unknown mean and variance of a random sample generated from the normal distribution.</li>
+<li>Find the maximum likelihood estimator for those parameters!</li>
+<li>density: <span class="math display">\[ f(x_i|\mu,\sigma^2) = \frac{1}{\sigma \sqrt{2\pi}} \exp\left(-\frac{(x_i - \mu)^2}{2\sigma^2}\right) \]</span></li>
+<li>Likelihood Function <span class="math display">\[ \begin{align} L(\mu,\sigma^2) = \Pi_{i=1}^N f(x_i|\mu,\sigma^2) =&amp; \frac{1}{(\sigma \sqrt{2\pi})^n} \exp\left(-\frac{1}{2\sigma^2} \sum_{i=1}^N (x_i-\mu)^2 \right) \\
+ =&amp; \left(\sigma^2 2\pi\right)^{-\frac{n}{2}} \exp\left(-\frac{1}{2\sigma^2} \sum_{i=1}^N (x_i-\mu)^2 \right) \end{align} \]</span></li>
+<li>Constraints: <span class="math inline">\(\mu\in \mathbb{R},\sigma&gt;0\)</span></li>
+<li>log-likelihood: <span class="math display">\[ \log L = l = -\frac{n}{2} \log \left( 2\pi \sigma^2 \right) - \frac{1}{2\sigma^2} \sum_{i=1}^N (x_i-\mu)^2 \]</span></li>
+<li>Let's do this in <code>JuMP</code>.</li>
+</ul>
+<div class="incremental">
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia"><span class="co">#  Copyright 2015, Iain Dunning, Joey Huchette, Miles Lubin, and contributors</span>
+<span class="co">#  example modified </span>
+using JuMP
+using Distributions
+
+distrib = Normal(<span class="fl">4.5</span>,<span class="fl">3.5</span>)
+n = <span class="fl">10000</span>
+
+data = rand(distrib,n);
+
+m = Model()
+
+@defVar(m, mu, start = <span class="fl">0.0</span>)
+@defVar(m, sigma &gt;= <span class="fl">0.0</span>, start = <span class="fl">1.0</span>)
+
+@setNLObjective(m, Max, -(n/<span class="fl">2</span>)*log(<span class="fl">2</span>π*sigma^<span class="fl">2</span>)-sum{(data[i]-mu)^<span class="fl">2</span>, i=<span class="fl">1</span>:n}/(<span class="fl">2</span>*sigma^<span class="fl">2</span>))
+
+solve(m)
+println(<span class="st">&quot;μ = &quot;</span>, getValue(mu),<span class="st">&quot;, mean(data) = &quot;</span>, mean(data))
+println(<span class="st">&quot;σ^2 = &quot;</span>, getValue(sigma)^<span class="fl">2</span>, <span class="st">&quot;, var(data) = &quot;</span>, var(data))</code></pre></div>
+</div>
+</div>
+<div id="references" class="slide section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references">
+<div id="ref-nocedal-wright">
+<p>Nocedal, J., &amp; Wright, S. (2006). <em>Numerical optimization</em>. Springer Science &amp; Business Media.</p>
+</div>
+</div>
+</div>
+</body>
+</html>
