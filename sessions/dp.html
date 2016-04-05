@@ -1,0 +1,683 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Florian Oswald" />
+  <title>Computational Economics: Numerical Dynamic Programming</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" type="text/css" media="screen, projection, print"
+    href="http://www.w3.org/Talks/Tools/Slidy2/styles/slidy.css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+  <script src="http://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js"
+    charset="utf-8" type="text/javascript"></script>
+</head>
+<body>
+<div class="slide titlepage">
+  <h1 class="title">Computational Economics: Numerical Dynamic Programming</h1>
+  <p class="author">
+Florian Oswald
+  </p>
+  <p class="date">Sciences Po, 2016</p>
+</div>
+<div id="intro" class="slide section level1">
+<h1>Intro</h1>
+<ul>
+<li>Numerical Dynamic Programming (DP) is widely used to solve dynamic models.</li>
+<li>You are familiar with the technique from your core macro course.</li>
+<li>We will illustrate some ways to solve dynamic programs.
+<ol style="list-style-type: decimal">
+<li>Models with one continuous choice variable</li>
+<li>Models with a discrete-continuous choice combination</li>
+</ol></li>
+<li>We will go through
+<ol style="list-style-type: decimal">
+<li>Value Function Iteration (VFI)</li>
+<li>Endogenous Grid Method (EGM)</li>
+<li>Discrete Choice Endogenous Grid Method (DCEGM)</li>
+</ol></li>
+</ul>
+</div>
+<div id="dynamic-programming" class="slide section level1">
+<h1>Dynamic Programming</h1>
+<ul>
+<li><p>Payoffs over time are <span class="math display">\[U=\sum_{t=1}^{\infty}\beta^{t}u\left(s_{t},c_{t}\right) \]</span> where <span class="math inline">\(\beta&lt;1\)</span> is a discount factor, <span class="math inline">\(s_{t}\)</span> is the state, <span class="math inline">\(c_{t}\)</span> is the control.</p></li>
+<li>The state (vector) evolves as <span class="math inline">\(s_{t+1}=h(s_{t},c_{t})\)</span>.</li>
+<li><p>All past decisions are contained in <span class="math inline">\(s_{t}\)</span>.</p></li>
+</ul>
+<h2 id="assumptions">Assumptions</h2>
+<ul>
+<li>Let <span class="math inline">\(c_{t}\in C(s_{t}),s_{t}\in S\)</span> and assume <span class="math inline">\(u\)</span> is bounded in <span class="math inline">\((c,s)\in C\times S\)</span>.</li>
+<li>Stationarity: neither payoff <span class="math inline">\(u\)</span> nor transition <span class="math inline">\(h\)</span> depend on time.</li>
+<li>Write the problem as <span class="math display">\[ v(s)=\max_{s&#39;\in\Gamma(s)}u(s,s&#39;)+\beta v(s&#39;) \]</span></li>
+<li><span class="math inline">\(\Gamma(s)\)</span> is the constraint set (or feasible set) for <span class="math inline">\(s&#39;\)</span> when the current state is <span class="math inline">\(s\)</span></li>
+</ul>
+<h2 id="existence">Existence</h2>
+<p><strong>Theorem.</strong> Assume that <span class="math inline">\(u(s,s&#39;)\)</span> is real-valued, continuous, and bounded, that <span class="math inline">\(\beta\in(0,1)\)</span>, and that the constraint set <span class="math inline">\(\Gamma(s)\)</span> is nonempty, compact, and continuous. Then there exists a unique function <span class="math inline">\(v(s)\)</span> that solves the above functional equation.</p>
+<p><strong>Proof.</strong> <span class="citation">(Stokey and Lucas 1989)</span> theoreom 4.6.</p>
+</div>
+<div id="value-function-iteration-vfi" class="slide section level1">
+<h1>Value Function Iteration (VFI)</h1>
+<ul>
+<li>Find the fix point of the functional equation by iterating on it until the distance between consecutive iterations becomes small.</li>
+<li>Motivated by the Bellman Operator, and it's characterization in the Continuous Mapping Theorem.</li>
+</ul>
+<h2 id="discrete-dp-vfi">Discrete DP VFI</h2>
+<ul>
+<li>Represents and solves the functional problem in <span class="math inline">\(\mathbb{R}\)</span> on a finite set of grid points only.</li>
+<li>Widely used method.
+<ul>
+<li>Simple (+)</li>
+<li>Robust (+)</li>
+<li>Slow (-)</li>
+<li>Imprecise (-)</li>
+</ul></li>
+<li>Precision depends on number of discretization points used.</li>
+<li>High-dimensional problems are difficult to tackle with this method because of the curse of dimensionality.</li>
+</ul>
+</div>
+<div id="deterministic-growth-model-with-discrete-vfi" class="slide section level1">
+<h1>Deterministic growth model with Discrete VFI</h1>
+<ul>
+<li>We have this theoretical model:</li>
+</ul>
+<p><span class="math display">\[ \begin{align}
+   V(k) &amp;= \max_{0&lt;k&#39;&lt;f(k)} \ln(f(k) - k&#39;) + \beta V(k&#39;)\\
+     f(k)  &amp; = k^\alpha\\
+     k_0   &amp; \text{given} 
+     \end{align}
+\]</span></p>
+<ul>
+<li><p>and we employ the followign numerical approximation: <span class="math display">\[ V(k_i) = \max_{i&#39;=1,2,\dots,n} \ln(f(k_i) - k_{i&#39;}) + \beta V(i&#39;) \]</span></p></li>
+<li><p>The iteration is then on successive iterates of <span class="math inline">\(V\)</span>: The LHS gets updated in each iteration! <span class="math display">\[ \begin{align}
+V^{r+1}(k_i) &amp;= \max_{i&#39;=1,2,\dots,n} \ln(f(k_i) - k_{i&#39;}) + \beta V^{r}(i&#39;) \\
+V^{r+2}(k_i) &amp;= \max_{i&#39;=1,2,\dots,n} \ln(f(k_i) - k_{i&#39;}) + \beta V^{r+1}(i&#39;) \\
+... &amp; 
+\end{align}
+\]</span></p></li>
+<li>And it stops at iteration <span class="math inline">\(r\)</span> if <span class="math inline">\(d(V^{r},V^{r-1}) &lt; \text{tol}\)</span></li>
+<li>You choose a measure of <em>distance</em>, <span class="math inline">\(d(\cdot,\cdot)\)</span>, and a level of tolerance.</li>
+<li><span class="math inline">\(V^{r}\)</span> is usually an <em>array</em>. So <span class="math inline">\(d\)</span> will be some kind of <em>norm</em>.</li>
+<li>maximal absolute distance</li>
+<li><p>mean squared distance</p></li>
+</ul>
+</div>
+<div id="exercise-1-implement-discrete-vfi" class="slide section level1">
+<h1> Exercise 1: Implement discrete VFI</h1>
+<h2 id="checklist">Checklist</h2>
+<ol style="list-style-type: decimal">
+<li>Set parameter values</li>
+<li>define a grid for state variable <span class="math inline">\(k \in [0,2]\)</span></li>
+<li>initialize value function <span class="math inline">\(V\)</span></li>
+<li>start iteration, repeatedly computing a new version of <span class="math inline">\(V\)</span>.</li>
+<li>stop if <span class="math inline">\(d(V^{r},V^{r-1}) &lt; \text{tol}\)</span>.</li>
+<li>plot value and policy function</li>
+<li>report the maximum error of both wrt to analytic solution</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">alpha     = <span class="fl">0.65</span>
+beta      = <span class="fl">0.95</span>
+grid_max  = <span class="fl">2</span>  <span class="co"># upper bound of capital grid</span>
+n         = <span class="fl">150</span>  <span class="co"># number of grid points</span>
+N_iter    = <span class="fl">3000</span>  <span class="co"># number of iterations</span>
+kgrid     = <span class="fl">1e-6</span>:(grid_max-<span class="fl">1e-6</span>)/(n-<span class="fl">1</span>):grid_max  <span class="co"># equispaced grid</span>
+f(x) = x^alpha  <span class="co"># defines the production function f(k)</span>
+tol = <span class="fl">1e-9</span></code></pre></div>
+<h2 id="analytic-solution">Analytic Solution</h2>
+<p>In the above case, the problem has a closed form solution:</p>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">ab        = alpha * beta
+c1        = (log(<span class="fl">1</span> - ab) + log(ab) * ab / (<span class="fl">1</span> - ab)) / (<span class="fl">1</span> - beta)
+c2        = alpha / (<span class="fl">1</span> - ab)
+v_star(k) = c1 .+ c2 .* log(k)  
+p_star(k) = ab * k.^alpha   </code></pre></div>
+</div>
+<div id="exercise-1-implement-discrete-vfi-1" class="slide section level1">
+<h1> Exercise 1: Implement discrete VFI</h1>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia"><span class="co"># Bellman Operator</span>
+<span class="co"># inputs</span>
+<span class="co"># `grid`: grid of values of state variable</span>
+<span class="co"># `v0`: current guess of value function</span>
+
+<span class="co"># output</span>
+<span class="co"># `v1`: next guess of value function</span>
+<span class="co"># `pol`: corresponding policy function </span>
+
+<span class="co">#takes a grid of state variables and computes the next iterate of the value function.</span>
+<span class="kw">function</span> bellman_operator(grid,v0)
+    
+    v1  = zeros(n)     <span class="co"># next guess</span>
+    pol = zeros(<span class="dt">Int</span>,n)     <span class="co"># policy function</span>
+    w   = zeros(n)   <span class="co"># temporary vector </span>
+
+    <span class="co"># loop over current states</span>
+    <span class="co"># current capital</span>
+    <span class="kw">for</span> (i,k) <span class="kw">in</span> enumerate(grid)
+
+        <span class="co"># loop over all possible kprime choices</span>
+        <span class="kw">for</span> (iprime,kprime) <span class="kw">in</span> enumerate(grid)
+            <span class="kw">if</span> f(k) - kprime &lt; <span class="fl">0</span>   <span class="co">#check for negative consumption</span>
+                w[iprime] = -Inf
+            <span class="kw">else</span>
+                w[iprime] = log(f(k) - kprime) + beta * v0[iprime]
+            <span class="kw">end</span>
+        <span class="kw">end</span>
+        <span class="co"># find maximal choice</span>
+        v1[i], pol[i] = findmax(w)     <span class="co"># stores Value und policy (index of optimal choice)</span>
+    <span class="kw">end</span>
+    <span class="kw">return</span> (v1,pol)   <span class="co"># return both value and policy function</span>
+<span class="kw">end</span>
+
+
+
+<span class="co"># VFI iterator</span>
+<span class="co">#</span>
+<span class="co">## input</span>
+<span class="co"># `n`: number of grid points</span>
+<span class="co"># output</span>
+<span class="co"># `v_next`: tuple with value and policy functions after `n` iterations.</span>
+<span class="kw">function</span> VFI()
+    v_init = zeros(n)     <span class="co"># initial guess</span>
+    <span class="kw">for</span> iter <span class="kw">in</span> <span class="fl">1</span>:N_iter
+        v_next = bellman_operator(kgrid,v_init)  <span class="co"># returns a tuple: (v1,pol)</span>
+        <span class="co"># check convergence</span>
+        <span class="kw">if</span> maxabs(v_init.-v_next[<span class="fl">1</span>]) &lt; tol
+            println(<span class="st">&quot;Found solution after $iter iterations&quot;</span>)
+            <span class="kw">return</span> v_next
+        <span class="kw">elseif</span> iter==N_iter
+            warn(<span class="st">&quot;No solution found after $iter iterations&quot;</span>)
+            <span class="kw">return</span> v_next
+        <span class="kw">end</span>
+        v_init = v_next[<span class="fl">1</span>]  <span class="co"># update guess </span>
+    <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="co"># plot</span>
+<span class="kw">function</span> plotVFI()
+    v = VFI()
+    figure(<span class="st">&quot;discrete VFI&quot;</span>,figsize=(<span class="fl">10</span>,<span class="fl">5</span>))
+    subplot(<span class="fl">131</span>)
+    plot(kgrid,v[<span class="fl">1</span>],color=<span class="st">&quot;blue&quot;</span>)
+    plot(kgrid,v_star(kgrid),color=<span class="st">&quot;black&quot;</span>)
+    xlim(-<span class="fl">0.1</span>,grid_max)
+    ylim(-<span class="fl">50</span>,-<span class="fl">30</span>)
+    xlabel(<span class="st">&quot;k&quot;</span>)
+    ylabel(<span class="st">&quot;value&quot;</span>)
+    title(<span class="st">&quot;value function&quot;</span>)
+
+    subplot(<span class="fl">132</span>)
+    plot(kgrid,kgrid[v[<span class="fl">2</span>]])
+    plot(kgrid,p_star(kgrid),color=<span class="st">&quot;black&quot;</span>)
+    xlabel(<span class="st">&quot;k&quot;</span>)
+    title(<span class="st">&quot;policy function&quot;</span>)
+
+    subplot(<span class="fl">133</span>)
+    plot(kgrid,kgrid[v[<span class="fl">2</span>]])
+    plot(kgrid,p_star(kgrid),color=<span class="st">&quot;black&quot;</span>)
+    xlabel(<span class="st">&quot;k&quot;</span>)
+    xlim(<span class="fl">0.8</span>,<span class="fl">1.2</span>)
+    ylim(<span class="fl">0.5</span>,<span class="fl">0.75</span>)
+    title(<span class="st">&quot;policy function zoom&quot;</span>)
+<span class="kw">end</span></code></pre></div>
+</div>
+<div id="exercise-2-discretizing-only-the-state-space-not-control-space" class="slide section level1">
+<h1>Exercise 2: Discretizing only the state space (not control space)</h1>
+<ul>
+<li>Same exercise, but now use a continuous solver for choice of <span class="math inline">\(k&#39;\)</span>.</li>
+<li>in other words, employ the following numerical approximation: <span class="math display">\[ V(k_i) = \max_{k&#39;\in[0,\bar{k}]} \ln(f(k_i) - k&#39;) + \beta V(k&#39;) \]</span></li>
+<li>To do this, you need to be able to evaluate <span class="math inline">\(V(k&#39;)\)</span> where <span class="math inline">\(k&#39;\)</span> is potentially off the <code>kgrid</code>.</li>
+<li>use <code>Interpolations.jl</code> to linearly interpolate V.
+<ul>
+<li>the relevant object is setup with function <code>interpolate((grid,),v,Gridded(Linear()))</code></li>
+</ul></li>
+<li>use <code>Optim::optimize()</code> to perform the maximization.
+<ul>
+<li>you have to define an ojbective function for each <span class="math inline">\(k_i\)</span></li>
+<li>do something like <code>optimize(objective, lb,ub)</code></li>
+</ul></li>
+</ul>
+</div>
+<div id="exercise-2-discretizing-only-the-state-space-not-control-space-1" class="slide section level1">
+<h1>Exercise 2: Discretizing only the state space (not control space)</h1>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia"><span class="kw">function</span> bellman_operator2(grid,v0)
+    
+    v1  = zeros(n)     <span class="co"># next guess</span>
+    pol = zeros(n)     <span class="co"># consumption policy function</span>
+
+    Interp = interpolate((collect(grid),), v0, Gridded(Linear()) ) 
+
+    <span class="co"># loop over current states</span>
+    <span class="co"># of current capital</span>
+    <span class="kw">for</span> (i,k) <span class="kw">in</span> enumerate(grid)
+
+        objective(c) = - (log(c) + beta * Interp[f(k) - c])
+        <span class="co"># find max of ojbective between [0,k^alpha]</span>
+        res = optimize(objective, <span class="fl">1e-6</span>, f(k)) 
+        pol[i] = f(k) - res.minimum
+        v1[i] = -res.f_minimum
+    <span class="kw">end</span>
+    <span class="kw">return</span> (v1,pol)   <span class="co"># return both value and policy function</span>
+<span class="kw">end</span>
+
+<span class="kw">function</span> VFI2()
+    v_init = zeros(n)     <span class="co"># initial guess</span>
+    <span class="kw">for</span> iter <span class="kw">in</span> <span class="fl">1</span>:N_iter
+        v_next = bellman_operator2(kgrid,v_init)  <span class="co"># returns a tuple: (v1,pol)</span>
+        <span class="co"># check convergence</span>
+        <span class="kw">if</span> maxabs(v_init.-v_next[<span class="fl">1</span>]) &lt; tol
+            verrors = maxabs(v_next[<span class="fl">1</span>].-v_star(kgrid))
+            perrors = maxabs(v_next[<span class="fl">2</span>].-p_star(kgrid))
+            println(<span class="st">&quot;Found solution after $iter iterations&quot;</span>)
+            println(<span class="st">&quot;value function error = $verrors&quot;</span>)
+            println(<span class="st">&quot;policy function error = $perrors&quot;</span>)
+            <span class="kw">return</span> v_next
+        <span class="kw">elseif</span> iter==N_iter
+            warn(<span class="st">&quot;No solution found after $iter iterations&quot;</span>)
+            <span class="kw">return</span> v_next
+        <span class="kw">end</span>
+        v_init = v_next[<span class="fl">1</span>]  <span class="co"># update guess </span>
+    <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="kw">function</span> plotVFI2()
+    v = VFI2()
+    figure(<span class="st">&quot;discrete VFI - continuous control&quot;</span>,figsize=(<span class="fl">10</span>,<span class="fl">5</span>))
+    subplot(<span class="fl">131</span>)
+    plot(kgrid,v[<span class="fl">1</span>],color=<span class="st">&quot;blue&quot;</span>)
+    plot(kgrid,v_star(kgrid),color=<span class="st">&quot;black&quot;</span>)
+    xlim(-<span class="fl">0.1</span>,grid_max)
+    ylim(-<span class="fl">50</span>,-<span class="fl">30</span>)
+    xlabel(<span class="st">&quot;k&quot;</span>)
+    ylabel(<span class="st">&quot;value&quot;</span>)
+    title(<span class="st">&quot;value function&quot;</span>)
+
+    subplot(<span class="fl">132</span>)
+    plot(kgrid,v[<span class="fl">2</span>])
+    plot(kgrid,p_star(kgrid),color=<span class="st">&quot;black&quot;</span>)
+    xlabel(<span class="st">&quot;k&quot;</span>)
+    title(<span class="st">&quot;policy function&quot;</span>)
+
+    subplot(<span class="fl">133</span>)
+    plot(kgrid,v[<span class="fl">2</span>].-p_star(kgrid))
+    xlabel(<span class="st">&quot;k&quot;</span>)
+    title(<span class="st">&quot;policy function error&quot;</span>)
+    println(<span class="st">&quot;policy=$(v[2])&quot;</span>)
+<span class="kw">end</span></code></pre></div>
+</div>
+<div id="endogenous-grid-method-egm" class="slide section level1">
+<h1>Endogenous Grid Method (EGM)</h1>
+<ul>
+<li>Fast, elegant and precise method to solve consumption/savings problems</li>
+<li>One continuous state variable</li>
+<li>One continuous control variable <span class="math display">\[ V(M_t) = \max_{0&lt;c&lt;M_t} u(c) + \beta E V_{t+1}(R (M_t - c) + y_{t+1}) \]</span></li>
+<li>Here, <span class="math inline">\(M_t\)</span> is cash in hand, all available resources at the start of period <span class="math inline">\(t\)</span>
+<ul>
+<li>For example, assets plus income.</li>
+</ul></li>
+<li><span class="math inline">\(A_t = M_t - c_t\)</span> is end of period assets</li>
+<li><span class="math inline">\(y_{t+1}\)</span> is stochastic next period income.</li>
+<li><span class="math inline">\(R\)</span> is the gross return on savings, i.e. <span class="math inline">\(R=1+r\)</span>.</li>
+<li>utility function can be of many forms, we only require twice differentiable and concave.</li>
+</ul>
+<h2 id="egm-after-carroll2006method">EGM after <span class="citation">(Carroll 2006)</span></h2>
+<ul>
+<li><span class="citation">(Carroll 2006)</span> introduced this method.</li>
+<li>The idea is as follows:
+<ul>
+<li>Instead of using non-linear root finding for optimal <span class="math inline">\(c\)</span> (see above)</li>
+<li>fix a grid of possible end-of-period asset levels <span class="math inline">\(A_t\)</span></li>
+<li>use structure of model to find implied beginning of period cash in hand.</li>
+<li>We use euler equation and envelope condition to connect <span class="math inline">\(M_{t+1}\)</span> with <span class="math inline">\(c_t\)</span></li>
+</ul></li>
+</ul>
+</div>
+<div id="recall-traditional-methods-vfi-and-euler-equation" class="slide section level1">
+<h1>Recall Traditional Methods: VFI and Euler Equation</h1>
+<ul>
+<li>Just to be clear, let us repeat what we did in the beginning of this lecture, using the <span class="math inline">\(M_t\)</span> notation. <span class="math display">\[ \begin{align}
+V(M_t) &amp;= \max_{0&lt;c&lt;M_t} u(c) + \beta E V_{t+1}(R (M_t - c) + y_{t+1}) \\
+M_{t+1} &amp;= R (M_t - c) + y_{t+1} \end{align}
+\]</span></li>
+</ul>
+<h2 id="vfi">VFI</h2>
+<ol style="list-style-type: decimal">
+<li>Define a grid over <span class="math inline">\(M_t\)</span>.</li>
+<li>In the final period, compute <span class="math display">\[ V_T(M_T) = \max_{0&lt;c&lt;M_t} u(c) \]</span></li>
+<li>In all preceding periods <span class="math inline">\(t\)</span>, do <span class="math display">\[ V_t(M_t) =  \max_{0&lt;c_t&lt;M_t} u(c_t) + \beta E V_{t+1}(R (M_t - c_t) + y_{t+1}) \]</span></li>
+<li>where optimal consumption is <span class="math display">\[ c_t^*(M_t) = \arg \max_{0&lt;c_t&lt;M_t} u(c_t) + \beta E V_{t+1}(R (M_t - c_t) + y_{t+1}) \]</span></li>
+</ol>
+<h2 id="euler-equation">Euler Equation</h2>
+<ul>
+<li>The first order condition of the Bellman Equation is <span class="math display">\[ 
+\begin{align}
+\frac{\partial V_t}{\partial c_t} &amp; = 0 \\
+u&#39;(c_t) &amp; = \beta E \left[\frac{\partial V_{t+1} (M_{t+1}) }{\partial M_{t+1}} \right] \quad (FOC)
+\end{align}
+\]</span></li>
+<li>By the Envelope Theorem, we have that <span class="math display">\[ 
+\begin{align}
+\frac{\partial V_t}{\partial M_t} &amp; = \beta E \left[\frac{\partial V_{t+1} (M_{t+1}) }{\partial M_{t+1}} \right] \\
+\text{by FOC} &amp;  \\
+\frac{\partial V_t}{\partial M_t} &amp; = u&#39;(c_t) \\
+\text{true in every period:} &amp; \\
+\frac{\partial V_{t+1}}{\partial M_{t+1}} &amp; = u&#39;(c_{t+1}) 
+\end{align}
+\]</span></li>
+<li>Summing up, we get the Euler Equation: <span class="math display">\[ u&#39;(c_t) = \beta E \left[u&#39;(c_{t+1}) R \right] \]</span></li>
+</ul>
+<h3 id="euler-equation-algorithm">Euler Equation Algorithm</h3>
+<ol style="list-style-type: decimal">
+<li>Fix grid over <span class="math inline">\(M_t\)</span></li>
+<li>In the final period, compute <span class="math display">\[ c_T^*(M_T) = \arg\max_{0&lt;cT&lt;M_t} u(c_T) \]</span></li>
+<li>With optimal <span class="math inline">\(c_{t+1}^*(M_{t+1})\)</span> in hand, backward recurse to find <span class="math inline">\(c_t\)</span> from <span class="math display">\[ u&#39;(c_t) = \beta E \left[u&#39;(c_{t+1}^*(R (M_t - c_t) + y_{t+1}) ) R \right] \]</span></li>
+<li>Notice that if <span class="math inline">\(M_t\)</span> is small, the euler equation does not hold.
+<ul>
+<li>In fact, the euler equation would prescribe to <em>borrow</em>, i.e. set <span class="math inline">\(M_t &lt;0\)</span>. This is ruled out.</li>
+<li>So, one needs to tweak this algorithm to check for this possibility</li>
+</ul></li>
+<li>Homework.</li>
+</ol>
+</div>
+<div id="the-egm-algorithm" class="slide section level1">
+<h1>The EGM Algorithm</h1>
+<p>Starts in period <span class="math inline">\(T\)</span> with <span class="math inline">\(c_T^* = M_T\)</span>. For all preceding periods:</p>
+<ol style="list-style-type: decimal">
+<li>Fix a grid of <em>end-of-period</em> assets <span class="math inline">\(A_t\)</span></li>
+<li>Compute all possible next period cash-in-hand holdings <span class="math inline">\(M_{t+1}\)</span> <span class="math display">\[ M_{t+1} = R * A_t + y_{t+1} \]</span>
+<ul>
+<li>for example, if there are <span class="math inline">\(n\)</span> values in <span class="math inline">\(A_t\)</span> and <span class="math inline">\(m\)</span> values for <span class="math inline">\(y_{t+1}\)</span>, we have <span class="math inline">\(dim(M_{t+1}) = (n,m)\)</span></li>
+</ul></li>
+<li>Given that we know optimal policy in <span class="math inline">\(t+1\)</span>, use it to get consumption at each <span class="math inline">\(M_{t+1}\)</span> <span class="math display">\[ c_{t+1}^* (M_{t+1}) \]</span></li>
+<li>Invert the Euler Equation to get current consumption compliant with an expected level of cash-on-hand, given <span class="math inline">\(A_t\)</span> <span class="math display">\[ c_{t} = (u&#39;)^{-1} \left( \beta E \left[u&#39;(c_{t+1}^*(M_{t+1}) ) R |A_t \right]  \right) \]</span></li>
+<li>Current period <em>endogenous</em> cash on hand just obeys the accounting relation <span class="math display">\[ M_t = c_t + A_t \]</span></li>
+</ol>
+</div>
+<div id="issues-with-traditional-methods" class="slide section level1">
+<h1>Issues with traditional methods</h1>
+<h2 id="numerical-optimization-at-each-grid-point">Numerical optimization at each grid point</h2>
+<ol style="list-style-type: decimal">
+<li>We spend a lot of effort in the nonlinear optimization part (i.e. the <span class="math inline">\(\max\)</span> of the problem)</li>
+<li>This is not guaranteed to work well in non-convex problems</li>
+<li>precision suffers close to a binding borrowing constraint.</li>
+</ol>
+<h2 id="egm-no-numerical-optimization.">EGM: no numerical optimization.</h2>
+<ol style="list-style-type: decimal">
+<li>we have no call to anything like <code>optim</code> anywhere.</li>
+<li>Gets the binding borrowing constraint exactly right, no approximation error.</li>
+<li>The <strong>speed gain</strong> is <strong>mind-blowing</strong>.</li>
+</ol>
+</div>
+<div id="core-of-a-simple-implementation" class="slide section level1">
+<h1> Core of a simple implementation</h1>
+<ol style="list-style-type: decimal">
+<li>Define a <code>type</code> model:</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia"><span class="kw">type</span> iidModel &lt;: Model
+
+    <span class="co"># computation grids</span>
+    avec::<span class="dt">Vector</span>{<span class="dt">Float64</span>}
+    yvec::<span class="dt">Vector</span>{<span class="dt">Float64</span>}   <span class="co"># income support</span>
+    ywgt::<span class="dt">Vector</span>{<span class="dt">Float64</span>}   <span class="co"># income weights</span>
+
+    <span class="co"># intermediate objects (na,ny)</span>
+    m1::<span class="dt">Array</span>{<span class="dt">Float64</span>,<span class="fl">2</span>}    <span class="co"># next period cash on hand (na,ny)</span>
+    c1::<span class="dt">Array</span>{<span class="dt">Float64</span>,<span class="fl">2</span>}    <span class="co"># next period consumption</span>
+    ev::<span class="dt">Array</span>{<span class="dt">Float64</span>,<span class="fl">2</span>}
+
+    <span class="co"># result objects</span>
+    C::<span class="dt">Array</span>{<span class="dt">Float64</span>,<span class="fl">2</span>}     <span class="co"># consumption function on (na,nT)</span>
+    S::<span class="dt">Array</span>{<span class="dt">Float64</span>,<span class="fl">2</span>}     <span class="co"># savings function on (na,nT)</span>
+    M::<span class="dt">Array</span>{<span class="dt">Float64</span>,<span class="fl">2</span>}     <span class="co"># endogenous cash on hand on (na,nT)</span>
+    V::<span class="dt">Array</span>{<span class="dt">Float64</span>,<span class="fl">2</span>}     <span class="co"># value function on (na,nT). Optional.</span>
+    Vzero::<span class="dt">Array</span>{<span class="dt">Float64</span>,<span class="fl">1</span>} <span class="co"># value of saving zero</span>
+<span class="kw">end</span></code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>Function <code>EGM!</code></li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia"><span class="kw">function</span> EGM!(m::iidModel,p::Param)
+
+    <span class="co"># final period: consume everything.</span>
+    m.M[:,p.nT] = m.avec
+    m.C[:,p.nT] = m.avec
+    m.C[m.C[:,p.nT].&lt;p.cfloor,p.nT] = p.cfloor
+
+    <span class="co"># preceding periods</span>
+    <span class="kw">for</span> it <span class="kw">in</span> (p.nT-<span class="fl">1</span>):-<span class="fl">1</span>:<span class="fl">1</span>
+
+        <span class="co"># interpolate optimal consumption from next period on all cash-on-hand states</span>
+        <span class="co"># using C[:,it+1] and M[:,it+1], find c(m,it)</span>
+
+        tmpx = [<span class="fl">0.0</span>; m.M[:,it+<span class="fl">1</span>] ] 
+        tmpy = [<span class="fl">0.0</span>; m.C[:,it+<span class="fl">1</span>] ]
+        <span class="kw">for</span> ia <span class="kw">in</span> <span class="fl">1</span>:p.na
+            <span class="kw">for</span> iy <span class="kw">in</span> <span class="fl">1</span>:p.ny
+                m.c1[ia+p.na*(iy-<span class="fl">1</span>)] = linearapprox(tmpx,tmpy,m.m1[ia+p.na*(iy-<span class="fl">1</span>)],<span class="fl">1</span>,p.na)
+                <span class="co"># m.c1[ia,iy] = linearapprox(tmpx,tmpy,m.m1[ia,iy],1,p.na)  # equivalent</span>
+            <span class="kw">end</span>
+        <span class="kw">end</span>
+
+        <span class="co"># get expected marginal value of saving: RHS of euler equation</span>
+        <span class="co"># beta * R * E[ u&#39;(c_{t+1}) ] </span>
+        Eu = p.R * p.beta .* up(m.c1,p) * m.ywgt
+
+        <span class="co"># get optimal consumption today from euler equation: invert marginal utility</span>
+        m.C[:,it] = iup(Eu,p)
+
+        <span class="co"># floor consumption</span>
+        m.C[m.C[:,it].&lt;p.cfloor,it] = p.cfloor
+
+        <span class="co"># get endogenous grid today</span>
+        m.M[:,it] = m.C[:,it] .+ m.avec
+    <span class="kw">end</span>
+<span class="kw">end</span></code></pre></div>
+</div>
+<div id="discrete-choice-egm" class="slide section level1">
+<h1>Discrete Choice EGM</h1>
+<ul>
+<li>This is a method developed by Fedor Iskhakov, Thomas Jorgensen, John Rust and Bertel Schjerning.</li>
+<li>Reference: <span class="citation">(Iskhakov et al. 2014)</span></li>
+<li>Suppose we have several discrete choices (like &quot;work/retire&quot;), combined with a continuous choice in each case (like &quot;how much to consume given work/retire&quot;).</li>
+<li>Let <span class="math inline">\(d=0\)</span> mean to retire.</li>
+<li>Write the problem of a worker as <span class="math display">\[ \begin{align}
+V_t(M_t) &amp; = \max \left[ v_t(M_t|d_t=0), v_t(M_t|d_t=1) \right] \\
+ &amp;  \text{with}\\
+v_t(M_t|d_t=0) &amp; = \max_{0&lt;c_t&lt;M_t} u(c_t) + \beta E W_{t+1}(R (M_t - c_t)) \\
+v_t(M_t|d_t=1) &amp; = \max_{0&lt;c_t&lt;M_t} u(c_t) -1 + \beta E V_{t+1}(R (M_t - c_t) + y_{t+1}) 
+\end{align}
+\]</span></li>
+<li>The problem of a retiree is <span class="math display">\[
+W_t(M_t) = \max_{0&lt;c_t&lt;M_t} u(c_t) + \beta E W_{t+1}(R (M_t - c_t)) 
+\]</span></li>
+<li>Our task is to compute the optimal consumption functions <span class="math inline">\(c_t^*(M_t|d_t=0)\)</span>, <span class="math inline">\(c_t^*(M_t|d_t=1)\)</span></li>
+</ul>
+</div>
+<div id="problems-with-discrete-continuous-choice" class="slide section level1">
+<h1>Problems with Discrete-Continuous Choice</h1>
+<ul>
+<li>Even if all conditional value functions <span class="math inline">\(v\)</span> are concave, the <em>envelope</em> over them, <span class="math inline">\(V\)</span>, is in general not.</li>
+<li><span class="citation">(Clausen and Strub 2013)</span> show that there will be a kink point <span class="math inline">\(\bar{M}\)</span> such that <span class="math display">\[ v_t(\bar{M}|d_t=0) = v_t(\bar{M}|d_t=1) \]</span>
+<ul>
+<li>We call any such point a <strong>primary kink</strong> (because it refers to a discrete choice in the <strong>current period</strong>)</li>
+</ul></li>
+<li><span class="math inline">\(V\)</span> is not differentiable at <span class="math inline">\(\bar{M}\)</span>.</li>
+<li>However, it can be shown that both left and right derivatives exist, with <span class="math display">\[ V^-(\bar{M}) &lt; V^+(\bar{M}) \]</span></li>
+<li>Given that the value of the derivative changes discretely at <span class="math inline">\(\bar{M_t}\)</span>, the value function in <span class="math inline">\(t-1\)</span> will exhibit a discontinuity as well:
+<ul>
+<li><span class="math inline">\(v_{t-1}\)</span> depends on <span class="math inline">\(V_t\)</span>.</li>
+<li>Tracing out the optimal choice of <span class="math inline">\(c_{t-1}\)</span> implies next period cash on hand <span class="math inline">\(M_t\)</span>, and as that hits <span class="math inline">\(\bar{M_t}\)</span>, the derivative jumps.</li>
+<li>The derivative of the value function determines optimal behaviour via the Euler Equation.</li>
+<li>We call a discontinuity in <span class="math inline">\(v_{t-1}\)</span> arising from a kink in <span class="math inline">\(V_t\)</span> a <strong>secondary kink</strong>.</li>
+</ul></li>
+<li>The kinks propagate backwards.</li>
+<li><span class="citation">(Iskhakov et al. 2014)</span> provide an analytic example where one can compute the actual number of kinks in period 1 of T.</li>
+<li>Figure 1 in <span class="citation">(Clausen and Strub 2013)</span>:</li>
+</ul>
+<p><img src="figs/clausen-struub.png" width="1200" height="500"/></p>
+<div class="figure">
+<img src="figs/fedor-1.png" alt="(Iskhakov et al. 2014) figure 1" />
+<p class="caption"><span class="citation">(Iskhakov et al. 2014)</span> figure 1</p>
+</div>
+</div>
+<div id="kinks" class="slide section level1">
+<h1>Kinks</h1>
+<ul>
+<li>Refer back to the work/retirement model from before.</li>
+<li>6 period implementation of the DC-EGM method:</li>
+</ul>
+<div class="figure">
+<img src="figs/Dchoice_condV.png" alt="github/floswald" />
+<p class="caption">github/floswald</p>
+</div>
+<ul>
+<li><p><a href="http://www.cemmap.ac.uk/event/id/1213">Iskhakov @ cemmap 2015: Value functions in T-1</a> <img src="figs/fedor-3.png" width="900" height="500"/></p></li>
+<li><p><a href="http://www.cemmap.ac.uk/event/id/1213">Iskhakov @ cemmap 2015: Value functions in T-2</a> <img src="figs/fedor-4.png" width="900" height="500"/></p></li>
+<li><p><a href="http://www.cemmap.ac.uk/event/id/1213">Iskhakov @ cemmap 2015: Consumption function in T-2</a> <img src="figs/fedor-5.png" width="900" height="500"/></p></li>
+<li><p>Optimal consumption in 6 period model: <img src="figs/Dchoice_envC.png" alt="github/floswald" /></p></li>
+</ul>
+</div>
+<div id="the-problem-with-kinks" class="slide section level1">
+<h1>The Problem with Kinks</h1>
+<ul>
+<li>Relying on fast methods that rely on first order conditions (like euler equation) will fail.</li>
+<li>There are multiple zeros in the Euler Equation, and a standard Euler Equation approach is not guaranteed to find the right one.</li>
+<li>picture from Fedor Iskhakov's master class at <a href="http://www.cemmap.ac.uk/event/id/1213">cemmap 2015</a>:</li>
+</ul>
+<p><img src="figs/fedor-2-cropped.png" width="1000" height="500"/></p>
+</div>
+<div id="dc-egm-algorithm" class="slide section level1">
+<h1>DC-EGM Algorithm</h1>
+<ol style="list-style-type: decimal">
+<li>Do the EGM step for each discrete choice <span class="math inline">\(d\)</span></li>
+<li>Compute <span class="math inline">\(d\)</span>-specific consumption and value functions</li>
+<li>compare <span class="math inline">\(d\)</span>-specific value functions to find optimal switch points</li>
+<li>Build envelope over <span class="math inline">\(d\)</span>-specific consumption functions with knowledge of which optimal <span class="math inline">\(d\)</span> applies where.</li>
+</ol>
+<h2 id="but-egm-relies-on-the-euler-equation">But EGM relies on the Euler Equation?!</h2>
+<ul>
+<li>Yes.</li>
+<li>An important result in <span class="citation">(Clausen and Strub 2013)</span> is that the Euler Equation is still the necessary condition for optimal consumption
+<ul>
+<li>Intuition: marginal utility differs greatly at <span class="math inline">\(\epsilon+\bar{M}\)</span>.</li>
+<li>No economic agent would ever locate <strong>at</strong> <span class="math inline">\(\bar{M}\)</span>.</li>
+</ul></li>
+<li>This is different from saying that a proceedure that tries to find the zeros of the Euler Equation would still work.
+<ul>
+<li>this will pick the wrong solution some times.</li>
+</ul></li>
+<li>EGM finds <strong>all</strong> solutions.
+<ul>
+<li>There is a proceedure to discard the &quot;wrong ones&quot;. Proof in <span class="citation">(Iskhakov et al. 2014)</span></li>
+</ul></li>
+</ul>
+</div>
+<div id="adding-shocks" class="slide section level1">
+<h1>Adding Shocks</h1>
+<ul>
+<li>This problem is hard to solve with standard methods.</li>
+<li>It is hard, because the only reliable method is VFI, and this is not feasible in large problems.</li>
+<li>Adding shocks to non-smooth problems is a widely used remedy.
+<ul>
+<li>think of &quot;convexifying&quot; in game theoretic models</li>
+<li>(Add a lottery)</li>
+<li>Also used a lot in macro</li>
+</ul></li>
+<li>Adding shocks does indeed help in the current model.
+<ul>
+<li>We add idiosyncratic taste shocks: Type 1 EV.</li>
+<li>Income uncertainty:</li>
+<li>In general, the more shocks, the more smoothing.</li>
+</ul></li>
+<li>The problem becomes <span class="math display">\[ \begin{align}
+V_t(M_t) &amp; = \max \left[ v_t(M_t|d_t=0) + \sigma_\epsilon \epsilon_t(0), v_t(M_t|d_t=1) + \sigma_\epsilon \epsilon_t(1)\right]  \\
+v_t(M_t|d_t=1) &amp; = \max_{0&lt;c_t&lt;M_t} \log(c_t) -1 + \beta \int E V_{t+1}(R (M_t - c_t) + y\eta_{t+1})f(d\eta_{t+1}) 
+\end{align}
+\]</span> where the value for retirees stays the same.</li>
+</ul>
+</div>
+<div id="adding-shocks-1" class="slide section level1">
+<h1>Adding Shocks</h1>
+<div class="figure">
+<img src="figs/fedor-7.png" alt="(Iskhakov et al. 2014) figure 2" />
+<p class="caption"><span class="citation">(Iskhakov et al. 2014)</span> figure 2</p>
+</div>
+<div class="figure">
+<img src="figs/fedor-6.png" alt="(Iskhakov et al. 2014) figure 4" />
+<p class="caption"><span class="citation">(Iskhakov et al. 2014)</span> figure 4</p>
+</div>
+<div class="figure">
+<img src="figs/fedor-8.png" alt="(Iskhakov et al. 2014) figure 4" />
+<p class="caption"><span class="citation">(Iskhakov et al. 2014)</span> figure 4</p>
+</div>
+</div>
+<div id="full-dc-egm" class="slide section level1">
+<h1>Full DC-EGM</h1>
+<ul>
+<li>Needs to discard <em>false</em> solutions.</li>
+<li>Criterion:
+<ul>
+<li>grid in <span class="math inline">\(A_t\)</span> is <strong>increasing</strong></li>
+<li>Assuming concave utility function, the function <span class="math display">\[ A(M|d) = M - c(M|d) \]</span> is <strong>monotone non-decreasing</strong></li>
+<li>This means that, if you go through <span class="math inline">\(A_i\)</span>, and find that <span class="math display">\[ M_t(A^j) &lt; M_t(A^{j-1}) \]</span> you know you entered a non-concave region</li>
+</ul></li>
+<li>The Algorithm goes through the upper envelope and <em>prunes</em> the <em>inferior</em> points <span class="math inline">\(M\)</span> from the endogenous grids.</li>
+<li>Precise details of Algorithm in paper.</li>
+<li>Julia implementation on <a href="https://github.com/floswald/ConsProb.jl">floswald/ConsProb.jl</a></li>
+</ul>
+</div>
+<div id="references" class="slide section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references">
+<div id="ref-carroll2006method">
+<p>Carroll, C. D. (2006). The method of endogenous gridpoints for solving dynamic stochastic optimization problems. <em>Economics letters</em>, <em>91</em>(3), 312–320.</p>
+</div>
+<div id="ref-clausenenvelope">
+<p>Clausen, A., &amp; Strub, C. (2013). Envelope theorems for non-smooth and non-concave optimization. <em>https://andrewclausen.net/research.html</em>. <a href="https://andrewclausen.net/Clausen_Strub_Envelope.pdf" class="uri">https://andrewclausen.net/Clausen_Strub_Envelope.pdf</a></p>
+</div>
+<div id="ref-iskhakovRust2014">
+<p>Iskhakov, F., Rust, John, Schjerning, B., &amp; Jorgensen, T. (2014). Estimating Discrete-Continuous Choice Models: Endogenous Grid Method with Taste Shocks. <em>SSRN working paper</em>. <a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2696079" class="uri">http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2696079</a></p>
+</div>
+<div id="ref-stokeylucas">
+<p>Stokey, N., &amp; Lucas, R. (1989). <em>Recursive methods in economic dynamics (with e. prescott)</em>. Harvard University Press.</p>
+</div>
+</div>
+</div>
+</body>
+</html>
