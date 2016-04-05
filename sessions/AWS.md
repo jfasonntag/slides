@@ -14,7 +14,7 @@
 **Before** you come to class:
 
 1. get an account on AWS
-	1. got to [https://aws.amazon.com/console/](https://aws.amazon.com/console/)
+	1. go to [https://aws.amazon.com/console/](https://aws.amazon.com/console/)
 	1. sign-in or create a new amazon web services account
 1. Windows users: get PuTTY 
 	1. user guide for connecting to [aws for windows users](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/putty.html)
@@ -30,7 +30,6 @@
 		* (optional) install AWS CLI via installer at [https://aws.amazon.com/cli/](https://aws.amazon.com/cli/)
 1. you need **starcluster**
 	* now that you have python, do `easy_install starcluster` on your command line
-	* create star cluster sample config: type `star cluster help`
 	* we will edit this file together in class.
 
 ---------------------
@@ -88,6 +87,11 @@ The aim here is to show you how to set up a general purpose compute cluster on A
 
 * create a new group
 * give it administrator rights
+
+
+## Starcluster
+
+* create star cluster sample config: type `star cluster help`
 
 
 ### Put Credentials into star cluster config
