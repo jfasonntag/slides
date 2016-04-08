@@ -54,6 +54,7 @@
 * There is a very [easy-to-use calculator](http://s3.amazonaws.com/calculator/index.html).
 * Here is [an example configuration](http://s3.amazonaws.com/calculator/index.html#r=IAD&s=EC2&key=calc-BAFF4EDF-DB58-473D-9C94-4B0D02F3B72F)
 * There are research grants.
+
 ## Setup in Class
 
 The aim here is to show you how to set up a general purpose compute cluster on AWS Elastic Compute 2 (AWS EC2). We will use starcluster to help us interact with our clusters. First, we need to enter your security credentials into the config of starcluster, that you created already.
@@ -77,19 +78,51 @@ The aim here is to show you how to set up a general purpose compute cluster on A
 #### creating an SSH keypair for your user
 
 * go to the [AWS Console](https://console.aws.amazon.com/ec2/)
-* top right, select the region through which you want to connect to AWS. I choose Frankfurt.
+* top right, select the region through which you want to connect to AWS. I choose US East in Virginia.
+	* the region you choose has impacts on which kind of *machine images* (more below) that are available to you.
 * click on **key pairs**
 * create new key pair
-* give it a name (i called mine *frankfurt*), and download
-* save in a location that you will remember. Standard for *nix users is `~/.ssh/frankfurt.pem`
+* give it a name (i called mine *us-east-virginia*), and download
+* save in a location that you will remember. Standard for *nix users is `~/.ssh/us-east-virginia.pem`
 
 #### add user to a group
 
 * create a new group
 * give it administrator rights
 
+### Amazon Machine Images (AMI)
+
+* Go to console and click on launch an instance
+* Base instances have just a minimal set of software installed
+* we don't have to pay each time we connect for the time it takes to install all of our software
+* ideally, we do that once, and that create a *new* AMI from the machine we installed our software on
+* I created such an AMI for you. It has R, julia, python and some basic development tools (gnu compiler collection and cmake)
+* There is an AMI marketplace where you can find (for free or for a charge) other people's AMIs. 
+
+### Volumes
+
+* You probably will want to store data on the cluster, either as input or output
+* similarly: you may want to install add-on software (R, python and julia packages for example)
+* Whatever you store on the disk of your AMI instance will be lost when you end the session
+	* that is, the AMI stays exactly the same to the moment you created it
+	* everything else that you add to it during a session will be lost
+
+* One solution are **Volumes**
+* Think that you get your own hard disk drive from AWS, and everytime you start a cluster, you would bring the disk, and they will plug into the cluster
+* this way you could add data each time you use the cluster, and use it again the next time.
+
+#### Attach Volume to the provided AMI
+
+* The AMI I created for you has 2 links for a volume to be attached
+* one for R libraries and one for julia packages
+* The volume needs to be mounted as `/data`. more below.
+
 
 ## Starcluster
+
+* Starcluster helps us with all of those tasks
+
+### Steps
 
 * create star cluster sample config: type `star cluster help`
 
