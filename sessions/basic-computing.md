@@ -266,6 +266,9 @@ println("u1 takes $(round(t1/t3,2)) times longer than u3")
 * It is useful to first talk about `Git`, a widely used version control system.
 * This is because the julia package system is built using git.
 * In fact, a julia package is a `Git` *repository*.
+
+How does Git work?
+
 - After one makes changes to a project, they **commit** the changes
 - Changes are **pushed** to the main repository hosted online
 - To download the code, you **clone** the repository
@@ -307,6 +310,20 @@ plot(rand(4,4))
 ~~~~~~~~~~~ 
 
 ----------------
+
+# Cloning the `Slides` repository
+
+* Let's try this out. We want to clone **this** repository, which lives at https://github.com/ScPo-CompEcon/slides
+* To do so, we do
+
+	~~~~~~~~~~~ {.julia}
+	Pkg.clone("https://github.com/ScPo-CompEcon/slides")
+	~~~~~~~~~~~ 
+
+* This places a copy into your `Pkg.dir()`.
+
+
+
 ----------------
 
 # Some Numerical Concepts and `Julia`

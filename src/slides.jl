@@ -12,6 +12,11 @@ of a repository, or ask for help!
 """)
 end
 
-export find_easter
+function hello()
+    println("""
+        Welcome to the ScPo-CompEcon slides repository!
+        """)
+
+export find_easter, hello
 
 end

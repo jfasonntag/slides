@@ -161,20 +161,40 @@ Florian Oswald
 [<span class="dv">1</span>] <span class="dv">25000</span>
 &gt;<span class="st"> </span><span class="kw">system.time</span>(<span class="kw">sum</span>(<span class="kw">as.numeric</span>(<span class="kw">unlist</span>(<span class="kw">lapply</span>(<span class="dv">1</span>:n,function(x) <span class="dv">1</span>:x)))))
    user  system elapsed 
-  <span class="fl">1.710</span>   <span class="fl">0.830</span>   <span class="fl">2.545</span> 
-&gt;<span class="st"> </span></code></pre></div>
+  <span class="fl">1.710</span>   <span class="fl">0.830</span>   <span class="fl">2.545</span> </code></pre></div>
 <div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">N = <span class="fl">25</span>_000
 julia&gt; @time sum([sum([j <span class="kw">for</span> j <span class="kw">in</span> <span class="fl">1</span>:i]) <span class="kw">for</span> i <span class="kw">in</span> <span class="fl">1</span>:N])  <span class="co"># R-equivalent</span>
+  <span class="fl">0.965853</span> seconds (<span class="fl">97.73</span> k allocations: <span class="fl">2.333</span> GB, <span class="fl">21.25</span>% gc time)
+
 julia&gt; @time sum(sum(j <span class="kw">for</span> j <span class="kw">in</span> <span class="fl">1</span>:i) <span class="kw">for</span> i <span class="kw">in</span> <span class="fl">1</span>:N)
-<span class="fl">220</span></code></pre></div>
+  <span class="fl">0.041750</span> seconds (<span class="fl">113.21</span> k allocations: <span class="fl">3.107</span> MB)</code></pre></div>
 </div>
+</div>
+<div id="community" class="slide section level1">
+<h1>Community</h1>
+<ul>
+<li>The <code>julia</code> community is a very active and thriving place, comparable to <code>R</code>.</li>
+<li>You should get used to asking questions in the different forums if you have problems.</li>
+<li><p>You will find it much harder to learn any language if you are afraid to ask questions.</p>
+<ul>
+<li>Your main forum is <a href="https://discourse.julialang.org" class="uri">https://discourse.julialang.org</a></li>
+</ul></li>
+<li>You can get help on <a href="http://stackoverflow.com/questions/tagged/julia-lang">stackoverflow</a> under tag <code>julia-lang</code></li>
+<li><p>Many package maintainers are very active on their respective github repositories - some offer a gitter chat for questions.</p></li>
+</ul>
 </div>
 <div class="slide section level1">
 
 <h2 id="why-not-julia">Why not julia?</h2>
 <ul>
-<li>Julia is still in version <code>0.4.0</code>. There may be language changes in future releases.</li>
-<li>There are way fewer packages for certain tasks than for, say, R.</li>
+<li>Julia is in version <code>0.5.0</code>. There may be language changes in future releases.
+<ul>
+<li>People were worried whether <em>julia is here to stay</em>.</li>
+<li>The developers are very cautious before releasing version <code>1.0</code> because of that.</li>
+<li>There are examples of other languages which ran out of steam (Perl).</li>
+<li>The next version <code>0.6</code> is being released early feb 2017.</li>
+</ul></li>
+<li>There are fewer packages for certain tasks than you have in R.</li>
 <li>Relatively few people know it. Your supervisor almost surely doesn't know it.</li>
 </ul>
 </div>
@@ -287,11 +307,70 @@ t3 = @elapsed <span class="kw">for</span> i <span class="kw">in</span> <span cla
 println(<span class="st">&quot;u1 takes $(round(t1/t3,2)) times longer than u3&quot;</span>)</code></pre></div>
 </div>
 </div>
+<div id="time-to-get-your-hands-dirty-with-some-code" class="slide section level1">
+<h1>Time to get your hands dirty (with some code)!</h1>
+<h2 id="first-things-first-git">First Things First: <code>Git</code></h2>
+<ul>
+<li>It is useful to first talk about <code>Git</code>, a widely used version control system.</li>
+<li>This is because the julia package system is built using git.</li>
+<li>In fact, a julia package is a <code>Git</code> <em>repository</em>.</li>
+</ul>
+<p>How does Git work?</p>
+<ul>
+<li>After one makes changes to a project, they <strong>commit</strong> the changes</li>
+<li>Changes are <strong>pushed</strong> to the main repository hosted online</li>
+<li>To download the code, you <strong>clone</strong> the repository</li>
+<li>Instead of editing the main repository, one edits a <strong>branch</strong></li>
+<li>To get the changes of the main branch in yours, you <strong>fetch</strong>, <strong>pull</strong>, or <strong>rebase</strong></li>
+<li>One asks the owner of the repository to add their changes via a <strong>pull request</strong></li>
+<li>Stable versions are called <strong>releases</strong></li>
+<li>The packages can be found / investigated at Github.com</li>
+</ul>
+</div>
+<div id="first-things-first-github.com" class="slide section level1">
+<h1>First Things First: <code>Github.com</code></h1>
+<ul>
+<li>The major online service for git repositories is Github</li>
+<li>Github is a free service</li>
+<li>The code is hosted online, free for everyone to view</li>
+<li>Users can open <strong>Issues</strong> to ask for features and give bug reports to developers</li>
+<li>Many projects are brought together into <strong>organizations</strong> (JuliaMath, JuliaDiffEq, JuliaStats, etc.)</li>
+</ul>
+<p>An example Github repository for a Julia package is <a href="https://github.com/JuliaOpt/JuMP.jl" class="uri">https://github.com/JuliaOpt/JuMP.jl</a></p>
+</div>
+<div id="julias-package-manager" class="slide section level1">
+<h1>Julia's Package Manager</h1>
+<ul>
+<li>Officially registered packages are available on github via the function <code>Pkg.add()</code>.
+<ul>
+<li>Let's install the <code>Plots.jl</code> package: <code>Pkg.add(&quot;Plots&quot;)</code></li>
+</ul></li>
+<li>Non-registered ones are available via <code>Pkg.clone()</code>
+<ul>
+<li>For example, <code>Pkg.clone(&quot;https://github.com/JuliaDiffEq/ParameterizedFunctions.jl&quot;)</code></li>
+</ul></li>
+</ul>
+<h2 id="using-a-package">Using a Package</h2>
+<ul>
+<li>To use a package, we need to import it's code into our julia session.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">using Plots
+plot(rand(<span class="fl">4</span>,<span class="fl">4</span>))</code></pre></div>
+</div>
+<div id="cloning-the-slides-repository" class="slide section level1">
+<h1>Cloning the <code>Slides</code> repository</h1>
+<ul>
+<li>Let's try this out. We want to clone <strong>this</strong> repository, which lives at https://github.com/ScPo-CompEcon/slides</li>
+<li><p>To do so, we do</p>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">Pkg.clone(<span class="st">&quot;https://github.com/ScPo-CompEcon/slides&quot;</span>)</code></pre></div></li>
+<li><p>This places a copy into your <code>Pkg.dir()</code>.</p></li>
+</ul>
+</div>
 <div id="some-numerical-concepts-and-julia" class="slide section level1">
 <h1>Some Numerical Concepts and <code>Julia</code></h1>
 <ul>
 <li>Machine epsilon: The smallest number that your computer can represent, type <code>eps()</code>.</li>
-<li>Infinity: A number greater than all representable numbers on your computer. <a href="http://docs.julialang.org/en/release-0.4/manual/integers-and-floating-point-numbers/?highlight=infinity#special-floating-point-values">Obeys some arithmethmic rules</a>
+<li>Infinity: A number greater than all representable numbers on your computer. <a href="http://docs.julialang.org/en/release-0.5/manual/integers-and-floating-point-numbers/?highlight=infinity#special-floating-point-values">Obeys some arithmethmic rules</a>
 <ul>
 <li>Overflow: If you perform an operation where the result is greater than the largest representable number.</li>
 <li>Underflow: You take two (very small) representable numbers, but the result is smaller than <code>eps()</code>.</li>
@@ -301,7 +380,7 @@ x + <span class="fl">1</span></code></pre></div></li>
 </ul></li>
 <li>Integers and Floating Point Numbers.</li>
 <li>Single and Double Precision.</li>
-<li>In Julia, all of these are different <a href="http://docs.julialang.org/en/release-0.4/manual/integers-and-floating-point-numbers/"><em>numeric primitive types (head over to julia manual for a second)</em></a>.</li>
+<li>In Julia, all of these are different <a href="http://docs.julialang.org/en/release-0.5/manual/integers-and-floating-point-numbers/"><em>numeric primitive types (head over to julia manual for a second)</em></a>.</li>
 <li>Julia also supports <em>Arbitrary Precision Arithmetic</em>. Thus, overflow shouldn't become an issue anymore.</li>
 <li>See min and max for different types:</li>
 </ul>
@@ -326,6 +405,28 @@ end</code></pre>
 <li>documented in the <a href="http://docs.julialang.org/en/release-0.5/manual/interacting-with-julia">manual</a></li>
 </ul></li>
 </ul>
+</div>
+<div class="slide section level1">
+
+<table style="width:22%;">
+<colgroup>
+<col width="22%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left"># Julia Primer</td>
+</tr>
+<tr class="even">
+<td align="left">We'll introduce the following fundamental concepts:</td>
+</tr>
+<tr class="odd">
+<td align="left">* Workflow * DataStructures * Working with Data * Statistics * Plotting * Performance</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="workflow" class="slide section level1">
+<h1>Workflow</h1>
 </div>
 <div id="julia-primer-what-is-a-module" class="slide section level1">
 <h1><code>Julia</code> Primer: What is a <code>module</code>?</h1>
