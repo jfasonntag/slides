@@ -349,6 +349,10 @@ println(<span class="st">&quot;u1 takes $(round(t1/t3,2)) times longer than u3&q
 <ul>
 <li>For example, <code>Pkg.clone(&quot;https://github.com/JuliaDiffEq/ParameterizedFunctions.jl&quot;)</code></li>
 </ul></li>
+<li>You can get a certain <strong>branch</strong> of a package by doing
+<ul>
+<li><code>Pkg.checkout(&quot;DataFrames&quot;,&quot;nl/join&quot;)</code> checks out the branch called <em>nl/join</em> from the DataFrames.jl repository.</li>
+</ul></li>
 </ul>
 <h2 id="using-a-package">Using a Package</h2>
 <ul>
@@ -360,11 +364,39 @@ plot(rand(<span class="fl">4</span>,<span class="fl">4</span>))</code></pre></di
 <div id="cloning-the-slides-repository" class="slide section level1">
 <h1>Cloning the <code>Slides</code> repository</h1>
 <ul>
-<li>Let's try this out. We want to clone <strong>this</strong> repository, which lives at https://github.com/ScPo-CompEcon/slides</li>
-<li><p>To do so, we do</p>
-<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">Pkg.clone(<span class="st">&quot;https://github.com/ScPo-CompEcon/slides&quot;</span>)</code></pre></div></li>
-<li><p>This places a copy into your <code>Pkg.dir()</code>.</p></li>
+<li>Let's try this out. We want to clone <strong>this</strong> repository, which lives at <a href="https://github.com/ScPo-CompEcon/slides" class="uri">https://github.com/ScPo-CompEcon/slides</a></li>
+<li>You clone it into Julia with</li>
 </ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">Pkg.clone(<span class="st">&quot;https://github.com/ScPo-CompEcon/slides&quot;</span>) <span class="co"># Clone the slides Repo</span>
+using slides   <span class="co"># load code</span>
+hello()     </code></pre></div>
+</div>
+<div id="checkout-a-different-slides-branch" class="slide section level1">
+<h1>Checkout a different <code>Slides</code> branch</h1>
+<ul>
+<li>Different version of code live on different <em>branches</em></li>
+<li>Sometimes it is useful for you to use the most recent version, as opposed to the released one.</li>
+</ul>
+<h2 id="excercise">Excercise</h2>
+<ul>
+<li>I have hidden an easter egg somewhere in that repo.</li>
+<li>You should check out the <code>Easter</code> branch, and run <code>find_easter()</code>.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia"><span class="co"># 1. checkout Easter branch</span>
+<span class="co"># 2. then do this</span>
+reload(<span class="st">&quot;slides&quot;</span>)
+slides.find_easter()  <span class="co"># the slides. is important!</span></code></pre></div>
+</div>
+<div id="using-ijulia-notebooks-in-slides" class="slide section level1">
+<h1>Using <code>IJulia</code> Notebooks in <code>slides</code></h1>
+<ul>
+<li><code>slides</code> also contains a folder <em>Notebooks</em>.</li>
+<li>We will use one of those now in your browser to continue this session.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">Pkg.add(<span class="st">&quot;IJulia&quot;</span>) <span class="co"># This will install IJulia</span>
+<span class="co"># Next commands you run each time you open the REPL</span>
+using IJulia
+notebook(detached=true,dir=Pkg.dir(<span class="st">&quot;slides/Notebooks&quot;</span>))</code></pre></div>
 </div>
 <div id="some-numerical-concepts-and-julia" class="slide section level1">
 <h1>Some Numerical Concepts and <code>Julia</code></h1>

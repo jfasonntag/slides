@@ -299,6 +299,8 @@ An example Github repository for a Julia package is [https://github.com/JuliaOpt
 	* Let's install the `Plots.jl` package: `Pkg.add("Plots")`
 * Non-registered ones are available via `Pkg.clone()`
 	* For example, `Pkg.clone("https://github.com/JuliaDiffEq/ParameterizedFunctions.jl")`
+* You can get a certain **branch** of a package by doing
+	* `Pkg.checkout("DataFrames","nl/join")` checks out the branch called *nl/join* from the DataFrames.jl repository.
 
 ## Using a Package
 
@@ -313,19 +315,47 @@ plot(rand(4,4))
 
 # Cloning the `Slides` repository
 
-* Let's try this out. We want to clone **this** repository, which lives at https://github.com/ScPo-CompEcon/slides
-* You can get [https://desktop.github.com](https://desktop.github.com) for an easy interface to github. Open, and login with your github username.
-* To clone, go to [https://github.com/ScPo-CompEcon/slides](https://github.com/ScPo-CompEcon/slides) and click on **clone**, then *Open in Desktop*
-	* If you don't like GUI's, you can just copy the address and do in your terminal `git clone git@github.com:ScPo-CompEcon/slides.git`
-* You can now use this package. For example, navigate to where you cloned it to and do
+* Let's try this out. We want to clone **this** repository, which lives at [https://github.com/ScPo-CompEcon/slides](https://github.com/ScPo-CompEcon/slides)
+* You clone it into Julia with
 
 ~~~~~~~~~~~ {.julia}
-# you are in slides/
-include("src/slides.jl")   # this loads the package code
-hello()
+Pkg.clone("https://github.com/ScPo-CompEcon/slides") # Clone the slides Repo
+using slides   # load code
+hello()     
 ~~~~~~~~~~~ 
 
+----------------
 
+# Checkout a different `Slides` branch
+
+* Different version of code live on different *branches*
+* Sometimes it is useful for you to use the most recent version, as opposed to the released one.
+
+## Excercise
+
+* I have hidden an easter egg somewhere in that repo.
+* You should check out the `Easter` branch, and run `find_easter()`.
+
+~~~~~~~~~~~ {.julia}
+# 1. checkout Easter branch
+# 2. then do this
+reload("slides")
+slides.find_easter()  # the slides. is important!
+~~~~~~~~~~~ 
+
+------------
+
+# Using `IJulia` Notebooks in `slides`
+
+* `slides` also contains a folder *Notebooks*.
+* We will use one of those now in your browser to continue this session.
+
+~~~~~~~~~~~ {.julia}
+Pkg.add("IJulia") # This will install IJulia
+# Next commands you run each time you open the REPL
+using IJulia
+notebook(detached=true,dir=Pkg.dir("slides/Notebooks"))
+~~~~~~~~~~~ 
 
 
 ----------------
