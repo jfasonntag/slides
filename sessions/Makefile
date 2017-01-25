@@ -15,7 +15,7 @@ $(MDS) : %.ipynb : %.md
 
 $(OBJS) : %.html : %.md 
 	# pandoc --standalone --mathjax -t revealjs -V revealjs-url=../reveal.js -c ../styles/pandoc-style.css --highlight-style pygments $< -o $@
-	pandoc --standalone --mathjax -t slidy --standalone --mathml --highlight-style=kate --filter=pandoc-citeproc --bibliography=../../references/references.bib --csl=../../references/computational-economics.csl $< -o $@
+	pandoc --standalone --mathjax -t slidy --self-contained --mathml --highlight-style=kate --filter=pandoc-citeproc --bibliography=../../references/references.bib --csl=../../references/computational-economics.csl $< -o $@
 	# pandoc --standalone --mathjax -t slidy --highlight-style pygments $< -o $@
 
 $(PDF) : %.pdf : %.md 
