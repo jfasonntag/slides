@@ -61,9 +61,9 @@ Florian Oswald
 </div>
 <div id="outline" class="slide section level1">
 <h1>Outline</h1>
-<ol style="list-style-type: decimal">
+<ol class="incremental" style="list-style-type: decimal">
 <li>Overview of Approximation Methods
-<ol style="list-style-type: decimal">
+<ol class="incremental" style="list-style-type: decimal">
 <li>Interpolation</li>
 <li>Regression</li>
 </ol></li>
@@ -74,9 +74,9 @@ Florian Oswald
 </div>
 <div id="approximation-methods" class="slide section level1">
 <h1>Approximation Methods</h1>
-<ul>
+<ul class="incremental">
 <li>Confronted with a non-analytic function <span class="math inline">\(f\)</span> (i.e. something not like <span class="math inline">\(log(x)\)</span>), we need a way to numerically represent <span class="math inline">\(f\)</span> in a computer.
-<ul>
+<ul class="incremental">
 <li>If your problem is to compute a value function in a dynamic problem, you don't have an analytic representation of <span class="math inline">\(V\)</span>.</li>
 <li>If you need to compute an equilibrium distribution for your model, you probably can't tell it's from one parametric family or another.</li>
 </ul></li>
@@ -88,7 +88,7 @@ Florian Oswald
 </div>
 <div id="some-classification" class="slide section level1">
 <h1>Some Classification</h1>
-<ul>
+<ul class="incremental">
 <li>Local Approximations: approximate function and it's derivative <span class="math inline">\(f,f&#39;\)</span> at a <em>single</em> point <span class="math inline">\(x_0\)</span>. Taylor Series: <span class="math display">\[ f(x) = f(x_0) + (x-x_0)f&#39;(x_0) + \frac{(x-x_0)^2}{2}f&#39;&#39;(x_0) + \dots + \frac{(x-x_0)^n}{n!}f^{n}(x_0) \]</span></li>
 <li>Interpolation or <em>Colocation</em>: find a function <span class="math inline">\(\hat{f}\)</span> that is a good fit to <span class="math inline">\(f\)</span>, and require that <span class="math inline">\(\hat{f}\)</span> <em>passes through</em> the points. If we think of there being a <em>residual</em> <span class="math inline">\(\epsilon_i = f(x_i) - \hat{f}(x_i)\)</span> at each grid point <span class="math inline">\(i\)</span>, this methods succeeds in setting <span class="math inline">\(\epsilon_i=0,\forall i\)</span>.</li>
 <li>Regression: Minimize some notion of distance (squared) between <span class="math inline">\(\hat{f}\)</span> and <span class="math inline">\(f\)</span>, without the requirement of pass through.</li>
@@ -96,7 +96,7 @@ Florian Oswald
 </div>
 <div id="doing-interpolation-in-julia" class="slide section level1">
 <h1>Doing Interpolation in Julia</h1>
-<ul>
+<ul class="incremental">
 <li>In practice, you will make heavy use of high-quality interpolation packages in julia.</li>
 <li>List in the end.</li>
 <li>Nevertheless, function approximation is <em>extremely</em> problem-specific, so sometimes a certain approach does not work for your problem.</li>
@@ -106,9 +106,9 @@ Florian Oswald
 </div>
 <div id="interpolation-basics" class="slide section level1">
 <h1>Interpolation Basics</h1>
-<ul>
+<ul class="incremental">
 <li>Let <span class="math inline">\(f\)</span> be a smooth function mapping <span class="math inline">\(\mathbb{R}^d \mapsto \mathbb{R}\)</span>, and define <span class="math inline">\(\hat{f}(\cdot;c)\)</span> to be our parametric approximation function. We generically define this as <span class="math display">\[  \hat{f}(x;c) = \sum_{j=1}^J c_j \phi_j(x) \]</span> where
-<ul>
+<ul class="incremental">
 <li><span class="math inline">\(\phi_j : \mathbb{R}^d \mapsto \mathbb{R}\)</span> is called a <strong>basis function</strong>,</li>
 <li><span class="math inline">\(c={c_1,c_2,\dots,c_J}\)</span> is a coefficient vector</li>
 </ul></li>
@@ -134,7 +134,7 @@ Florian Oswald
 </div>
 <div id="regression-basics" class="slide section level1">
 <h1>Regression Basics</h1>
-<ul>
+<ul class="incremental">
 <li>Clearly, on the previous slide we required that there are as many interpolation nodes as there are basis functions - we had <span class="math inline">\(J\)</span> equations for <span class="math inline">\(M\)</span> unknowns, so there exists a unique solution for <span class="math inline">\(c\)</span>.</li>
 <li>We needed to <em>invert</em> <span class="math inline">\(\mathbf{\Phi}\)</span>.</li>
 <li>If we have more, <span class="math inline">\(M&gt;J\)</span> say, interpolation nodes than basis functions, we cannot do that. Instead we can define a loss function, and minimize it.</li>
@@ -147,16 +147,16 @@ Florian Oswald
 </div>
 <div id="spectral-and-finite-element-methods" class="slide section level1">
 <h1>Spectral and Finite Element Methods</h1>
-<ul>
+<ul class="incremental">
 <li>Spectral Methods are such that the basis functions are non-zero over the entire domain of <span class="math inline">\(f\)</span>.
-<ul>
+<ul class="incremental">
 <li>Polynomial interpolation</li>
 <li>Chebychev interpolation</li>
 </ul></li>
 <li>Finite Element methods are such that basis functions are non-zero only on a subset of the domain.
-<ul>
+<ul class="incremental">
 <li>Splines
-<ul>
+<ul class="incremental">
 <li>Linear splines, i.e. splines of degree 1, a.k.a. <em>linear approximation</em></li>
 <li>Higher order splines, mainly the <em>cubic spline</em>.</li>
 </ul></li>
@@ -164,7 +164,7 @@ Florian Oswald
 </ul>
 <div class="incremental">
 <h3 id="what-makes-a-good-approximation">What makes a good Approximation?</h3>
-<ul>
+<ul class="incremental">
 <li>Should be arbitrarily accurate as we increase <span class="math inline">\(n\)</span>.</li>
 <li><span class="math inline">\(\Phi\)</span> Should be efficiently (fast) computable. If <span class="math inline">\(\Phi\)</span> were differentiable, we could easily get e.g. <span class="math inline">\(\hat{f}&#39;(x) = \sum_{j=1}^J c_j \phi_j&#39;(x_i)\)</span></li>
 <li><span class="math inline">\(c\)</span> Should be efficiently (fast) computable.</li>
@@ -173,21 +173,21 @@ Florian Oswald
 </div>
 <div id="polynomial-interpolation" class="slide section level1">
 <h1>Polynomial Interpolation</h1>
-<ul>
+<ul class="incremental">
 <li>For any continuous real-valued function <span class="math inline">\(f\)</span> on interval <span class="math inline">\([a,b]\)</span>, and an <span class="math inline">\(\epsilon&gt;0\)</span>, there is a polynomial <span class="math inline">\(p\)</span>, such that <span class="math display">\[ || f - p ||_\infty \equiv \sup_{x\in[a,b]} |f(x)-p(x)| &lt; \epsilon \]</span></li>
 <li>However, the choice of <span class="math inline">\(p\)</span> is critical. <em>Orthogonal Polynomials</em> have been shown to perform very well.</li>
 </ul>
 <blockquote>
 <p><span style="color:red">Definition - Orthogonal Polynomials</span>: an orthogonal polynomial sequence is a family of polynomials such that any two different polynomials in the sequence are orthogonal to each other under some inner product.</p>
 </blockquote>
-<ul>
+<ul class="incremental">
 <li>There are many families that satisfy this. See <span class="citation">(Kenneth L. Judd 1998)</span> table 6.3 for an overview.</li>
 <li>We will now look at a widely used family, the Chebyshev polynomial.</li>
 </ul>
 </div>
 <div id="chebyshev-nodes" class="slide section level1">
 <h1>Chebyshev Nodes</h1>
-<ul>
+<ul class="incremental">
 <li><em>Chebyshev Nodes</em> are defined in the interval <span class="math inline">\([-1,1]\)</span> as <span class="math display">\[ x_i = \cos\left(\frac{2k-1}{2n} \pi\right), k=1,\dots,n \]</span></li>
 <li>Which maps to general interval <span class="math inline">\([a,b]\)</span> as <span class="math display">\[ x_i = \frac{1}{2} (a+b) + \frac{1}{2} (b-a) \cos\left(\frac{2k-1}{2n} \pi\right) , k=1,\dots,n \]</span></li>
 <li>Chebyshev nodes are <strong>not</strong> evenly spaced: there are more points towards the boundaries.</li>
@@ -210,7 +210,7 @@ fig[:canvas][:draw]()  <span class="co"># update figure</span></code></pre></div
 </div>
 <div id="what-polynomial-to-use-what-form-for-phi" class="slide section level1">
 <h1>What Polynomial to use? What form for <span class="math inline">\(\Phi\)</span>?</h1>
-<ul>
+<ul class="incremental">
 <li>In principle the <em>monomial basis</em> could be used. It is just the power functions of <span class="math inline">\(x\)</span>: <span class="math inline">\(1,x,x^2,x^3,\dots\)</span></li>
 <li>Stacking this up for each evaluation node (Chebyshev, or any other), gives the <em>Vandermonde Matrix</em>: <span class="math display">\[ V = \left[\begin{matrix} 
         1 &amp; x_1 &amp; \dots &amp; x_1^{n-2} &amp; x_1^{n-1} \\ 
@@ -225,10 +225,10 @@ fig[:canvas][:draw]()  <span class="co"># update figure</span></code></pre></div
 </div>
 <div id="evaluating-the-chebyshev-polynomial-and-basis-function" class="slide section level1">
 <h1>Evaluating the Chebyshev Polynomial and Basis Function</h1>
-<ul>
+<ul class="incremental">
 <li>As before, this Basis is defined in <span class="math inline">\([-1,1]\)</span>, so for general <span class="math inline">\(x\in[a,b]\)</span> we normalize <span class="math inline">\(x\)</span> to <span class="math display">\[ z_i = 2\frac{x_i-a}{b-a} -1 \]</span></li>
 <li>There are several ways to obtain the value of the order <span class="math inline">\(j\)</span> Chebyshev polynomial at <span class="math inline">\(z\)</span>, e.g. to get <span class="math inline">\(\sum_{i=0}^n a_i T_i(z)\)</span>.
-<ol style="list-style-type: decimal">
+<ol class="incremental" style="list-style-type: decimal">
 <li>use definition <span class="math inline">\(T_j(z) = \cos(\arccos(z)j)\)</span>. Or</li>
 <li>Recursively we have that <span class="math inline">\(\phi_j(x) = T_{j-1}(z)\)</span>, and <span class="math display">\[ \begin{align}
     T_0(z) =&amp; 1 \\
@@ -240,7 +240,7 @@ fig[:canvas][:draw]()  <span class="co"># update figure</span></code></pre></div
 </ul>
 <div class="incremental">
 <h3 id="constructing-phi-as-t-evaluated-at-the-chebyshev-nodes">Constructing <span class="math inline">\(\Phi\)</span> as <span class="math inline">\(T\)</span> evaluated <em>at</em> the Chebyshev Nodes</h3>
-<ul>
+<ul class="incremental">
 <li>Combining Chebyshev nodes evaluated at <span class="math inline">\(T\)</span> to construct <span class="math inline">\(\Phi\)</span> is a particularly good idea.</li>
 <li>Doing so, we obtain an interpolation matrix <span class="math inline">\(\Phi\)</span> with typical element <span class="math display">\[ \phi_{ij} = \cos\left( \frac{(n-i+0.5)(j-1)\pi}{n}\right)  \]</span></li>
 <li>And we obtain that <span class="math inline">\(\Phi\)</span> is indeed orthogonal <span class="math display">\[ \Phi^T \Phi = \text{diag}\{n,n/2,n/2,\dots,n/2\}  \]</span></li>
@@ -249,18 +249,18 @@ fig[:canvas][:draw]()  <span class="co"># update figure</span></code></pre></div
 </div>
 <div id="chebyshev-interpolation-proceedure" class="slide section level1">
 <h1>(Chebyshev) Interpolation Proceedure</h1>
-<ul>
+<ul class="incremental">
 <li>Let's summarize this proceedure.</li>
 <li>Instead of Chebyshev polynomials we could be using any other suitable family of polynomials.</li>
 <li>To obtain a Polynomial interpolant <span class="math inline">\(\hat{f}\)</span>, we need:
-<ol style="list-style-type: decimal">
+<ol class="incremental" style="list-style-type: decimal">
 <li>a function to <span class="math inline">\(f\)</span> interpolate. We need to be able to get the function values somehow.</li>
 <li>A set of (Chebyshev) interpolation nodes at which to compute <span class="math inline">\(f\)</span></li>
 <li>An interpolation matrix <span class="math inline">\(\Phi\)</span> that corresponds to the nodes we have chosen.</li>
 <li>A resulting coefficient vector <span class="math inline">\(c\)</span></li>
 </ol></li>
 <li>To obtain the value of the interpolation at <span class="math inline">\(x&#39;\)</span> off our grid, we also need a way to evaluate <span class="math inline">\(\Phi(x&#39;)\)</span> .
-<ol style="list-style-type: decimal">
+<ol class="incremental" style="list-style-type: decimal">
 <li>Evaluate the Basis function <span class="math inline">\(\Phi\)</span> at <span class="math inline">\(x&#39;\)</span></li>
 <li>obtain new values as <span class="math inline">\(y = \Phi c\)</span>.</li>
 </ol></li>
@@ -268,7 +268,7 @@ fig[:canvas][:draw]()  <span class="co"># update figure</span></code></pre></div
 </div>
 <div id="polynomial-interpolation-with-julia-approxfun.jl" class="slide section level1">
 <h1>Polynomial Interpolation with <code>Julia</code>: <code>ApproxFun.jl</code></h1>
-<ul>
+<ul class="incremental">
 <li><a href="https://github.com/ApproxFun/ApproxFun.jl"><code>ApproxFun.jl</code></a> is a Julia package based on the Matlab package <a href="http://www.chebfun.org"><code>chebfun</code></a>. It is quite amazing.</li>
 <li>More than just <em>function approximation</em>. This is a toolbox to actually <em>work</em> with functions.</li>
 <li>given 2 functions <span class="math inline">\(f,g\)</span>, we can do algebra with them, i.e. <span class="math inline">\(h(x) = f(x) + g(x)^2\)</span></li>
@@ -280,7 +280,7 @@ fig[:canvas][:draw]()  <span class="co"># update figure</span></code></pre></div
 </div>
 <div id="polynomial-interpolation-with-julia-approxfun.jl-1" class="slide section level1">
 <h1>Polynomial Interpolation with <code>Julia</code>: <code>ApproxFun.jl</code></h1>
-<ul>
+<ul class="incremental">
 <li>This even works with discontinuities:</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">using ApproxFun
@@ -299,7 +299,7 @@ integral = norm(f-g)</code></pre></div>
 </div>
 <div id="polynomial-interpolation-with-julia-approxfun.jl-2" class="slide section level1">
 <h1>Polynomial Interpolation with <code>Julia</code>: <code>ApproxFun.jl</code></h1>
-<ul>
+<ul class="incremental">
 <li>The main purpose of this package is to manipulate analytic functions, i.e. function with an algebraic representation.</li>
 <li>There is the possibility to supply a set of data points and fit a polynomial:</li>
 </ul>
@@ -319,7 +319,7 @@ subplot(<span class="fl">122</span>) <span class="co">#create second axis of 1x2
 title(<span class="st">&quot;x = rand(20)&quot;</span>)
 ApproxFun.plot(f2,linewidth=<span class="fl">1.5</span>)
 ApproxFun.plot(x,v2,marker=<span class="st">&quot;o&quot;</span>,color=<span class="st">&quot;red&quot;</span>)</code></pre></div>
-<ul>
+<ul class="incremental">
 <li>Check out more examples with <a href="https://github.com/ApproxFun/ApproxFun.jl/issues/275">my conversation with one of the package authors</a></li>
 </ul>
 </div>
@@ -331,10 +331,10 @@ ApproxFun.plot(x,v2,marker=<span class="st">&quot;o&quot;</span>,color=<span cla
 </div>
 <div id="splines-piecewise-polynomial-approximation" class="slide section level1">
 <h1>Splines: Piecewise Polynomial Approximation</h1>
-<ul>
+<ul class="incremental">
 <li>Splines are a finite element method, i.e. there are regions of the function domain where some basis functions are zero.</li>
 <li>As such, they provide a very flexible framework for approximation instead of high-order polynomials.
-<ul>
+<ul class="incremental">
 <li>Keep in mind that Polynomials basis functions are non-zero on the entire domain. Remember the Vandermonde matrix.</li>
 </ul></li>
 <li>They bring some element of local approximation back into our framework. What happens at one end of the domain to the function is not important to what happens at the other end.</li>
@@ -342,7 +342,7 @@ ApproxFun.plot(x,v2,marker=<span class="st">&quot;o&quot;</span>,color=<span cla
 </ul>
 <div class="incremental">
 <h2 id="splines-basic-setup">Splines: Basic Setup</h2>
-<ul>
+<ul class="incremental">
 <li>The fundamental building block is the <em>knot vector</em>, or the <em>breakpoints vector</em> <span class="math inline">\(\mathbf{z}\)</span> of length <span class="math inline">\(p\)</span>. An element of <span class="math inline">\(\mathbf{z}\)</span> is <span class="math inline">\(z_i\)</span>.</li>
 <li><span class="math inline">\(\mathbf{z}\)</span> is ordered in ascending order.</li>
 <li><span class="math inline">\(\mathbf{z}\)</span> spans the domain <span class="math inline">\([a,b]\)</span> of our function, and we have that <span class="math inline">\(a=z_1,b=z_p\)</span></li>
@@ -353,7 +353,7 @@ ApproxFun.plot(x,v2,marker=<span class="st">&quot;o&quot;</span>,color=<span cla
 </div>
 <div id="splines-characterization" class="slide section level1">
 <h1>Splines: Characterization</h1>
-<ul>
+<ul class="incremental">
 <li>Given <span class="math inline">\(p\)</span> knots, there are <span class="math inline">\(p-1\)</span> polynomial segments of order <span class="math inline">\(k\)</span>, each characterized by <span class="math inline">\(k+1\)</span> coefficients, i.e. a total of <span class="math inline">\((p-1)(k+1)\)</span> parameters.</li>
 <li>However, we also require the spline to be continuous and differentiable of degree <span class="math inline">\(k-1\)</span> at the <span class="math inline">\(p-2\)</span> interior breakpoints.</li>
 <li>Imposing that uses up an additional <span class="math inline">\(k(p-2)\)</span> conditions.</li>
@@ -392,13 +392,13 @@ fig[:canvas][:draw]()</code></pre></div>
 <div class="center" style="width: auto; margin-left: auto; margin-right: auto;">
 <img src="figs/cubic-bspline.png" alt="Cubic Spline Basis of degree 3" />
 </div>
-<ul>
+<ul class="incremental">
 <li>Notice that placing each of those panels on top of each other generates a sparse matrix!</li>
 </ul>
 </div>
 <div id="b-splines-definition" class="slide section level1">
 <h1>B-Splines: Definition</h1>
-<ul>
+<ul class="incremental">
 <li>We mostly use Basis Splines, or <strong>B-Splines</strong>.</li>
 <li>Here is a recursive definition of a B-Spline (and what is used in <code>ApproXD</code>):</li>
 <li>Denote the <span class="math inline">\(j\)</span>-th basis function of degree <span class="math inline">\(k\)</span> with knot vector <span class="math inline">\(\mathbf{z}\)</span> at <span class="math inline">\(x\)</span> as <span class="math inline">\(B_j^{k,\mathbf{z}} (x)\)</span></li>
@@ -406,7 +406,7 @@ fig[:canvas][:draw]()</code></pre></div>
 <li>We can define <span class="math inline">\(B_j^{k,\mathbf{z}} (x)\)</span> recursively like this: <span class="math display">\[  B_j^{k,\mathbf{z}} (x) = \frac{x-z_{j-k}}{z_j - z_{j-k}} B_{j-1}^{k-1,\mathbf{z}} (x)  + \frac{z_{j+1}-x}{z_{j+1} - z_{j+1-k}} B_{j}^{k-1,\mathbf{z}} (x), j=1,\dots,n\]</span></li>
 </ul>
 <div class="incremental">
-<ul>
+<ul class="incremental">
 <li>The recursion starts with <span class="math display">\[ B_j^{0,\mathbf{z}} (x) = \begin{cases}
     1 &amp; \text{if }z_j \leq x &lt;  z_{j+1}\\
     0 &amp; \text{otherwise.}
@@ -423,7 +423,7 @@ fig[:canvas][:draw]()</code></pre></div>
 </div>
 <div id="b-splines-derivatives-and-integrals" class="slide section level1">
 <h1>B-Splines: Derivatives and Integrals</h1>
-<ul>
+<ul class="incremental">
 <li>This is another very nice thing about B-Splines.</li>
 <li>The derivative wrt to it's argument <span class="math inline">\(x\)</span> is <span class="math display">\[ \frac{d B_j^{k,\mathbf{z}} (x)}{dx} = \frac{k}{z_j - z_{j-k}} B_{j-1}^{k-1,\mathbf{z}} (x)  + \frac{k}{z_{j+1} - z_{j+1-k}} B_{j}^{k-1,\mathbf{z}} (x), j=1,\dots,n\]</span></li>
 <li>Similarly, the Integral is just the sum over the basis functions: <span class="math display">\[ \int_a^x B_j^{k,\mathbf{z}} (y) dy = \sum_{i=j}^n \frac{z_i - z_{i-k}}{k} B_{i+1}^{k+1,\mathbf{z}} (x)  \]</span></li>
@@ -431,17 +431,17 @@ fig[:canvas][:draw]()</code></pre></div>
 </div>
 <div id="linear-b-spline-a-useful-special-case" class="slide section level1">
 <h1>Linear B-Spline: A useful special case</h1>
-<ul>
+<ul class="incremental">
 <li>This is <em>connecting the dots with a straight line</em></li>
 <li>This may incur some approximation error if the underlying function is very curved between the dots.</li>
 <li>However, it has some benefits:
-<ul>
+<ul class="incremental">
 <li>it is shape-preserving,</li>
 <li>it is fast,</li>
 <li>it is easy to build.</li>
 </ul></li>
 <li>For a linear spline with evenly spaced breakpoints, this becomes almost trivial.
-<ul>
+<ul class="incremental">
 <li>Let's define <span class="math inline">\(h = \frac{b-a}{n-1}\)</span> as the distance between breakpoints.</li>
 <li>Our basis function becomes very simple, giving us a measure of how far <span class="math inline">\(x\)</span> is from the next knot: <span class="math display">\[ \phi_j (x) = \begin{cases}
     1 - \frac{|x-z_j|}{h} &amp; \text{if } |x-z_j| \leq h \\
@@ -480,7 +480,7 @@ fig[:canvas][:draw]()</code></pre></div>
 </div>
 <div id="linear-b-spline-evaluation" class="slide section level1">
 <h1>Linear B-Spline: Evaluation</h1>
-<ul>
+<ul class="incremental">
 <li>In order to evaluate the linear interpolator, we need to know only one thing: Which knot span is active, i.e. what is <span class="math inline">\(j\)</span> s.t. <span class="math inline">\(x\in [z_j, z_{j+1}]\)</span>?</li>
 <li>This is a classic problem in computer science. Binary search.</li>
 <li><code>julia</code> implements <a href="http://docs.julialang.org/en/release-0.4/stdlib/sort/#Base.searchsortedlast"><code>searchsortedlast</code></a>.</li>
@@ -489,7 +489,7 @@ fig[:canvas][:draw]()</code></pre></div>
 </div>
 <div id="the-importance-of-knot-placement" class="slide section level1">
 <h1>The Importance of Knot Placement</h1>
-<ul>
+<ul class="incremental">
 <li>We just talked about <em>equally spaced knots</em>. This is just a special case.</li>
 <li>B-Splines give us the flexibility to place the knots where we want.</li>
 <li>Contrary to Polynomial interpolations (where we cannot choose the evaluation nodes), this is very helpful in cases where we know that a function is very curved in a particular region.</li>
@@ -499,22 +499,22 @@ fig[:canvas][:draw]()</code></pre></div>
 </div>
 <div id="b-spline-approximation-with-interpolations.jl" class="slide section level1">
 <h1>B-Spline Approximation with <a href="https://github.com/tlycken/Interpolations.jl"><code>Interpolations.jl</code></a></h1>
-<ul>
+<ul class="incremental">
 <li>Let's go the readme page and give it a look!</li>
 </ul>
 </div>
 <div id="the-compecon-toolbox-of-miranda-and-fackler" class="slide section level1">
 <h1>The CompEcon Toolbox of Miranda and Fackler</h1>
-<ul>
+<ul class="incremental">
 <li><a href="https://github.com/spencerlyon2/CompEcon.jl">CompEcon.jl</a></li>
 </ul>
 </div>
 <div id="mulitidimensional-approximation" class="slide section level1">
 <h1>Mulitidimensional Approximation</h1>
-<ul>
+<ul class="incremental">
 <li>Up to now, everything we did was in one dimesion.</li>
 <li>Economic problems <em>often</em> have more dimension than that.
-<ul>
+<ul class="incremental">
 <li>The number of state variables in your value functions are the number of dimensions.</li>
 </ul></li>
 <li>We can readily extend what we learned into more dimensions.</li>
@@ -523,9 +523,9 @@ fig[:canvas][:draw]()</code></pre></div>
 </div>
 <div id="tensor-product-of-univariate-basis-functions-product-rule" class="slide section level1">
 <h1>Tensor Product of univariate Basis Functions: Product Rule</h1>
-<ul>
+<ul class="incremental">
 <li>One possibility is to approximate e.g. the 2D function <span class="math inline">\(f(x,y)\)</span> by <span class="math display">\[ \hat{f}(x,y) = \sum_{i=1}^n \sum_{j=1}^m c_{i,j} \phi_i^x(x) \phi_j^y(y)  \]</span>
-<ul>
+<ul class="incremental">
 <li>here <span class="math inline">\(\phi_i^x\)</span> is the basis function in <span class="math inline">\(x\)</span> space,</li>
 <li>you can see that the coefficient vector <span class="math inline">\(c_{i,j}\)</span> is indexed in two dimensions now.</li>
 <li>Notice that our initial notation was general enough to encompass this case, as we defined the basis functions as <span class="math inline">\(\mathbb{R}^d \mapsto \mathbb{R}\)</span>. So with the product rule, this mapping is just given by <span class="math inline">\(\phi_i^x(x) \phi_j^y(y)\)</span>.</li>
@@ -534,7 +534,7 @@ fig[:canvas][:draw]()</code></pre></div>
 <li>This is equivalent to the tensor product between <span class="math inline">\(\phi_i^x\)</span> and <span class="math inline">\(\phi_j^y\)</span>.</li>
 </ul>
 <h2 id="compute-c">Computing Coefficients from Tensor Product Spaces</h2>
-<ul>
+<ul class="incremental">
 <li>Extending this into <span class="math inline">\(D\)</span> dimensions, where in each dim <span class="math inline">\(i\)</span> we have <span class="math inline">\(n_i\)</span> basis functions, we get <span class="math display">\[ \hat{f}(x_1,x_2,\dots,x_D) = \sum_{i_1=1}^{n_1} \sum_{i_2=1}^{n_2} \dots  \sum_{i_D=1}^{n_D} c_{i_1,i_2,\dots,i_D} \phi_{i_1}(x_1) \phi_{i_2}(x_2) \dots \phi_{i_D}(x_D)  \]</span></li>
 <li>In Vector notation <span class="math display">\[ 
 \hat{f}(x_1,x_2,\dots,x_D) =  \left[ \phi_{D}(x_D) \otimes \phi_{D-1}(x_{D-1})  \otimes \dots  \otimes  \phi_{1}(x_1) \right]  c \]</span> where <span class="math inline">\(c\)</span> is is an <span class="math inline">\(n=\Pi_{i=1}^D n_i\)</span> column vector</li>
@@ -544,7 +544,7 @@ fig[:canvas][:draw]()</code></pre></div>
 </div>
 <div id="the-problem-with-tensor-product-of-univariate-basis-functions" class="slide section level1">
 <h1>The Problem with Tensor Product of univariate Basis Functions</h1>
-<ul>
+<ul class="incremental">
 <li>What's the problem?</li>
 <li>Well, solving <span class="math inline">\(\Phi c = y\)</span> is hard.</li>
 <li>If we have as many evaluation points as basis functions in each dimension, i.e. if each single <span class="math inline">\(\Phi_i\)</span> is a square matrix, <span class="math inline">\(\Phi\)</span> is of size (n,n).</li>
@@ -564,11 +564,11 @@ fig[:canvas][:draw]()</code></pre></div>
 <div class="center" style="width: auto; margin-left: auto; margin-right: auto;">
 <img src="figs/spline-basis-sparse.png" alt="BSpline basis functions are sparse." />
 </div>
-<ul>
+<ul class="incremental">
 <li>Blue is zero.</li>
 <li>the y axis lists 500 equispaced points in [0,1]</li>
 <li>the x axis shows the value of all basis functions
-<ul>
+<ul class="incremental">
 <li>i.e. each row is all basis functions evaluated at <span class="math inline">\(x_i\)</span></li>
 </ul></li>
 <li>This is a cubic spline basis. at most <span class="math inline">\(k+1=3\)</span> basis are non-zero for any <span class="math inline">\(x\)</span>.</li>
@@ -576,7 +576,7 @@ fig[:canvas][:draw]()</code></pre></div>
 </div>
 <div id="using-sparsity-of-splines" class="slide section level1">
 <h1>Using Sparsity of Splines</h1>
-<ul>
+<ul class="incremental">
 <li>It may be better to store the splines in sparse format.</li>
 <li>Look at object <code>B</code> by typing <code>B</code> and <code>typeof(B)</code></li>
 <li>There are sparse system solvers available.</li>
@@ -591,7 +591,7 @@ fig[:canvas][:draw]()</code></pre></div>
 </div>
 <div id="high-dimensional-functions-introducing-the-smolyak-grid" class="slide section level1">
 <h1>High Dimensional Functions: Introducing the Smolyak Grid</h1>
-<ul>
+<ul class="incremental">
 <li>This is a modification of the Tensor product rule.</li>
 <li>It elemininates points from the full tensor product according to their <em>importance</em> for the quality of approximation.</li>
 <li>The user controls this quality parameter, thereby increasing/decreasing the size of the grid.</li>
@@ -601,7 +601,7 @@ fig[:canvas][:draw]()</code></pre></div>
 </div>
 <div id="the-smolyak-grid-in-2-dimensions" class="slide section level1">
 <h1>The Smolyak Grid in 2 Dimensions</h1>
-<ul>
+<ul class="incremental">
 <li>Approximation level <span class="math inline">\(\mu \in \mathbb{N}\)</span> governs the quality of the approximation.</li>
 <li>Start with a unidimensional grid of points <span class="math inline">\(x\)</span>: <span class="math display">\[ x = \left\{-1,\frac{-1}{\sqrt{2}},0,\frac{1}{\sqrt{2}},1\right\} \]</span> which are 5 Chebyshev nodes (it's not important that those are Chebyshev nodes, any grid will work).</li>
 <li>A 2D tensor product <span class="math inline">\(x\otimes x\)</span> gives 25 grid points <span class="math display">\[ x\otimes x=\left\{(-1,-1),(-1,\frac{-1}{\sqrt{2}}),\dots,(1,1)\right\} \]</span></li>
@@ -621,20 +621,20 @@ fig[:canvas][:draw]()</code></pre></div>
 <p class="caption"><span class="citation">(Maliar and Maliar 2013)</span> table 3: All Tensor Products</p>
 </div>
 <h2 id="selecting-elements">Selecting Elements</h2>
-<ul>
+<ul class="incremental">
 <li>Denote the Smolyak grid for <span class="math inline">\(d\)</span> dimensions at level <span class="math inline">\(\mu\)</span> by <span class="math inline">\(\mathcal{H}^{d,\mu}\)</span>.</li>
 <li>if <span class="math inline">\(\mu=0\)</span> we have <span class="math inline">\(i_1+i_2\leq 2\)</span>. Only one point satisfies this, and <span class="math display">\[ \mathcal{H}^{2,0} = \{(0,0)\} \]</span></li>
 <li>if <span class="math inline">\(\mu=1\)</span> we have <span class="math inline">\(i_1+i_2\leq 3\)</span>. Three cases satisfy this:
-<ol style="list-style-type: decimal">
+<ol class="incremental" style="list-style-type: decimal">
 <li><span class="math inline">\(i_1 = 1, i_2=1 \rightarrow (0,0)\)</span></li>
 <li><span class="math inline">\(i_1 = 1, i_2=2 \rightarrow (0,0),(0,-1),(0,1)\)</span></li>
 <li><span class="math inline">\(i_1 = 2, i_2=1 \rightarrow (0,0),(-1,0),(1,0)\)</span></li>
 </ol>
-<ul>
+<ul class="incremental">
 <li>Therefore, the unique elements from the union of all of those is <span class="math display">\[ \mathcal{H}^{2,1} = \{(0,0),(-1,0),(1,0),(0,-1),(0,1)\} \]</span></li>
 </ul></li>
 <li>if <span class="math inline">\(\mu=2\)</span> we have <span class="math inline">\(i_1+i_2\leq 4\)</span>. Six cases satisfy this:
-<ol style="list-style-type: decimal">
+<ol class="incremental" style="list-style-type: decimal">
 <li><span class="math inline">\(i_1 = 1, i_2=1\)</span></li>
 <li><span class="math inline">\(i_1 = 1, i_2=2\)</span></li>
 <li><span class="math inline">\(i_1 = 2, i_2=1\)</span></li>
@@ -642,7 +642,7 @@ fig[:canvas][:draw]()</code></pre></div>
 <li><span class="math inline">\(i_1 = 2, i_2=2\)</span></li>
 <li><span class="math inline">\(i_1 = 3, i_2=1\)</span></li>
 </ol>
-<ul>
+<ul class="incremental">
 <li>Therefore, the unique elements from the union of all of those is <span class="math display">\[ \mathcal{H}^{2,2} = \left\{(-1,1),(0,1),(1,1),(-1,0),(0,0),(1,0),(-1,-1),(0,-1),(1,-1),\left(\frac{-1}{\sqrt{2}},0\right),\left(\frac{1}{\sqrt{2}},0\right),\left(0,\frac{-1}{\sqrt{2}}\right),\left(0,\frac{1}{\sqrt{2}}\right)\right\} \]</span></li>
 </ul></li>
 <li>Note that those elements are on the diagonal from top left to bottom right expanding through all the tensor products on table 3.</li>
@@ -650,7 +650,7 @@ fig[:canvas][:draw]()</code></pre></div>
 </div>
 <div id="size-of-smolyak-grids" class="slide section level1">
 <h1>Size of Smolyak Grids</h1>
-<ul>
+<ul class="incremental">
 <li>The Smolyak grid grows much slower (at order <span class="math inline">\(d\)</span> to a power of <span class="math inline">\(\mu\)</span>) than the Tensor grid (exponential growth)</li>
 </ul>
 <div class="figure">
@@ -664,7 +664,7 @@ fig[:canvas][:draw]()</code></pre></div>
 </div>
 <div id="smolyak-polynomials" class="slide section level1">
 <h1>Smolyak Polynomials</h1>
-<ul>
+<ul class="incremental">
 <li>Corresponding to the construction of grid points, there is the Smolyak way of constructing polynomials.</li>
 <li>This works exactly as before. We start with a one-dimensional set of basis functions (again Chebyshev here, again irrelevant): <span class="math display">\[ \left\{1,x,2x^2-1,4x^3-3x,8x^4-8x^2+1\right\} \]</span></li>
 <li>Three nested sets: <span class="math display">\[ \begin{array}{l}
@@ -681,22 +681,22 @@ fig[:canvas][:draw]()</code></pre></div>
 <div id="smolyak-interpolation" class="slide section level1">
 <h1>Smolyak Interpolation</h1>
 <p>This proceeds as in the previouses cases:</p>
-<ol style="list-style-type: decimal">
+<ol class="incremental" style="list-style-type: decimal">
 <li>Evaluate <span class="math inline">\(f\)</span> at all grid points <span class="math inline">\(\mathcal{H}^{d,\mu}\)</span>.</li>
 <li>Evaluate the set of basis functions given by <span class="math inline">\(\mathcal{P}^{d,\mu}\)</span>f$ at all grid points <span class="math inline">\(\mathcal{H}^{d,\mu}\)</span>.</li>
 <li>Solve for the interpolating coefficients by inverting the Basis function matrix.</li>
 </ol>
 <h2 id="extensions">Extensions</h2>
-<ul>
+<ul class="incremental">
 <li>There is a lot of redundancy in computing the grids the way we did it.</li>
 <li>More sophisticated approaches take care not to compute repeated elements.</li>
 </ul>
 </div>
 <div id="smolyak-grids-in-julia" class="slide section level1">
 <h1>Smolyak Grids in Julia</h1>
-<ul>
+<ul class="incremental">
 <li>There are at least 2 julia packages that implement this idea:
-<ul>
+<ul class="incremental">
 <li><a href="https://github.com/EconForge/Smolyak" class="uri">https://github.com/EconForge/Smolyak</a></li>
 <li><a href="https://github.com/alancrawford/Smolyak" class="uri">https://github.com/alancrawford/Smolyak</a></li>
 </ul></li>
@@ -748,7 +748,7 @@ fig[:canvas][:draw]()</code></pre></div>
 <div class="slide section level1">
 
 <h2 id="bibliography">Bibliography</h2>
-<ul>
+<ul class="incremental">
 <li><span class="citation">(Fackler and Miranda 2004)</span> is the main reference for this lecture.</li>
 <li><span class="citation">(Kenneth L. Judd 1998)</span> is the classic reference. A bit more difficult.</li>
 <li><span class="citation">(Aruoba and Fernandez-Villaverde 2014)</span> gives an overview over computing languages widely used in Economics.</li>

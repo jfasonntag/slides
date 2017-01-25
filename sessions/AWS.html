@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; background-color: #dddddd; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { font-weight: bold; } /* Keyword */
+code > span.dt { color: #800000; } /* DataType */
+code > span.dv { color: #0000ff; } /* DecVal */
+code > span.bn { color: #0000ff; } /* BaseN */
+code > span.fl { color: #800080; } /* Float */
+code > span.ch { color: #ff00ff; } /* Char */
+code > span.st { color: #dd0000; } /* String */
+code > span.co { color: #808080; font-style: italic; } /* Comment */
+code > span.al { color: #00ff00; font-weight: bold; } /* Alert */
+code > span.fu { color: #000080; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #ff0000; font-weight: bold; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #ff00ff; } /* SpecialChar */
+code > span.vs { color: #dd0000; } /* VerbatimString */
+code > span.ss { color: #dd0000; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { } /* Variable */
+code > span.cf { } /* ControlFlow */
+code > span.op { } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { font-weight: bold; } /* Preprocessor */
+code > span.at { } /* Attribute */
+code > span.do { color: #808080; font-style: italic; } /* Documentation */
+code > span.an { color: #808080; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #808080; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #808080; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" type="text/css" media="screen, projection, print"
+    href="http://www.w3.org/Talks/Tools/Slidy2/styles/slidy.css" />
+  <script src="http://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js"
+    charset="utf-8" type="text/javascript"></script>
+</head>
+<body>
+<div id="amazon-web-services-cloud-computing" class="slide section level1">
+<h1>Amazon Web Services Cloud Computing</h1>
+<ul class="incremental">
+<li>In this session we will work with the <a href="https://aws.amazon.com">Amazon Web Services (AWS)</a> Elastic Cloud (EC2) virtual servers.</li>
+<li>The aim will be for you to be able to launch a <strong>general purpose cluster</strong> on AWS.
+<ul class="incremental">
+<li>By this I mean a cluster for any kind of suitable parallel computing task: R, python, julia, C++, fortran.</li>
+<li>You could even dream of setting up a cluster for matlab or stata. however, you will need to buy a license for each compute node you want to launch.
+<ul class="incremental">
+<li>Here is the place where using proprietary software stops being fun.</li>
+</ul></li>
+</ul></li>
+<li>Julia has a very nice way to launch a cluster on AWS <strong>directly from your computer</strong>, with the help of the great <a href="https://github.com/JuliaParallel/AWS.jl">ASW.jl</a> package.</li>
+<li>However, for many other applications, and to manage large julia jobs as well, it is good to know how to work with AWS.</li>
+</ul>
+<h2 id="prerequisites-for-this-session">Prerequisites For This Session</h2>
+<p><strong>Before</strong> you come to class:</p>
+<ol class="incremental" style="list-style-type: decimal">
+<li>get an account on AWS
+<ol class="incremental" style="list-style-type: decimal">
+<li>go to <a href="https://aws.amazon.com/console/" class="uri">https://aws.amazon.com/console/</a></li>
+<li>sign-in or create a new amazon web services account</li>
+</ol></li>
+<li>Windows users: get PuTTY
+<ol class="incremental" style="list-style-type: decimal">
+<li>user guide for connecting to <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/putty.html">aws for windows users</a></li>
+<li>I won't be able to spend a lot of time helping windows user to get set up. I recommend you have a look at this document before coming.</li>
+<li>You won't connect to AWS via PuTTY in the end if all goes according to plan.</li>
+</ol></li>
+<li>you need <strong>python</strong>
+<ol class="incremental" style="list-style-type: decimal">
+<li>mac os el capitan/yosemite: built-in python is not working.
+<ul class="incremental">
+<li>need more complete version from homebrew</li>
+<li>get homebrew if you don't have it</li>
+<li>do <code>brew install python</code></li>
+<li>(optional) install amazon command line interface (AWS CLI) via <code>pip install awscli</code></li>
+</ul></li>
+<li>windows: get <a href="https://www.continuum.io/downloads">anaconda python</a>
+<ul class="incremental">
+<li>(optional) install AWS CLI via installer at <a href="https://aws.amazon.com/cli/" class="uri">https://aws.amazon.com/cli/</a></li>
+</ul></li>
+</ol></li>
+<li>you need <strong>starcluster</strong>
+<ul class="incremental">
+<li>now that you have python, do <code>easy_install starcluster</code> on your command line</li>
+<li>we will edit this file together in class.</li>
+</ul></li>
+</ol>
+<h2 id="caution-financial-costs">CAUTION: Financial Costs!</h2>
+<ul class="incremental">
+<li>AWS is a pay as you go system.</li>
+<li>There is a free-tier arrangement under which you can use the service without having to pay for it.</li>
+<li>However, this is subject to some restrictions. Once you exceed the limits, you will be charged.</li>
+<li>It is <strong>very important</strong> that you go to your amazon AWS console and have a close eye on your Billing Status (top right, click on your name)</li>
+<li>Inside Billing Status there is an <em>estimated cost of your free tier usage</em>. you can see how much of your free time and resources you have used up already in the current month.</li>
+<li><strong>Danger</strong>: You are charged for volumnes (i.e. hard disks) that are kept available for you. reduce the number of active volumes and snapshots in your aws console to a minimum.
+<ul class="incremental">
+<li><em>terminating</em> an instance instead of just <em>stopping</em> it automatically detaches a volume and therefore prevents this problem.</li>
+</ul></li>
+</ul>
+</div>
+<div id="in-class" class="slide section level1">
+<h1>In Class</h1>
+<h2 id="what-is-aws-ec2">What is <a href="https://aws.amazon.com/ec2/">AWS EC2</a>?</h2>
+<ul class="incremental">
+<li>A cloud computing service.</li>
+<li>It's an on-demand system: you pay what you use.</li>
+<li>The price varies according to demand at any given time.</li>
+<li>There is a <strong>free usage tier</strong>, which we will be using: your first year is for free (on certain machine types).</li>
+<li>machine = <strong>instance</strong></li>
+<li>You can pre-pay and thus reserve some instances, but that's more expensive</li>
+<li>You can say you only want to launch the instance at a certain unit price (it varies, remember)</li>
+</ul>
+<h3 id="what-could-it-cost">What could it cost?</h3>
+<ul class="incremental">
+<li>There is a very <a href="http://s3.amazonaws.com/calculator/index.html">easy-to-use calculator</a>.</li>
+<li>Here is <a href="http://s3.amazonaws.com/calculator/index.html#r=IAD&amp;s=EC2&amp;key=calc-BAFF4EDF-DB58-473D-9C94-4B0D02F3B72F">an example configuration</a></li>
+<li>There are research grants.</li>
+</ul>
+<h2 id="setup-in-class">Setup in Class</h2>
+<p>The aim here is to show you how to set up a general purpose compute cluster on AWS Elastic Compute 2 (AWS EC2). We will use starcluster to help us interact with our clusters. First, we need to enter your security credentials into the config of starcluster, that you created already.</p>
+<h3 id="amazon-credentials">amazon credentials?</h3>
+<ul class="incremental">
+<li>You connect to AWS via ssh.</li>
+<li>ssh is based on a key-pair system: there is a unique key that fits into a unique <em>lock</em> (it's not called lock in reality). We have to create such a key-pair for you.</li>
+</ul>
+<h4 id="setting-up-an-aws-user-identity-access-management-iam">Setting up an AWS user: Identity Access Management (IAM)</h4>
+<ul class="incremental">
+<li>go to the <a href="https://aws.amazon.com/console/">AWS console</a></li>
+<li>click on your name, security credentials</li>
+<li>in the popup, click on <strong>get started with IAM Users</strong></li>
+<li><strong>create new users</strong></li>
+<li>choose a user name for yourself</li>
+<li>keep tick box ticked.</li>
+<li><strong>create</strong></li>
+<li>you <strong>now for the last and only time</strong> able to download the security credentials for this user: Do it, and save to a secure place on your computer.</li>
+</ul>
+<h4 id="creating-an-ssh-keypair-for-your-user">creating an SSH keypair for your user</h4>
+<ul class="incremental">
+<li>go to the <a href="https://console.aws.amazon.com/ec2/">AWS Console</a></li>
+<li>top right, select the region through which you want to connect to AWS. I choose US East in Virginia.
+<ul class="incremental">
+<li>the region you choose has impacts on which kind of <em>machine images</em> (more below) that are available to you.</li>
+</ul></li>
+<li>click on <strong>key pairs</strong></li>
+<li>create new key pair</li>
+<li>give it a name (i called mine <em>us-east-virginia</em>), and download</li>
+<li>save in a location that you will remember. Standard for *nix users is <code>~/.ssh/us-east-virginia.pem</code></li>
+</ul>
+<h4 id="add-user-to-a-group">add user to a group</h4>
+<ul class="incremental">
+<li>create a new group</li>
+<li>give it administrator rights</li>
+</ul>
+<h3 id="amazon-machine-images-ami">Amazon Machine Images (AMI)</h3>
+<ul class="incremental">
+<li>Go to console and click on launch an instance</li>
+<li>Base instances have just a minimal set of software installed</li>
+<li>we don't have to pay each time we connect for the time it takes to install all of our software</li>
+<li>ideally, we do that once, and that create a <em>new</em> AMI from the machine we installed our software on</li>
+<li>I created such an AMI for you. It has R, julia, python and some basic development tools (gnu compiler collection and cmake)</li>
+<li>There is an AMI marketplace where you can find (for free or for a charge) other people's AMIs.</li>
+</ul>
+<h3 id="volumes">Volumes</h3>
+<ul class="incremental">
+<li>You probably will want to store data on the cluster, either as input or output</li>
+<li>similarly: you may want to install add-on software (R, python and julia packages for example)</li>
+<li>Whatever you store on the disk of your AMI instance will be lost when you end the session
+<ul class="incremental">
+<li>that is, the AMI stays exactly the same to the moment you created it</li>
+<li>everything else that you add to it during a session will be lost</li>
+</ul></li>
+<li>One solution are <strong>Volumes</strong></li>
+<li>Think that you get your own hard disk drive from AWS, and everytime you start a cluster, you would bring the disk, and they will plug into the cluster</li>
+<li>this way you could add data each time you use the cluster, and use it again the next time.</li>
+</ul>
+<h4 id="attach-volume-to-the-provided-ami">Attach Volume to the provided AMI</h4>
+<ul class="incremental">
+<li>The AMI I created for you has 2 links for a volume to be attached</li>
+<li>one for R libraries and one for julia packages</li>
+<li>The volume needs to be mounted as <code>/data</code>. more below.</li>
+</ul>
+<h2 id="starcluster">Starcluster</h2>
+<ul class="incremental">
+<li>Starcluster helps us with all of those tasks</li>
+</ul>
+<h3 id="steps">Steps</h3>
+<ul class="incremental">
+<li>create star cluster sample config: type <code>star cluster help</code></li>
+</ul>
+<h3 id="put-credentials-into-star-cluster-config">Put Credentials into star cluster config</h3>
+<ul class="incremental">
+<li>open <code>~/.starcluster/config</code> in a text editor</li>
+<li>from your downloaded credentials file, add access information</li>
+<li>set region to</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode makefile"><code class="sourceCode makefile"><span class="dt">AWS_REGION_NAME </span><span class="ch">=</span><span class="st"> us-east-1</span>
+<span class="dt">AWS_REGION_HOST </span><span class="ch">=</span><span class="st"> ec2.us-east-1.amazonaws.com</span></code></pre></div>
+<ul class="incremental">
+<li>define keypair to use</li>
+<li>select AMI ami-e2c8de88
+<ul class="incremental">
+<li>Amazon Machine Image (AMI): a certain type of <em>computer</em>, i.e. OS, pre-installed software, etc.</li>
+<li>The machines are pretty much empty, so you would have to install all of your software each time before actually starting to work</li>
+<li>AMIs prevent you from having to do that.</li>
+</ul></li>
+</ul>
+<h2 id="run-starcluster">Run <code>starcluster</code></h2>
+<ul class="incremental">
+<li>do <code>start starcluster myfirst</code> where <code>myfirst</code> is the name of the cluster you want to create</li>
+<li>this will uses your default cluster template from the config</li>
+<li>after it's done, you can connect to the master node with <code>starcluster sshmaster myfirst</code></li>
+<li>to stop, do <code>starcluster stop myfirst</code></li>
+</ul>
+</div>
+</body>
+</html>

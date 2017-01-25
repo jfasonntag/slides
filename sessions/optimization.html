@@ -61,7 +61,7 @@ Florian Oswald
 </div>
 <div id="some-taxonomy-and-initial-examples" class="slide section level1">
 <h1>Some Taxonomy and Initial Examples</h1>
-<ul>
+<ul class="incremental">
 <li>In most of the examples to follow, we talk about <em>minimization</em> of a function <span class="math inline">\(f\)</span>. Everything we do also applies to maximization, since <span class="math inline">\(\min_x f(x) = \max_x -f(x)\)</span>.</li>
 <li><p>Here is a generic optimization problem: <span class="math display">\[ \min_{x\in\mathbb{R}^n} f(x)  \quad  s.t.\quad \begin{array} c_i(x) = 0, &amp; i\in E \\
                                                           c_i(x) \geq 0, &amp; i\in I \end{array}
@@ -79,9 +79,9 @@ Florian Oswald
 </div>
 <div id="kinds-of-problems-considered" class="slide section level1">
 <h1>Kinds of problems considered</h1>
-<ul>
+<ul class="incremental">
 <li>Don't talk about stochastic optimization methods:
-<ul>
+<ul class="incremental">
 <li>Simluated Annealing</li>
 <li>MCMC</li>
 <li>other Stochastic Search Methods</li>
@@ -99,7 +99,7 @@ Florian Oswald
 <p class="caption">Figure 1.2 in <span class="citation">(Nocedal and Wright 2006)</span></p>
 </div>
 <div class="incremental">
-<ul>
+<ul class="incremental">
 <li><p>A mathematical formulation of this problem is <span class="math display">\[ \begin{align}
     \min \sum_{ij} c_{ij} x_{ij} \\
     \text{subject to} \sum_{j=1}^{12} x_{ij} \leq a_i,\quad i=1,2 \\
@@ -114,7 +114,7 @@ Florian Oswald
 </div>
 <div id="constrained-vs-unconstrained" class="slide section level1">
 <h1>Constrained vs Unconstrained</h1>
-<ul>
+<ul class="incremental">
 <li>There are many applications of both in economics.</li>
 <li>Unconstrained: maximimum likelihood</li>
 <li>Constrained: MPEC</li>
@@ -123,17 +123,17 @@ Florian Oswald
 </div>
 <div id="convexity" class="slide section level1">
 <h1>Convexity</h1>
-<ul>
+<ul class="incremental">
 <li>Convex problems are easier to solve.</li>
 <li>What is convex?</li>
 </ul>
 <blockquote>
 <p>A set <span class="math inline">\(S\in\mathbb{R}^n\)</span> is convex if the straight line segment connecting any two points in <span class="math inline">\(S\)</span> lies entirely inside <span class="math inline">\(S\)</span>. A function <span class="math inline">\(f\)</span> is a convex function, if its domain <span class="math inline">\(S\)</span> is a convex set, and for any two points <span class="math inline">\(x,y \in S\)</span>, we have that <span class="math display">\[ f(\alpha x + (1-\alpha)y) \leq \alpha f(x) + (1-\alpha) f(y) \]</span> for all <span class="math inline">\(\alpha \in [0,1]\)</span></p>
 </blockquote>
-<ul>
+<ul class="incremental">
 <li>Simple instances of convex sets are the unit ball <span class="math inline">\(\{y \in \mathbb{R}^n, \Vert y\Vert_2 \leq 1\}\)</span>, and any set defined by linear equalities and inequalities.</li>
 <li><em>convex Programming</em> describes a special case of the introductory minimizatin problem where
-<ul>
+<ul class="incremental">
 <li>the objective function is convex,</li>
 <li>the equality constrains are linear, and</li>
 <li>the inequality constraints are concave.</li>
@@ -142,11 +142,11 @@ Florian Oswald
 </div>
 <div id="optimization-algorithms" class="slide section level1">
 <h1>Optimization Algorithms</h1>
-<ul>
+<ul class="incremental">
 <li>All of the algorithms we are going to see employ some kind of <em>iterative</em> proceedure.</li>
 <li>They try to improve the value of the objective function over successive steps.</li>
 <li>The way the algorithm goes about generating the next step is what distinguishes algorithms from one another.
-<ul>
+<ul class="incremental">
 <li>Some algos only use the objective function</li>
 <li>Some use both objective and gradients</li>
 <li>Some add the Hessian</li>
@@ -155,16 +155,16 @@ Florian Oswald
 </ul>
 <div class="incremental">
 <h2 id="desirable-features-of-any-algorithm">Desirable Features of any Algorithm</h2>
-<ul>
+<ul class="incremental">
 <li>Robustness: We want good performance on a wide variety of problems in their class, and starting from <em>all</em> reasonable starting points.</li>
 <li>Efficiency: They should be fast and not use an excessive amount of memory.</li>
 <li>Accuracy: They should identify the solution with high precision.</li>
 </ul>
 <h2 id="a-word-of-caution">A Word of Caution</h2>
-<ul>
+<ul class="incremental">
 <li>You should <strong>not</strong> normally attempt to write a numerical optimizer for yourself.</li>
 <li>Entire generations of Applied Mathematicians and other numerical pro's have worked on those topics before you, so you should use their work.
-<ul>
+<ul class="incremental">
 <li>Any optimizer you could come up with is probably going to perform below par, and be highly likely to contain mistakes.</li>
 <li>Don't reinvent the wheel.</li>
 </ul></li>
@@ -174,7 +174,7 @@ Florian Oswald
 </div>
 <div id="unconstrained-optimization-what-is-a-solution" class="slide section level1">
 <h1>Unconstrained Optimization: What is a solution?</h1>
-<ul>
+<ul class="incremental">
 <li>A typical unconstrained optimization problem will look something like this: <span class="math display">\[ \min_x f(x),\quad x\in \mathbb{R}^n \]</span> and where <span class="math inline">\(f : \mathbb{R}^n \mapsto \mathbb{R}\)</span> is a smooth function.</li>
 <li>In general, we would always like to find a <em>global</em> minimizer, i.e.
 <div class="center" style="width: auto; margin-left: auto; margin-right: auto;">
@@ -194,9 +194,9 @@ a point <span class="math inline">\(x^*\)</span> where <span class="math inline"
 </div>
 <div id="unconstrained-optimization-in-julia" class="slide section level1">
 <h1>(Unconstrained) Optimization in <code>Julia</code></h1>
-<ul>
+<ul class="incremental">
 <li>Umbrella Organisation: <a href="http://www.juliaopt.org"><code>http://www.juliaopt.org</code></a>
-<ul>
+<ul class="incremental">
 <li>We will make ample use of this when we talk about constrained optimsation.</li>
 <li>The Julia Interface to the very well established <a href="http://ab-initio.mit.edu/wiki/index.php/NLopt">C-Library NLopt</a> is called <a href="https://github.com/JuliaOpt/NLopt.jl"><code>NLopt.jl</code></a>. One could use <code>NLopt</code> without constraints in an unconstrained problem.</li>
 </ul></li>
@@ -206,9 +206,9 @@ a point <span class="math inline">\(x^*\)</span> where <span class="math inline"
 </div>
 <div id="introducing-optim.jl" class="slide section level1">
 <h1>Introducing <a href="https://github.com/JuliaOpt/Optim.jl"><code>Optim.jl</code></a></h1>
-<ul>
+<ul class="incremental">
 <li>Multipurpose unconstrained optimization package
-<ul>
+<ul class="incremental">
 <li>provides 8 different algorithms</li>
 <li>univariate optimization without derivatives</li>
 </ul></li>
@@ -220,14 +220,14 @@ a point <span class="math inline">\(x^*\)</span> where <span class="math inline"
 <p class="caption">Banana for <span class="math inline">\(a = 0\)</span>. By Gaortizg <a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a> or <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>, via Wikimedia Commons</p>
 </div>
 <h3 id="what-is-the-minimum-of-that-function">What is the minimum of that function?</h3>
-<ul>
+<ul class="incremental">
 <li>For <span class="math inline">\(a=1,b=100\)</span>, what is the global minimum of that function?</li>
 <li>What are the inputs one needs to supply to an algorithm in a more general example?</li>
 </ul>
 </div>
 <div id="rosenbrock-banana-and-optim.jl" class="slide section level1">
 <h1>Rosenbrock Banana and Optim.jl</h1>
-<ul>
+<ul class="incremental">
 <li>We will use <code>Optim</code> for the rest of this lecture.</li>
 <li>We need to supply the objective function and - depending on the solution algorithm - the gradient and hessian as well.</li>
 </ul>
@@ -249,11 +249,11 @@ a point <span class="math inline">\(x^*\)</span> where <span class="math inline"
 </div>
 <div id="comparison-methods" class="slide section level1">
 <h1>Comparison Methods</h1>
-<ul>
+<ul class="incremental">
 <li>We will now look at a first class of algorithms, which are very simple, but sometimes a good starting point.</li>
 <li>They just <em>compare</em> function values.</li>
 <li><em>Grid Search</em> : Compute the objective function at <span class="math inline">\(G=\{x_1,\dots,x_N\}\)</span> and pick the highest value of <span class="math inline">\(f\)</span>.
-<ul>
+<ul class="incremental">
 <li>This is very slow.</li>
 <li>It requires large <span class="math inline">\(N\)</span>.</li>
 <li>But it's robust (will find global optimizer for large enough <span class="math inline">\(N\)</span>)</li>
@@ -270,13 +270,13 @@ println(<span class="st">&quot;grid search results in minimizer = $(grid2D[r[2]]
 </div>
 <div id="the-golden-ratio-or-bracketing-search-for-1d-problems" class="slide section level1">
 <h1>The Golden Ratio or Bracketing Search for 1D problems</h1>
-<ul>
+<ul class="incremental">
 <li>A derivative-free method</li>
 <li>a Bracketing method
-<ul>
+<ul class="incremental">
 <li>find the local minimum of <span class="math inline">\(f\)</span> on <span class="math inline">\([a,b]\)</span></li>
 <li>select 2 interior points <span class="math inline">\(c,d\)</span> such that <span class="math inline">\(a&lt;c&lt;d&lt;b\)</span>
-<ul>
+<ul class="incremental">
 <li><span class="math inline">\(f(c) \leq f(d) \implies\)</span> min must lie in <span class="math inline">\([a,d]\)</span>. replace <span class="math inline">\(b\)</span> with <span class="math inline">\(d\)</span>, start again with <span class="math inline">\([a,d]\)</span></li>
 <li><span class="math inline">\(f(c) &gt; f(d) \implies\)</span> min must lie in <span class="math inline">\([c,b]\)</span>. replace <span class="math inline">\(a\)</span> with <span class="math inline">\(c\)</span>, start again with <span class="math inline">\([c,b]\)</span></li>
 </ul></li>
@@ -289,7 +289,7 @@ println(<span class="st">&quot;grid search results in minimizer = $(grid2D[r[2]]
 </ul></li>
 </ul>
 <h3 id="bracketing-search-in-julia">Bracketing Search in Julia</h3>
-<ul>
+<ul class="incremental">
 <li>The package <a href="https://github.com/JuliaOpt/Optim.jl"><code>Optim.jl</code></a> provides an implementation of &quot;Brent's Method&quot; as well as the golden section search:</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">using Optim
@@ -299,7 +299,7 @@ minf(x) = -f(x)
 plot(f,<span class="fl">0</span>,<span class="fl">2</span>)
 brent = optimize(minf,<span class="fl">0</span>,<span class="fl">2</span>,method=:brent)
 golden = optimize(minf,<span class="fl">0</span>,<span class="fl">2</span>,method=:golden_section)</code></pre></div>
-<ul>
+<ul class="incremental">
 <li>how well does this do with many local minima?</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">g(x) = exp(x) - x^<span class="fl">4</span> +sin(<span class="fl">40</span>*x)
@@ -313,20 +313,20 @@ brent = optimize(ming,<span class="fl">0</span>,<span class="fl">2</span>,method
 using Base.Test
 @test_approx_eq  grid[idx] golden.minimum
 @test_approx_eq  grid[idx] brent.minimum</code></pre></div>
-<ul>
+<ul class="incremental">
 <li>Not <em>very</em> well at all. You can easily see that this method only works for unimodal functions.</li>
 <li>We get trapped in a local minimum here.</li>
 </ul>
 </div>
 <div id="bracketing-for-multidimensional-problems-nelder-mead" class="slide section level1">
 <h1>Bracketing for Multidimensional Problems: Nelder-Mead</h1>
-<ul>
+<ul class="incremental">
 <li>The Goal here is to find the simplex containing the local minimizer <span class="math inline">\(x^*\)</span></li>
 <li>In the case where <span class="math inline">\(f\)</span> is n-D, this simplex has <span class="math inline">\(n+1\)</span> vertices</li>
 <li>In the case where <span class="math inline">\(f\)</span> is 2-D, this simplex has <span class="math inline">\(2+1\)</span> vertices, i.e. it's a triangle.</li>
 <li>The method proceeds by evaluating the function at all <span class="math inline">\(n+1\)</span> vertices, and by replacing the worst function value with a new guess.</li>
 <li>this can be achieved by a sequence of moves:
-<ul>
+<ul class="incremental">
 <li>reflect</li>
 <li>expand</li>
 <li>contract</li>
@@ -336,14 +336,14 @@ using Base.Test
 <div class="center" style="width: auto; margin-left: auto; margin-right: auto;">
 <img src="figs/neldermeadsteps.gif" />
 </div>
-<ul>
+<ul class="incremental">
 <li>this is a very popular method. The matlab functions <code>fmincon</code> and <code>fminsearch</code> implements it.</li>
 <li>When it works, it works quite fast.</li>
 <li>No derivatives required.</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">using Optim
 optimize(rosenbrock, [<span class="fl">0.0</span>, <span class="fl">0.0</span>], method = :nelder_mead)</code></pre></div>
-<ul>
+<ul class="incremental">
 <li>But.</li>
 </ul>
 </div>
@@ -359,7 +359,7 @@ optimize(rosenbrock, [<span class="fl">0.0</span>, <span class="fl">0.0</span>],
 <div id="reminder-optimality-conditions" class="slide section level1">
 <h1>Reminder: Optimality Conditions</h1>
 <h3 id="notation">Notation</h3>
-<ul>
+<ul class="incremental">
 <li>Unless otherwise noted, we have <span class="math inline">\(x \in \mathbb{R}^n\)</span> as an <span class="math inline">\(n\)</span> element vector.</li>
 <li>The <strong>gradient</strong> of a function <span class="math inline">\(f : \mathbb{R}^n \mapsto \mathbb{R}\)</span> is denoted <span class="math inline">\(\nabla f:\mathbb{R}^n \mapsto \mathbb{R}^n\)</span> a it returns a vector <span class="math display">\[ \nabla f(x) = \left(\frac{\partial f}{\partial x_1}(x),\frac{\partial f}{\partial x_2}(x),\dots,\frac{\partial f}{\partial x_n}(x) \right) \]</span></li>
 <li>It's <strong>hessian</strong> is a function denoted <span class="math inline">\(\nabla^2 f(x)\)</span> or <span class="math inline">\(H_f :\mathbb{R}^n \mapsto \mathbb{R}^{n\times n}\)</span> and returns an <span class="math inline">\((n,n)\)</span> matrix given by <span class="math display">\[  H_f(x) = \left( \begin{array}{c} \frac{\partial^2 f}{\partial x_1 \partial x_1}(x)  &amp;  \frac{\partial^2 f}{\partial x_2 \partial x_1}(x) &amp; \dots &amp; \frac{\partial^2 f}{\partial x_n \partial x_1}(x) \\
@@ -371,7 +371,7 @@ optimize(rosenbrock, [<span class="fl">0.0</span>, <span class="fl">0.0</span>],
 \]</span></li>
 </ul>
 <h3 id="optimality-conditions">Optimality Conditions</h3>
-<ul>
+<ul class="incremental">
 <li><strong>First Order Necessary Conditions</strong>: If <span class="math inline">\(f\)</span> is continously differentiable and <span class="math inline">\(x^*\)</span> is a local minimizer of <span class="math inline">\(f\)</span>, then <span class="math inline">\(\nabla f(x^*) = 0\)</span>.</li>
 <li><strong>Second Order Necessary Conditions</strong>: If <span class="math inline">\(f\)</span> is twice continuously differentiable and <span class="math inline">\(x^*\)</span> is a local minimizer of <span class="math inline">\(f\)</span>, then <span class="math inline">\(\nabla f(x^*) = 0\)</span> <em>and</em> <span class="math inline">\(H_f (x^*)\)</span> is positive semi-definite, i.e. we have <span class="math inline">\(s^T H_f (x^*) s \geq 0\)</span> for all <span class="math inline">\(s \in \mathbb{R}^n\)</span>.</li>
 <li><strong>Second Order Sufficient Conditions</strong>: If <span class="math inline">\(f\)</span> is twice continuously differentiable and at <span class="math inline">\(x^*\)</span> we have that <span class="math inline">\(\nabla f(x^*) = 0\)</span> <em>and</em> <span class="math inline">\(H_f (x^*)\)</span> is positive definite, i.e. <span class="math inline">\(s^T H_f (x^*) s &gt; 0,s\neq 0\)</span> then <span class="math inline">\(x^*\)</span> is a local minimizer of <span class="math inline">\(f\)</span>.</li>
@@ -380,20 +380,20 @@ optimize(rosenbrock, [<span class="fl">0.0</span>, <span class="fl">0.0</span>],
 </div>
 <div id="reminder-sufficient-conditions-for-global-optimality" class="slide section level1">
 <h1>Reminder: Sufficient Conditions for Global Optimality</h1>
-<ul>
+<ul class="incremental">
 <li>If <span class="math inline">\(f\)</span> is convex, then any local minimizer <span class="math inline">\(x^*\)</span> is a global minimizer.</li>
 <li>If <span class="math inline">\(f\)</span> is convex and differentiable on <span class="math inline">\(\mathbb{R}^n\)</span> , then any point <span class="math inline">\(x^*\)</span> is a global minimizer if and only if it is a stationary point, i.e. if f<span class="math inline">\(\nabla f(x^*) = 0\)</span>.</li>
 </ul>
 </div>
 <div id="reminder-taylors-theorem" class="slide section level1">
 <h1>Reminder: Taylor's Theorem</h1>
-<ul>
+<ul class="incremental">
 <li>Many of the ensuing methods are based on Taylor's theorem, so let's remind ourselves of it:</li>
 </ul>
 <!--    f(x) & = & f(x^0) + \sum_{i=1}^n \frac{\partial f}{\partial x_i} (x^0) (x_i - x^0) \\
          & + & \frac{1}{2} + \sum_{i=1}^n \frac{\partial f}{\partial x_i} (x^0) (x_i - x^0) \\
  -->
-<ul>
+<ul class="incremental">
 <li>Suppose that <span class="math inline">\(f \in C^{n+1}[a,b]\)</span>, and <span class="math inline">\(x,x^0 \in [a,b]\)</span>. Then <span class="math display">\[ \begin{align}
 f(x)  = &amp; f(x^0) + f&#39;(x^0)(x - x^0) + f&#39;&#39;(x^0)\frac{(x- x^0)^2}{2}\\
       + &amp; \dots + f^{(n)}(x^0)\frac{(x - x^0)^n}{n!} + R_{n+1}(x) 
@@ -405,7 +405,7 @@ f(x)  = &amp; f(x^0) + f&#39;(x^0)(x - x^0) + f&#39;&#39;(x^0)\frac{(x- x^0)^2}{
 </div>
 <div id="a-quick-note-on-computing-derivatives" class="slide section level1">
 <h1>A quick Note on Computing Derivatives</h1>
-<ul>
+<ul class="incremental">
 <li>Finite Differences</li>
 <li>Automatic Differentiation</li>
 <li>We will talk about this in a separate session.</li>
@@ -414,17 +414,17 @@ f(x)  = &amp; f(x^0) + f&#39;(x^0)(x - x^0) + f&#39;&#39;(x^0)\frac{(x- x^0)^2}{
 </div>
 <div id="two-strategies-line-search-and-trust-region" class="slide section level1">
 <h1>Two Strategies: Line Search and Trust Region</h1>
-<ul>
+<ul class="incremental">
 <li>We only provide an overview of methods here. If you want to <em>really</em> know the details about those algorithms, I invite you to consult <span class="citation">(Nocedal and Wright 2006)</span>.</li>
 </ul>
 <h3 id="the-line-search-strategy">The Line Search Strategy</h3>
-<ul>
+<ul class="incremental">
 <li>An algorithm from the line search class chooses a direction <span class="math inline">\(p_k \in \mathbb{R}^n\)</span> and searches along that direction starting from the current iterate <span class="math inline">\(x_k \in \mathbb{R}^n\)</span> for a new iterate <span class="math inline">\(x_{k+1} \in \mathbb{R}^n\)</span> with a lower function value.</li>
 <li>After deciding on a direction <span class="math inline">\(p_k\)</span>, one needs to decide the <em>step length</em> <span class="math inline">\(\alpha\)</span> to travel by solving <span class="math display">\[ \min_{\alpha&gt;0} f(x_k + \alpha p_k) \]</span></li>
 <li>In practice, solving this exactly is too costly, so algos usually generate a sequence of trial values <span class="math inline">\(\alpha\)</span> and pick the one with the lowest <span class="math inline">\(f\)</span>.</li>
 </ul>
 <h3 id="the-trust-region-strategy">The Trust Region Strategy</h3>
-<ul>
+<ul class="incremental">
 <li>Here we construct a <em>model function</em> <span class="math inline">\(m_k\)</span> that is similar to <span class="math inline">\(f\)</span> around <span class="math inline">\(x_k\)</span>.</li>
 <li>We acknowledge that <span class="math inline">\(m_k\)</span> is decent approximation of <span class="math inline">\(f\)</span> only in some <em>region</em>.</li>
 <li>The problem is then to find a candidate step length <span class="math inline">\(p\)</span> by solving <span class="math display">\[ \min_p m_k (x_k + p) \]</span> where <span class="math inline">\(x_k + p\)</span> lies inside the trust region.</li>
@@ -436,7 +436,7 @@ f(x)  = &amp; f(x^0) + f&#39;(x^0)(x - x^0) + f&#39;&#39;(x^0)\frac{(x- x^0)^2}{
 </div>
 <div id="trust-region-example" class="slide section level1">
 <h1>Trust Region Example</h1>
-<ul>
+<ul class="incremental">
 <li>Suppose we have <span class="math inline">\(f(x) = 10(x_2 - x_1^2)^2 + (1-x_1)^2\)</span>. At point <span class="math inline">\(x_k= (0,1)\)</span> gradient and hessian are:</li>
 <li>?</li>
 </ul>
@@ -446,12 +446,12 @@ f(x)  = &amp; f(x^0) + f&#39;(x^0)(x - x^0) + f&#39;&#39;(x^0)\frac{(x- x^0)^2}{
 <img src="figs-restricted/trust-region.png" alt="Figure 2.4 of (Nocedal and Wright 2006)" />
 <p class="caption">Figure 2.4 of <span class="citation">(Nocedal and Wright 2006)</span></p>
 </div>
-<ul>
+<ul class="incremental">
 <li>In this figure, we use <span class="math inline">\(B(x_k) = \nabla^2 f(x_k)\)</span>.</li>
 <li>After each unsuccesful step, the new candidate step will be shorter, and will go in a different direction</li>
 <li>This is the main difference to line search methods.</li>
 <li>Main difference between the two methods: order in which they change <em>direction</em> and <em>step length</em>
-<ul>
+<ul class="incremental">
 <li>line search fixes direction <span class="math inline">\(p_k\)</span> and finds right distance <span class="math inline">\(\alpha_k\)</span></li>
 <li>trust region fixes an appropriate radius <span class="math inline">\(\Delta_k\)</span></li>
 </ul></li>
@@ -461,7 +461,7 @@ f(x)  = &amp; f(x^0) + f&#39;(x^0)(x - x^0) + f&#39;&#39;(x^0)\frac{(x- x^0)^2}{
 <div id="line-search-methods-which-direction-to-go" class="slide section level1">
 <h1>Line Search Methods: Which Direction to go?</h1>
 <h3 id="steepest-descent">Steepest Descent</h3>
-<ul>
+<ul class="incremental">
 <li>The direction <span class="math inline">\(-\nabla f(x_k)\)</span> is an obvious choice: Among all possible directions, along this one <span class="math inline">\(f\)</span> decreases most rapidly.</li>
 <li>This claim can be verified using Taylor's theorem.</li>
 <li>The <strong>steepest descent method</strong> is a line search method that moves along <span class="math display">\[ p_k = -\nabla f(x_k) \]</span></li>
@@ -478,7 +478,7 @@ optimize(rosenbrock, rosenbrock_gradient!, [<span class="fl">0.0</span>, <span c
 </div>
 <div id="line-search-methods-the-newton-direction" class="slide section level1">
 <h1>Line Search Methods: The <strong>Newton</strong> Direction</h1>
-<ul>
+<ul class="incremental">
 <li>Probably the most important descent direction.</li>
 <li>In vector notation, the 2nd order taylor series approximation to <span class="math inline">\(f(x_k + p)\)</span> is <span class="math display">\[ f(x_k + p) \approx f(x_k) + p^T \nabla f(x_k) + \frac{1}{2} p^T \nabla^2 f(x_k) p \equiv m_k(p) \]</span></li>
 <li>the Newton direction is obtained by finding the vector <span class="math inline">\(p\)</span> that minimizes <span class="math inline">\(m_k(p)\)</span>, i.e. by setting the derivative of <span class="math inline">\(m_k(p)\)</span> to zero.</li>
@@ -490,7 +490,7 @@ optimize(rosenbrock, rosenbrock_gradient!, [<span class="fl">0.0</span>, <span c
 </div>
 <div id="quasi-newton-methods" class="slide section level1">
 <h1>Quasi-Newton Methods</h1>
-<ul>
+<ul class="incremental">
 <li>In response to the difficulties of getting the Hessian, quasi-newton methods propose to approximate <span class="math inline">\(B(x_k)\)</span> with something <em>similar</em> to the hessian.</li>
 <li>Taylors Theorem implies that <span class="math display">\[ \nabla^2 f(x_{k+1} - x_{k}) \approx \nabla f(x_{k+1}) - \nabla f(x_k) \]</span> and so we choose a <span class="math inline">\(B\)</span> matrix that mimics this property.</li>
 <li>This leads to the <em>secant condition</em> <span class="math display">\[ B_{k+1} (x_{k+1} - x_{k}) = f(x_{k+1}) - \nabla f(x_k) \]</span></li>
@@ -505,10 +505,10 @@ optimize(rosenbrock, rosenbrock_gradient!, rosenbrock_hessian!, [<span class="fl
 <div id="practical-considerations" class="slide section level1">
 <h1>Practical Considerations</h1>
 <h2 id="stopping-criteria">Stopping criteria</h2>
-<ul>
+<ul class="incremental">
 <li>In all of the above examples, we did not alter the default values for stopping criteria.</li>
 <li>There are different things you could focus on as a stopping criterion with <code>Optim</code>, and similarly in most solver packages.
-<ul>
+<ul class="incremental">
 <li><code>xtol</code>: changes in <span class="math inline">\(x\)</span> from one iterate to the next</li>
 <li><code>ftol</code>: perentage changes in <span class="math inline">\(f\)</span> from one iterate to the next</li>
 <li><code>grtol</code>: absolute value of the gradient beign smaller than this number.</li>
@@ -517,10 +517,10 @@ optimize(rosenbrock, rosenbrock_gradient!, rosenbrock_hessian!, [<span class="fl
 </div>
 <div id="some-applications-in-economics" class="slide section level1">
 <h1>Some Applications in Economics</h1>
-<ul>
+<ul class="incremental">
 <li>Maximum Likelihood Estimation</li>
 <li>The Nested Fixed Point Algorithm
-<ul>
+<ul class="incremental">
 <li><span class="citation">(Rust 1987)</span> is a maximum likelihood estimation with an inner loop that solves a dynamic programming problem.</li>
 <li><span class="citation">(Berry et al. 1995)</span> is a GMM estimation with an inner fixed point problem.</li>
 </ul></li>

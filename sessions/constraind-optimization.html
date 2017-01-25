@@ -61,7 +61,7 @@ Florian Oswald
 </div>
 <div id="constrained-optimisation" class="slide section level1">
 <h1>Constrained Optimisation</h1>
-<ul>
+<ul class="incremental">
 <li>Recall our generic definition of an optimization problem: <span class="math display">\[ \min_{x\in\mathbb{R}^n} f(x)  \quad  s.t.\quad \begin{array} c_i(x) = 0, &amp; i\in E \\
                                                           c_i(x) \geq 0, &amp; i\in I \end{array}
                                                           \]</span></li>
@@ -72,7 +72,7 @@ Florian Oswald
 <li><strong>Definition: The Active Set</strong>: Active set <span class="math inline">\(\mathcal{A}(x)\)</span> at any feasible <span class="math inline">\(x\)</span> consists of the equality constraint indices from E together with the indices of the inequality constraints for <span class="math inline">\(i\)</span> for which <span class="math inline">\(c_i(x) = 0\)</span>; that is, <span class="math display">\[ \matcal{A}(x) = E \cup {i\in I|c_i(x) = 0} \]</span> At a feasible point <span class="math inline">\(x\)</span>, the inequality constraint <span class="math inline">\(i \in I\)</span> is said to be <em>active</em> if <span class="math inline">\(c_i(x)=0\)</span>, and <em>inactive</em> if <span class="math inline">\(c_i(x)&gt;0\)</span></li>
 </ul>
 <h2 id="nonlinear-constraints">Nonlinear Constraints</h2>
-<ul>
+<ul class="incremental">
 <li>Consider the following problem $$ _{x ^2} s.t. 
 <span class="math display">\[\begin{array}{c}        \\
                                                                                 x_2 \geq 0 \\
@@ -84,7 +84,7 @@ $</li>
 </div>
 <div id="example-1-equality-constraint" class="slide section level1">
 <h1>Example: 1 equality constraint</h1>
-<ul>
+<ul class="incremental">
 <li>consider <span class="math display">\[ \min x_1 + x_2  \quad s.t. \quad x_1^2 + x_2^2 - 2 = 0 \]</span></li>
 <li>constraint is a circle with radius <span class="math inline">\(\sqrt{2}\)</span> centered at 0. The solution must lie <em>on</em> that circle.</li>
 <li>Solution: <span class="math inline">\((-1,-1)\)</span>. Consider any other point on circle, like <span class="math inline">\((\sqrt{2},0)\)</span>.</li>
@@ -96,12 +96,12 @@ $</li>
 </div>
 <div id="example-1-inequality-constraint" class="slide section level1">
 <h1>Example: 1 inequality constraint</h1>
-<ul>
+<ul class="incremental">
 <li>Let's modify this example to <span class="math display">\[ \min x_1 + x_2  \quad s.t. \quad 2- x_1^2 - x_2^2 \geq 0 \]</span></li>
 <li>constraint is the region inside a circle with radius <span class="math inline">\(\sqrt{2}\)</span> centered at 0. The solution must lie <em>on or inside</em> that circle.</li>
 <li>Solution: <span class="math inline">\((-1,-1)\)</span>. Consider any other point on circle, like <span class="math inline">\((\sqrt{2},0)\)</span>.</li>
 <li>Two cases:
-<ol style="list-style-type: decimal">
+<ol class="incremental" style="list-style-type: decimal">
 <li><span class="math inline">\(x\)</span> lies strictly inside the circle, and <span class="math inline">\(c_1(x) &gt; 0\)</span></li>
 <li><span class="math inline">\(x\)</span> lies strictly on the circle, and <span class="math inline">\(c_1(x) = 0\)</span></li>
 </ol></li>
@@ -113,7 +113,7 @@ $</li>
 </div>
 <div id="some-methods" class="slide section level1">
 <h1>Some Methods</h1>
-<ul>
+<ul class="incremental">
 <li>Penalty Function and Augmented Lagrangian Methods</li>
 <li>Sequential Quadratic Method</li>
 <li>Interior Point Method</li>
@@ -127,7 +127,7 @@ $</li>
 </div>
 <div id="constrained-optimisation-with-nlopt.jl" class="slide section level1">
 <h1>Constrained Optimisation with <a href="https://github.com/JuliaOpt/NLopt.jl"><code>NLopt.jl</code></a></h1>
-<ul>
+<ul class="incremental">
 <li>We need to specify one function for each objective and constraint.</li>
 <li>Both of those functions need to compute the function value (i.e. objective or constraint) <em>and</em> it's respective gradient.</li>
 <li>Notice that we can disregard <span class="math inline">\(x_2\geq0\)</span> here.</li>
@@ -172,7 +172,7 @@ inequality_constraint!(opt, (x,g) -&gt; constraint(x,g,-<span class="fl">1</span
 </div>
 <div id="nlopt-rosenbrock" class="slide section level1">
 <h1>NLopt: Rosenbrock</h1>
-<ul>
+<ul class="incremental">
 <li>Let's tackle the rosenbrock example.</li>
 <li>To make it more interesting, let's add an inequality constraint. <span class="math display">\[ \min_{x\in \mathbb{R}^2} (1-x_1)^2  + 100(x_2-x_1^2)^2  \quad s.t. \quad 0.8 - x_1^2 -x_2^2 \geq 0 \]</span></li>
 <li>in <code>NLopt</code> format, the constraint is <span class="math inline">\(x_1 + x_2 - 0.8 \leq 0\)</span></li>
@@ -200,11 +200,11 @@ ftol_rel!(opt,<span class="fl">1e-9</span>)
 </div>
 <div id="jump" class="slide section level1">
 <h1>JuMP</h1>
-<ul>
+<ul class="incremental">
 <li>Introduce <a href="https://github.com/JuliaOpt/JuMP.jl"><code>JuMP.jl</code></a></li>
 <li>JuMP is a mathematical programming interface for Julia. It is like AMPL, but for free and with a decent programming language.</li>
 <li>The main highlights are:
-<ul>
+<ul class="incremental">
 <li>It uses automatic differentiation to compute derivatives from your expression.</li>
 <li>It supplies this information, as well as the sparsity structure of the Hessian to your preferred solver.</li>
 <li>It decouples your problem completely from the type of solver you are using. This is great, since you don't have to worry about different solvers having different interfaces.</li>
@@ -215,7 +215,7 @@ ftol_rel!(opt,<span class="fl">1e-9</span>)
 </div>
 <div id="jump-example" class="slide section level1">
 <h1>JuMP: Example</h1>
-<ul>
+<ul class="incremental">
 <li>Instead of hand-coding first and second derivatives, you only have to give <code>JuMP</code> expressions for objective and constraints.</li>
 <li>Here is an example.</li>
 </ul>
@@ -235,7 +235,7 @@ ftol_rel!(opt,<span class="fl">1e-9</span>)
     println(<span class="st">&quot;x = &quot;</span>, getValue(x), <span class="st">&quot; y = &quot;</span>, getValue(y))
 
 <span class="kw">end</span></code></pre></div>
-<ul>
+<ul class="incremental">
 <li>not bad, right?</li>
 <li>adding the constraint from before:</li>
 </ul>
@@ -258,7 +258,7 @@ ftol_rel!(opt,<span class="fl">1e-9</span>)
 </div>
 <div id="jump-maximium-likelihood" class="slide section level1">
 <h1>JuMP: Maximium Likelihood</h1>
-<ul>
+<ul class="incremental">
 <li>Let's redo the maximum likelihood example in JuMP.</li>
 <li>Let <span class="math inline">\(\mu,\sigma^2\)</span> be the unknown mean and variance of a random sample generated from the normal distribution.</li>
 <li>Find the maximum likelihood estimator for those parameters!</li>

@@ -61,7 +61,7 @@ Florian Oswald
 </div>
 <div id="introduction" class="slide section level1">
 <h1>Introduction</h1>
-<ul>
+<ul class="incremental">
 <li>These slides are visible as long as you are online. It's a website ;-)</li>
 <li>You can hit <code>c</code> on your keyboard to see a table of contents. clickable.</li>
 <li>There will be working code on those slides. I invite you to copy and paste this into a julia session and try it out.</li>
@@ -69,7 +69,7 @@ Florian Oswald
 </div>
 <div id="computing-basics" class="slide section level1">
 <h1>Computing Basics</h1>
-<ul>
+<ul class="incremental">
 <li>It is important that we understand some basics about computers.</li>
 <li>Even though software (and computers) always get more and more sophisticated, there is still a considerable margin for &quot;human error&quot;. This doesn't mean necessarily that there is something wrong, but certain ways of doing things may have severe performance implications.</li>
 <li>Whatever else happens, <em>you</em> write the code, and one way of writing code is different from another.</li>
@@ -78,10 +78,10 @@ Florian Oswald
 <div class="center" style="width: auto; margin-left: auto; margin-right: auto;">
 <img src="figs/picnic.jpeg" />
 </div>
-<ul>
+<ul class="incremental">
 <li>In this session, we will look at some very basic computer structure, and see some common pitfalls in numerical analysis.</li>
 <li>We will take advantage to introduce the julia computing language.
-<ol style="list-style-type: decimal">
+<ol class="incremental" style="list-style-type: decimal">
 <li>Step Number 1: <a href="http://julialang.org/downloads/">install julia</a>!</li>
 <li>Step Number 2: Why Julia?</li>
 </ol></li>
@@ -91,20 +91,20 @@ Florian Oswald
 <div id="julia-why-julia" class="slide section level1">
 <h1>Julia? Why Julia?</h1>
 <blockquote>
-<ul>
+<ul class="incremental">
 <li>The <em>best</em> software doesn't exist. All of the following statements depend on:</li>
 </ul>
-<ol style="list-style-type: decimal">
+<ol class="incremental" style="list-style-type: decimal">
 <li>The problem at hand.</li>
 </ol>
-<ul>
+<ul class="incremental">
 <li>You are fine with Stata if you need to run a probit.</li>
 <li>Languages have different comparative advantages with regards to different tasks.</li>
 </ul>
-<ol style="list-style-type: decimal">
+<ol class="incremental" style="list-style-type: decimal">
 <li>Preferences of the analyst. Some people just <em>love</em> their software.</li>
 </ol>
-<ul>
+<ul class="incremental">
 <li>That said, there are some general themes we should keep in mind when choosing a software.</li>
 <li><a href="https://github.com/stevengj/julia-mit">Stephen Johnson at MIT has a good pitch.</a></li>
 <li>High-level languages for technical computing: Matlab, Python, R, ...</li>
@@ -121,9 +121,9 @@ Florian Oswald
 </div>
 <div id="julia-benchmarks" class="slide section level1">
 <h1>Julia Benchmarks</h1>
-<ul>
+<ul class="incremental">
 <li>Julia is <a href="http://julialang.org/benchmarks/">fast</a>.
-<ul>
+<ul class="incremental">
 <li>But julia is also a high-level dynamic language. How come?</li>
 <li>The JIT compiler.</li>
 <li>The <a href="https://en.wikipedia.org/wiki/LLVM">LLVM project</a>.</li>
@@ -132,7 +132,7 @@ Florian Oswald
 </div>
 <div id="julia-is-open-source-and-its-for-free" class="slide section level1">
 <h1>Julia is open source (and it's for free)</h1>
-<ul>
+<ul class="incremental">
 <li>It's for free.</li>
 <li>Did I say that it's for free?</li>
 <li>You will never again worry about licenses. Want to run 1000 instances of julia on your HPC? Do it.</li>
@@ -144,14 +144,14 @@ Florian Oswald
 </div>
 <div id="julia-is-new" class="slide section level1">
 <h1>Julia is new</h1>
-<ul>
+<ul class="incremental">
 <li>Julia is a very modern language, combining the best features of many other languages.</li>
 <li>For example, wow would you write that in <code>R</code>? <span class="math display">\[ \sum_{i=1}^N \sum_{j=1}^i j\]</span></li>
 </ul>
 <div class="incremental">
 <div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r">R&gt;<span class="st"> </span><span class="kw">sum</span>(<span class="kw">unlist</span>(<span class="kw">lapply</span>(<span class="dv">1</span>:<span class="dv">10</span>,function(x) <span class="dv">1</span>:x)))
 [<span class="dv">1</span>] <span class="dv">220</span></code></pre></div>
-<ul>
+<ul class="incremental">
 <li><p>and in julia? You could use a <em>Generator</em> expression, which does not allocate two arrays of values to sum over (which is what R has to do here).</p>
 <div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">julia&gt; sum(sum(j <span class="kw">for</span> j <span class="kw">in</span> <span class="fl">1</span>:i) <span class="kw">for</span> i <span class="kw">in</span> <span class="fl">1</span>:<span class="fl">10</span>)
 <span class="fl">220</span></code></pre></div></li>
@@ -172,11 +172,11 @@ julia&gt; @time sum(sum(j <span class="kw">for</span> j <span class="kw">in</spa
 </div>
 <div id="community" class="slide section level1">
 <h1>Community</h1>
-<ul>
+<ul class="incremental">
 <li>The <code>julia</code> community is a very active and thriving place, comparable to <code>R</code>.</li>
 <li>You should get used to asking questions in the different forums if you have problems.</li>
 <li><p>You will find it much harder to learn any language if you are afraid to ask questions.</p>
-<ul>
+<ul class="incremental">
 <li>Your main forum is <a href="https://discourse.julialang.org" class="uri">https://discourse.julialang.org</a></li>
 </ul></li>
 <li>You can get help on <a href="http://stackoverflow.com/questions/tagged/julia-lang">stackoverflow</a> under tag <code>julia-lang</code></li>
@@ -186,9 +186,9 @@ julia&gt; @time sum(sum(j <span class="kw">for</span> j <span class="kw">in</spa
 <div class="slide section level1">
 
 <h2 id="why-not-julia">Why not julia?</h2>
-<ul>
+<ul class="incremental">
 <li>Julia is in version <code>0.5.0</code>. There may be language changes in future releases.
-<ul>
+<ul class="incremental">
 <li>People were worried whether <em>julia is here to stay</em>.</li>
 <li>The developers are very cautious before releasing version <code>1.0</code> because of that.</li>
 <li>There are examples of other languages which ran out of steam (Perl).</li>
@@ -200,17 +200,17 @@ julia&gt; @time sum(sum(j <span class="kw">for</span> j <span class="kw">in</spa
 </div>
 <div id="economists-and-their-software" class="slide section level1">
 <h1>Economists and Their Software</h1>
-<ul>
+<ul class="incremental">
 <li><span class="citation">(Aruoba and Fernandez-Villaverde 2014)</span>, in <a href="http://economics.sas.upenn.edu/~jesusfv/comparison_languages.pdf"><em>A Comparison of Programming Languages in Economics</em></a>, compare some widely used languages on a close to <a href="https://github.com/jesusfv/Comparison-Programming-Languages-Economics">identical piece of code</a>.</li>
 <li>It can be quite contentious to talk about Software to Economists.
-<ul>
+<ul class="incremental">
 <li>Religious War.</li>
 <li>Look at the <a href="http://marginalrevolution.com/marginalrevolution/2014/07/a-comparison-of-programming-languages-in-economics.html">comments on this blog post regarding the paper</a>.</li>
 <li>There <em>are</em> switching costs from one language to another.</li>
 <li>Network effects (Seniors handing down their software to juniors etc)</li>
 </ul></li>
 <li>Takeaway from that paper:
-<ul>
+<ul class="incremental">
 <li>There are some very good alternatives to <code>fortran</code></li>
 <li><code>fortran</code> is <strong>not</strong> faster than <code>C++</code></li>
 <li>It seems pointless to invest either money or time in <code>matlab</code>, given the many good options that are available for free.</li>
@@ -222,20 +222,20 @@ julia&gt; @time sum(sum(j <span class="kw">for</span> j <span class="kw">in</spa
 <div id="the-fundamental-tradeoff" class="slide section level1">
 <h1>The Fundamental Tradeoff</h1>
 <h2 id="developer-time-your-time-is-much-more-expensive-than-computing-time">Developer Time (Your Time) is Much More Expensive than Computing Time</h2>
-<ul>
+<ul class="incremental">
 <li>It may well be that the runtime of a fortran program is one third of the time it takes to run the program in julia, or anything else for that matter.</li>
 <li>However, the time it takes to <strong>develop</strong> that program is very likely to be (much) longer in fortran.</li>
 <li>Particularly if you want to hold your program to the same quality standards.</li>
 </ul>
 <h2 id="takeaway">Takeaway</h2>
-<ul>
+<ul class="incremental">
 <li>Given my personal experience with many of the above languagues, I think <code>julia</code> is a very good tool for economists with non-trivial computational tasks.</li>
 <li>This is why I am using it for demonstrations in this course.</li>
 </ul>
 </div>
 <div id="a-second-fundamental-tradeoff" class="slide section level1">
 <h1>A Second Fundamental Tradeoff</h1>
-<ul>
+<ul class="incremental">
 <li>Regardless of the software you use, there is one main problem with computation.</li>
 <li>It concerns <strong>speed vs accuracy</strong>.</li>
 <li>You may be able to do something very fast, but at very small accuracy (i.e. with a high numerical margin of error)</li>
@@ -249,16 +249,16 @@ julia&gt; @time sum(sum(j <span class="kw">for</span> j <span class="kw">in</spa
 </div>
 <div id="computers" class="slide section level1">
 <h1>Computers</h1>
-<ul>
+<ul class="incremental">
 <li>At a high level, computers execute instructions.</li>
 <li>Most of the actual <em>computation</em> is performed on the Central Processing Unit (CPU). The CPU does
-<ul>
+<ul class="incremental">
 <li>Addition</li>
 <li>substraction</li>
 <li>multiplication</li>
 <li>division</li>
 <li>maybe also (depends on Chipset)
-<ul>
+<ul class="incremental">
 <li>exponentiation</li>
 <li>logarithm</li>
 <li>trogonometric operations</li>
@@ -270,7 +270,7 @@ julia&gt; @time sum(sum(j <span class="kw">for</span> j <span class="kw">in</spa
 </div>
 <div id="motivational-example" class="slide section level1">
 <h1>Motivational Example</h1>
-<ul>
+<ul class="incremental">
 <li>Suppose we want to compute <span class="math display">\[ u(c,l) = \frac{\left(c^\alpha l^{1-\alpha} \right)^{1-\gamma}}{1-\gamma} \]</span></li>
 <li>Let's take <span class="math inline">\(c=1.1,l=0.8\)</span> and compute this.</li>
 </ul>
@@ -280,7 +280,7 @@ gamma = <span class="fl">2.1</span>
 u(c,l) = ((c^alpha * l^(<span class="fl">1</span>-alpha))^(<span class="fl">1</span>-gamma)) / (<span class="fl">1</span>-gamma)</code></pre></div>
 <div class="incremental">
 <h2 id="more-sophisticated-approach">more sophisticated approach</h2>
-<ul>
+<ul class="incremental">
 <li>Note that <span class="math inline">\(x^\alpha = \exp(\alpha \log(x))\)</span>.</li>
 <li>(particularly non-integer) exponentiation is expensive. let's see if we can do better:</li>
 </ul>
@@ -295,7 +295,7 @@ t1 = @elapsed <span class="kw">for</span> i <span class="kw">in</span> <span cla
 t2 = @elapsed <span class="kw">for</span> i <span class="kw">in</span> <span class="fl">1</span>:n u2(<span class="fl">1.1</span>,<span class="fl">0.8</span>) <span class="kw">end</span>
 println(<span class="st">&quot;u1 takes $(round(t1/t2,2)) times longer than u2&quot;</span>)</code></pre></div>
 <h2 id="even-more-sophisticated-approach">even more sophisticated approach</h2>
-<ul>
+<ul class="incremental">
 <li>Now realise that there is a lot of precomputation that could be done.</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">mgamma        = (<span class="fl">1</span>-gamma)
@@ -310,13 +310,13 @@ println(<span class="st">&quot;u1 takes $(round(t1/t3,2)) times longer than u3&q
 <div id="time-to-get-your-hands-dirty-with-some-code" class="slide section level1">
 <h1>Time to get your hands dirty (with some code)!</h1>
 <h2 id="first-things-first-git">First Things First: <code>Git</code></h2>
-<ul>
+<ul class="incremental">
 <li>It is useful to first talk about <code>Git</code>, a widely used version control system.</li>
 <li>This is because the julia package system is built using git.</li>
 <li>In fact, a julia package is a <code>Git</code> <em>repository</em>.</li>
 </ul>
 <p>How does Git work?</p>
-<ul>
+<ul class="incremental">
 <li>After one makes changes to a project, they <strong>commit</strong> the changes</li>
 <li>Changes are <strong>pushed</strong> to the main repository hosted online</li>
 <li>To download the code, you <strong>clone</strong> the repository</li>
@@ -329,7 +329,7 @@ println(<span class="st">&quot;u1 takes $(round(t1/t3,2)) times longer than u3&q
 </div>
 <div id="first-things-first-github.com" class="slide section level1">
 <h1>First Things First: <code>Github.com</code></h1>
-<ul>
+<ul class="incremental">
 <li>The major online service for git repositories is Github</li>
 <li>Github is a free service</li>
 <li>The code is hosted online, free for everyone to view</li>
@@ -340,22 +340,22 @@ println(<span class="st">&quot;u1 takes $(round(t1/t3,2)) times longer than u3&q
 </div>
 <div id="julias-package-manager" class="slide section level1">
 <h1>Julia's Package Manager</h1>
-<ul>
+<ul class="incremental">
 <li>Officially registered packages are available on github via the function <code>Pkg.add()</code>.
-<ul>
+<ul class="incremental">
 <li>Let's install the <code>Plots.jl</code> package: <code>Pkg.add(&quot;Plots&quot;)</code></li>
 </ul></li>
 <li>Non-registered ones are available via <code>Pkg.clone()</code>
-<ul>
+<ul class="incremental">
 <li>For example, <code>Pkg.clone(&quot;https://github.com/JuliaDiffEq/ParameterizedFunctions.jl&quot;)</code></li>
 </ul></li>
 <li>You can get a certain <strong>branch</strong> of a package by doing
-<ul>
+<ul class="incremental">
 <li><code>Pkg.checkout(&quot;DataFrames&quot;,&quot;nl/join&quot;)</code> checks out the branch called <em>nl/join</em> from the DataFrames.jl repository.</li>
 </ul></li>
 </ul>
 <h2 id="using-a-package">Using a Package</h2>
-<ul>
+<ul class="incremental">
 <li>To use a package, we need to import it's code into our julia session.</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">using Plots
@@ -363,7 +363,7 @@ plot(rand(<span class="fl">4</span>,<span class="fl">4</span>))</code></pre></di
 </div>
 <div id="cloning-the-slides-repository" class="slide section level1">
 <h1>Cloning the <code>Slides</code> repository</h1>
-<ul>
+<ul class="incremental">
 <li>Let's try this out. We want to clone <strong>this</strong> repository, which lives at <a href="https://github.com/ScPo-CompEcon/slides" class="uri">https://github.com/ScPo-CompEcon/slides</a></li>
 <li>You clone it into Julia with</li>
 </ul>
@@ -373,12 +373,12 @@ hello()     </code></pre></div>
 </div>
 <div id="checkout-a-different-slides-branch" class="slide section level1">
 <h1>Checkout a different <code>Slides</code> branch</h1>
-<ul>
+<ul class="incremental">
 <li>Different version of code live on different <em>branches</em></li>
 <li>Sometimes it is useful for you to use the most recent version, as opposed to the released one.</li>
 </ul>
 <h2 id="excercise">Excercise</h2>
-<ul>
+<ul class="incremental">
 <li>I have hidden an easter egg somewhere in that repo.</li>
 <li>You should check out the <code>Easter</code> branch, and run <code>find_easter()</code>.</li>
 </ul>
@@ -389,7 +389,7 @@ slides.find_easter()  <span class="co"># the slides. is important!</span></code>
 </div>
 <div id="using-ijulia-notebooks-in-slides" class="slide section level1">
 <h1>Using <code>IJulia</code> Notebooks in <code>slides</code></h1>
-<ul>
+<ul class="incremental">
 <li><code>slides</code> also contains a folder <em>Notebooks</em>.</li>
 <li>We will use one of those now in your browser to continue this session.</li>
 </ul>
@@ -400,10 +400,10 @@ notebook(detached=true,dir=Pkg.dir(<span class="st">&quot;slides/Notebooks&quot;
 </div>
 <div id="some-numerical-concepts-and-julia" class="slide section level1">
 <h1>Some Numerical Concepts and <code>Julia</code></h1>
-<ul>
+<ul class="incremental">
 <li>Machine epsilon: The smallest number that your computer can represent, type <code>eps()</code>.</li>
 <li>Infinity: A number greater than all representable numbers on your computer. <a href="http://docs.julialang.org/en/release-0.5/manual/integers-and-floating-point-numbers/?highlight=infinity#special-floating-point-values">Obeys some arithmethmic rules</a>
-<ul>
+<ul class="incremental">
 <li>Overflow: If you perform an operation where the result is greater than the largest representable number.</li>
 <li>Underflow: You take two (very small) representable numbers, but the result is smaller than <code>eps()</code>.</li>
 <li><p>In Julia, you are wrapped around the end of your representable space:</p>
@@ -423,15 +423,15 @@ end</code></pre>
 </div>
 <div id="interacting-with-the-julia-repl" class="slide section level1">
 <h1>Interacting with the <code>Julia REPL</code></h1>
-<ul>
+<ul class="incremental">
 <li>What is a REPL?</li>
 <li>different modes:
-<ul>
+<ul class="incremental">
 <li>julian</li>
 <li>help: <code>?</code></li>
 <li>shell: <code>;</code></li>
 <li>search history file:
-<ul>
+<ul class="incremental">
 <li>incremental search with <code>CTRL r</code></li>
 </ul></li>
 <li>documented in the <a href="http://docs.julialang.org/en/release-0.5/manual/interacting-with-julia">manual</a></li>
@@ -462,14 +462,14 @@ end</code></pre>
 </div>
 <div id="julia-primer-what-is-a-module" class="slide section level1">
 <h1><code>Julia</code> Primer: What is a <code>module</code>?</h1>
-<ul>
+<ul class="incremental">
 <li>A separate <code>namespace</code>: variable names inside a module are not visible from outside, unless exported.</li>
 <li>If you use somebody else's code that contains the object <code>model</code>, and you have code that also defines <code>model</code>, you have a name conflict.</li>
 <li>Using modules avoids this conflict.</li>
 <li>Julia packages are provided as <code>module</code>s.</li>
 <li>You should adapt <code>module</code>s as the best workflow practice with julia.</li>
 <li>Let's try this out.
-<ol style="list-style-type: decimal">
+<ol class="incremental" style="list-style-type: decimal">
 <li>Create a folder somewhere called <code>modTest</code></li>
 <li>inside that folder create another folder called <code>src</code>. this will contain our <code>source code</code>.</li>
 <li>inside <code>src</code>, create a file called <code>tmodule.jl</code> as in <em>test module</em>.</li>
@@ -486,7 +486,7 @@ end</code></pre>
 </div>
 <div id="julia-primer-working-with-modules" class="slide section level1">
 <h1><code>Julia</code> Primer: Working with modules</h1>
-<ul>
+<ul class="incremental">
 <li>We will create a module called <em>Example</em>.</li>
 <li>Into your file write and save</li>
 </ul>
@@ -496,17 +496,17 @@ end</code></pre>
     domath(x::<span class="dt">Number</span>) = (x + <span class="fl">5</span>)
 
 <span class="kw">end</span></code></pre></div>
-<ul>
+<ul class="incremental">
 <li>open julia, and go to folder <code>modTest</code> with <code>cd(&quot;path/to/modTest&quot;)</code>.</li>
 <li>we need to <code>include</code> the code of the package/module with <code>include(&quot;src/tmodule.jl&quot;)</code>.</li>
 <li>type <code>hello(&quot;Bond. James Bond.&quot;)</code></li>
 </ul>
-<ul class="incremental">
+<ul>
 <li>you get an error.</li>
 <li>function <code>hello</code> is unknown.</li>
 <li>We need to either <code>export</code> it from the module, or tell the REPL that it's in module <code>Example</code>. Type <code>Example.hello(&quot;Bond. James Bond.&quot;)</code></li>
 </ul>
-<ul class="incremental">
+<ul>
 <li>Alternatively go back to your editor and change the module to:</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia"><span class="kw">module</span> Example
@@ -516,7 +516,7 @@ end</code></pre>
     domath(x::<span class="dt">Number</span>) = (x + <span class="fl">5</span>)
 
 <span class="kw">end</span></code></pre></div>
-<ul class="incremental">
+<ul>
 <li>After that we can do</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">using Example
@@ -525,7 +525,7 @@ domath(pi)</code></pre></div>
 </div>
 <div id="julia-primer-types" class="slide section level1">
 <h1><code>Julia</code> Primer: Types</h1>
-<ul>
+<ul class="incremental">
 <li>Types are at the core of what makes julia a great language.</li>
 <li><em>Everything</em> in julia is represented as a datatype.</li>
 <li>Remember the different numeric <em>types</em> from before? Those are types.</li>
@@ -539,7 +539,7 @@ domath(pi)</code></pre></div>
 </div>
 <div id="julia-primer-custom-types" class="slide section level1">
 <h1><code>Julia</code> Primer: Custom Types</h1>
-<ul>
+<ul class="incremental">
 <li>The great thing is that you can create you own types.</li>
 <li>Going with the example from the wikibook, we could have types <code>Jaguar</code> and <code>Pussycat</code> as being subtypes of <code>feline</code>:</li>
 </ul>
@@ -552,7 +552,7 @@ domath(pi)</code></pre></div>
     weight::<span class="dt">Float64</span>
     sound::AbstractString
 <span class="kw">end</span></code></pre></div>
-<ul>
+<ul class="incremental">
 <li>This means both jaguar and pusscat are subtypes of <code>Feline</code>,</li>
 <li>They have common fields <code>weight</code> and <code>sound</code>.</li>
 <li>but there could be different functions. We call function specific to a type 'methods'</li>
@@ -570,7 +570,7 @@ domath(pi)</code></pre></div>
 </div>
 <div id="julia-primer-multiple-dispatch" class="slide section level1">
 <h1>Julia Primer: Multiple Dispatch</h1>
-<ul>
+<ul class="incremental">
 <li>You have just learned <code>multiple dispatch</code>. The same function name dispatches to different functions, depending on the input argument type.</li>
 <li>Add all of the above code into the module <code>Example</code></li>
 <li>Add Jaguar, Pussycat, and <code>do_your_thing</code> to <code>export</code> and save the file.</li>
@@ -613,19 +613,19 @@ domath(pi)</code></pre></div>
         println(c.sound)
     <span class="kw">end</span>
 <span class="kw">end</span></code></pre></div>
-<ul>
+<ul class="incremental">
 <li>reload the module: <code>include(&quot;src/tmodule.jl&quot;)</code></li>
 <li>Let's create a cat or a panther via</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">using Example
 j = Jaguar(<span class="fl">130.1</span>,<span class="st">&quot;roaaarrrrrrr&quot;</span>)
 c = Pussycat(<span class="fl">9.8</span>,<span class="st">&quot;miauuu&quot;</span>)</code></pre></div>
-<ul>
+<ul class="incremental">
 <li>and make them <code>do_their_thing</code>:</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">do_your_thing(j)
 do_your_thing(c)</code></pre></div>
-<ul>
+<ul class="incremental">
 <li>of course we can also use the other functions in <code>Example</code>:</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">Example.hello(string(typeof(j)))</code></pre></div>
@@ -633,10 +633,10 @@ do_your_thing(c)</code></pre></div>
 </div>
 <div id="julia-primer-important-performance-lesson---type-stability" class="slide section level1">
 <h1>Julia Primer: Important performance lesson - Type Stability</h1>
-<ul>
+<ul class="incremental">
 <li>If you don't declare types, julia will try to infer them for you.</li>
 <li>DANGER: don't change types along the way.
-<ul>
+<ul class="incremental">
 <li>julia optimizes your code for a specific type configuration.</li>
 <li>it's not the same CPU operation to add two <code>Int</code>s and two <code>Float</code>s. The difference matters.</li>
 </ul></li>
@@ -664,36 +664,36 @@ do_your_thing(c)</code></pre></div>
 </div>
 <div class="incremental">
 <h2 id="what-is-unit-testing-why-should-you-test-you-code">What is Unit Testing? Why should you test you code?</h2>
-<ul>
+<ul class="incremental">
 <li>Bugs are very hard to find just by <em>looking</em> at your code.</li>
 <li>Bugs hide.</li>
 <li>From this very instructive <a href="http://web.mit.edu/6.005/www/fa15/classes/03-testing/#unit_testing_and_stubs">MIT software construction class</a>:</li>
 </ul>
 <blockquote>
 <p>Even with the best validation, it’s very hard to achieve perfect quality in software. Here are some typical residual defect rates (bugs left over after the software has shipped) per kloc (one thousand lines of source code):</p>
-<ul>
+<ul class="incremental">
 <li>1 - 10 defects/kloc: Typical industry software.</li>
 <li>0.1 - 1 defects/kloc: High-quality validation. The Java libraries might achieve this level of correctness.</li>
 <li>0.01 - 0.1 defects/kloc: The very best, safety-critical validation. NASA and companies like Praxis can achieve this level.</li>
 </ul>
 <p>This can be discouraging for large systems. For example, if you have shipped a million lines of typical industry source code (1 defect/kloc), it means you missed 1000 bugs!</p>
 </blockquote>
-<ul>
+<ul class="incremental">
 <li>One widely-used way to prevent your code from having too many errors, is to continuously test it.</li>
 <li>This issue is widely neglected in Economics as well as other sciences.
-<ul>
+<ul class="incremental">
 <li>If the resulting graph looks right, the code should be alright, shouldn't it?</li>
 <li>Well, should it?</li>
 </ul></li>
 <li>It is regrettable that so little effort is put into verifying the proper functioning of scientific code.
-<ul>
+<ul class="incremental">
 <li>Referees in general don't have access to the computing code for paper that is submitted to a journal for publication.</li>
 <li>How should they be able to tell whether what they see in black on white on paper is the result of the actual computation that was proposed, rather than the result of chance (a.k.a. a bug)?
-<ul>
+<ul class="incremental">
 <li>Increasingly papers do post the source code <em>after</em> publication.</li>
 </ul></li>
 <li>The scientific method is based on the principle of <strong>reproduciblity</strong> of results.
-<ul>
+<ul class="incremental">
 <li>Notice that having something reproducible is only a first step, since you can reproduce with your buggy code the same nice graph.</li>
 <li>But from where we are right now, it's an important first step.</li>
 </ul></li>
@@ -702,9 +702,9 @@ do_your_thing(c)</code></pre></div>
 <li>Extensively testing your code will guard you against this.</li>
 </ul>
 <h2 id="best-practice">Best Practice</h2>
-<ul>
+<ul class="incremental">
 <li>You want to be in <strong>maximum control</strong> over your code at all times:
-<ul>
+<ul class="incremental">
 <li>You want to be <strong>as sure as possible</strong> that a certain piece of code is doing, what it actually meant to do.</li>
 <li>This sounds trivial (and it is), yet very few people engage in unit testing.</li>
 </ul></li>
@@ -746,7 +746,7 @@ do_your_thing(c)</code></pre></div>
 </div>
 <div id="automated-testing" class="slide section level1">
 <h1>Automated Testing</h1>
-<ul>
+<ul class="incremental">
 <li>You should try to minimize the effort of writing tests.</li>
 <li>Using an automated test suite is very helpful here.</li>
 <li>In Julia, we have got <code>Base.Test</code> in the Base package, and <code>FactCheck</code> as a package.</li>
@@ -757,7 +757,7 @@ do_your_thing(c)</code></pre></div>
 </div>
 <div id="automated-testing-1" class="slide section level1">
 <h1>Automated Testing</h1>
-<ul>
+<ul class="incremental">
 <li>Let us create a test module for our <code>Example</code> module.</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia"><span class="kw">module</span> TestExample
@@ -774,14 +774,14 @@ do_your_thing(c)</code></pre></div>
         @fact domath(-<span class="fl">5</span>) == <span class="fl">0.0</span> --&gt; true
     <span class="kw">end</span>
 <span class="kw">end</span></code></pre></div>
-<ul>
+<ul class="incremental">
 <li>There are many more assertions. Checkout the <a href="https://github.com/JuliaLang/FactCheck.jl">FactCheck website</a>.</li>
 <li>now run the tests with <code>include(&quot;test/runtests.jl&quot;)</code></li>
 </ul>
 </div>
 <div id="automated-testing-on-travis" class="slide section level1">
 <h1>Automated Testing on Travis</h1>
-<ul>
+<ul class="incremental">
 <li><a href="https://travis-ci.org" class="uri">https://travis-ci.org</a> is a continuous integration service.</li>
 <li>It runs your test on their machines and notifies you of the result.</li>
 <li>Every time you push a commit to github.</li>
@@ -792,13 +792,13 @@ do_your_thing(c)</code></pre></div>
 </div>
 <div id="debugging-julia" class="slide section level1">
 <h1>Debugging Julia</h1>
-<ul>
+<ul class="incremental">
 <li>The <a href="https://github.com/toivoh/Debug.jl">Debug.jl package</a>.</li>
 </ul>
 </div>
 <div id="plotting-with-julia" class="slide section level1">
 <h1>Plotting with Julia</h1>
-<ul>
+<ul class="incremental">
 <li><a href="http://mth229.github.io/graphing.html" class="uri">http://mth229.github.io/graphing.html</a> has a nice intro using the package <code>Gadfly</code></li>
 <li>See <a href="http://quant-econ.net/jl/julia_libraries.html#plotting">quant-econ.net website</a> for good intro to PyPlot plotting.</li>
 </ul>

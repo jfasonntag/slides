@@ -62,21 +62,21 @@ Florian Oswald
 <div id="numerical-differentiation-and-integration" class="slide section level1">
 <h1>Numerical Differentiation and Integration</h1>
 <h2 id="derivatives">Derivatives</h2>
-<ol style="list-style-type: decimal">
+<ol class="incremental" style="list-style-type: decimal">
 <li>Finite Differencing: a numerical approximation
-<ul>
+<ul class="incremental">
 <li>Based on Taylor's Theorem</li>
 <li>Observe variation in function values from evaluating it at &quot;close&quot; points.</li>
 <li>Forward Differencing and Central Differencing</li>
 </ul></li>
 <li>Automatic Differentiation
-<ul>
+<ul class="incremental">
 <li>Breaks down the actual <code>code</code> that defines a function and performs elementary differentiation rules, after disecting expressions via the chain rule.</li>
 <li>This produces <strong>analytic</strong> derivatives, i.e. there is <strong>no</strong> approximation error.</li>
 <li>This is the future.</li>
 </ul></li>
 <li>Symbolic Differentiation
-<ul>
+<ul class="incremental">
 <li>Some languages (most notably Mathematica) support symbolic algebra. Very useful sometimes if one needs to work through complicated expressions.</li>
 <li>Not very useful for high computational demands, i.e. repeated computation of derivatives in an optimization routine.</li>
 </ul></li>
@@ -84,7 +84,7 @@ Florian Oswald
 </div>
 <div id="finite-differences" class="slide section level1">
 <h1>Finite Differences</h1>
-<ul>
+<ul class="incremental">
 <li>Consider the definition of the derivative of <span class="math inline">\(f\)</span> at point <span class="math inline">\(x\)</span>: <span class="math display">\[ f&#39;(x) = \lim_{h\to0}\frac{f(x+h)-f(x)}{h} \]</span></li>
 <li>The simplest way to calculate a numerical derivative is to replicate this computation for small <span class="math inline">\(h\)</span> with: <span class="math display">\[ f&#39;(x) \approx \frac{f(x+h)-f(x)}{h},\quad h\text{ small.} \]</span></li>
 <li>This is known as the Forward Difference approach.</li>
@@ -96,13 +96,13 @@ f(x) = <span class="fl">2</span> - x^<span class="fl">2</span>
 c = -<span class="fl">0.75</span>
 sec_line(h) = x -&gt; f(c) + (f(c + h) - f(c))/h * (x - c)
 plot([f, sec_line(<span class="fl">1</span>), sec_line(<span class="fl">.5</span>), sec_line(<span class="fl">.25</span>), sec_line(<span class="fl">.05</span>)], -<span class="fl">1</span>, <span class="fl">1</span>)</code></pre></div>
-<ul>
+<ul class="incremental">
 <li>What's the problem? Well, what is <em>small</em>?</li>
 </ul>
 </div>
 <div id="finite-differences-whats-the-right-step-size-h" class="slide section level1">
 <h1>Finite Differences: what's the right step size <span class="math inline">\(h\)</span>?</h1>
-<ul>
+<ul class="incremental">
 <li>Theoretically, we would like to have <span class="math inline">\(h\)</span> as small as possible, since we want to approximate the limit at zero.</li>
 <li>In practice, on a computer, there is a limit to this. There is a smallest representable number, as we know.</li>
 <li><code>eps()</code>.</li>
@@ -111,7 +111,7 @@ plot([f, sec_line(<span class="fl">1</span>), sec_line(<span class="fl">.5</span
 </div>
 <div id="automatic-differentiation-ad" class="slide section level1">
 <h1> Automatic Differentiation (AD)</h1>
-<ul>
+<ul class="incremental">
 <li>2 modes: Forward and Reverse Mode.</li>
 <li>The basic idea is that the derivative of any function can be decomposed into some basic algebraic operations.</li>
 <li><p>The <a href="https://en.wikipedia.org/wiki/Automatic_differentiation">wikipedia page is informative</a></p>
@@ -121,7 +121,7 @@ plot([f, sec_line(<span class="fl">1</span>), sec_line(<span class="fl">.5</span
 </div></li>
 </ul>
 <h2 id="example">Example</h2>
-<ul>
+<ul class="incremental">
 <li>Suppose we want to differentiate <span class="math inline">\(f(x_1,x_2) = x_1 x_2 + \sin x_1\)</span></li>
 <li>We label subexpressions by <span class="math inline">\(w_i\)</span> as follows: <span class="math display">\[ \begin{array}{cl}
 f(x_1,x_2) &amp;= x_1 x_2 + \sin x_1 \\
@@ -141,7 +141,7 @@ f(x_1,x_2) &amp;= x_1 x_2 + \sin x_1 \\
 </div>
 <div id="ad-in-julia" class="slide section level1">
 <h1>AD in Julia</h1>
-<ul>
+<ul class="incremental">
 <li>The organisation here is <a href="http://www.juliadiff.org" class="uri">http://www.juliadiff.org</a></li>
 <li>There are many packages to perform differentiation with Julia here.</li>
 <li>Many packages rely on the machinery here.</li>
@@ -154,17 +154,17 @@ x = rand(<span class="fl">5</span>); <span class="co"># get 5 random points</spa
 g = ForwardDiff.gradient(f); <span class="co"># g = ∇f</span>
 j = ForwardDiff.jacobian(g); <span class="co"># j = J(∇f)</span>
 ForwardDiff.hessian(f, x) <span class="co"># H(f)(x) == J(∇f)(x), as expected</span></code></pre></div>
-<ul>
+<ul class="incremental">
 <li>The authors provide some benchmarks. Let's run those:</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">include(joinpath(Pkg.dir(<span class="st">&quot;ForwardDiff&quot;</span>),<span class="st">&quot;benchmarks&quot;</span>,<span class="st">&quot;run_all_benchmarks(ForwardDiffBenchmarks.Rosenbrock)&quot;</span>))</code></pre></div>
 </div>
 <div id="numerical-approximation-of-integrals" class="slide section level1">
 <h1>Numerical Approximation of Integrals</h1>
-<ul>
+<ul class="incremental">
 <li>We will focus on methods that represent integrals as weighted sums.</li>
 <li>The typical representation will look like: <span class="math display">\[ E[G(\epsilon)] = \int_{\mathbb{R}^N} G(\epsilon) w(\epsilon) d\epsilon \approx \sum_{j=1}^J \omega_j G(\epsilon_j) \]</span>
-<ul>
+<ul class="incremental">
 <li><span class="math inline">\(N\)</span> is the dimensionality of the integration problem.</li>
 <li><span class="math inline">\(G:\mathbb{R}^N \mapsto \mathbb{R}\)</span> is the function we want to integrate wrt <span class="math inline">\(\epsilon \in \mathbb{R}^N\)</span>.</li>
 <li><span class="math inline">\(w\)</span> is a density function s.t. <span class="math inline">\(\int_{\mathbb{R}^n} w(\epsilon) d\epsilon = 1\)</span>.</li>
@@ -179,9 +179,9 @@ ForwardDiff.hessian(f, x) <span class="co"># H(f)(x) == J(∇f)(x), as expected<
 </div>
 <div id="quadrature-rules" class="slide section level1">
 <h1>Quadrature Rules</h1>
-<ul>
+<ul class="incremental">
 <li>We focus exclusively on those and leave Simpson and Newton Cowtes formulas out.
-<ul>
+<ul class="incremental">
 <li>This is because Quadrature is the method that in many situations gives highes accuracy with lowest computational cost.</li>
 </ul></li>
 <li>Quadrature provides a rule to compute weights <span class="math inline">\(w_j\)</span> and nodes <span class="math inline">\(\epsilon_j\)</span>.</li>
@@ -193,7 +193,7 @@ ForwardDiff.hessian(f, x) <span class="co"># H(f)(x) == J(∇f)(x), as expected<
 </div>
 <div id="gauss-hermite-expectation-of-a-normally-distributed-variable" class="slide section level1">
 <h1>Gauss-Hermite: Expectation of a Normally Distributed Variable</h1>
-<ul>
+<ul class="incremental">
 <li>There are many different rules, all specific to a certain random process.</li>
 <li>Gauss-Hermite is designed for an integral of the form <span class="math display">\[ \int_{-\infty}^{+\infty} e^{-x^2} G(x) dx \]</span> and where we would approximate <span class="math display">\[ \int_{-\infty}^{+\infty} e^{-x^2} f(x) dx \approx \sum_{i=1}^n \omega_i G(x_i) \]</span></li>
 <li>Now, let's say we want to approximate the expected value of function <span class="math inline">\(f\)</span> when it's argument <span class="math inline">\(z\sim N(\mu,\sigma^2)\)</span>: <span class="math display">\[ E[f(z)] = \int_{-\infty}^{+\infty} \frac{1}{\sigma \sqrt{2\pi}} \exp \left( -\frac{(z-\mu)^2}{2\sigma^2} \right) f(z) dz \]</span></li>
@@ -201,7 +201,7 @@ ForwardDiff.hessian(f, x) <span class="co"># H(f)(x) == J(∇f)(x), as expected<
 </div>
 <div id="gauss-hermite-expectation-of-a-normally-distributed-variable-1" class="slide section level1">
 <h1>Gauss-Hermite: Expectation of a Normally Distributed Variable</h1>
-<ul>
+<ul class="incremental">
 <li>The rule is defined for <span class="math inline">\(x\)</span> however. We need to transform <span class="math inline">\(z\)</span>: <span class="math display">\[ x = \frac{(z-\mu)^2}{2\sigma^2} \Rightarrow z = \sqrt{2} \sigma x + \mu \]</span></li>
 <li>This gives us now (just plug in for <span class="math inline">\(z\)</span>) <span class="math display">\[ E[f(z)] = \int_{-\infty}^{+\infty} \frac{1}{ \sqrt{\pi}} \exp \left( -x^2 \right) f(\sqrt{2} \sigma x + \mu) dx \]</span></li>
 <li>And thus, our approximation to this, using weights <span class="math inline">\(\omega_i\)</span> and nodes <span class="math inline">\(x_i\)</span> is <span class="math display">\[ E[f(z)] \approx \sum_{j=1}^J \frac{1}{\sqrt{\pi}} \omega_j f(\sqrt{2} \sigma x_j + \mu)\]</span></li>
@@ -209,7 +209,7 @@ ForwardDiff.hessian(f, x) <span class="co"># H(f)(x) == J(∇f)(x), as expected<
 </div>
 <div id="using-quadrature-in-julia" class="slide section level1">
 <h1> Using Quadrature in Julia</h1>
-<ul>
+<ul class="incremental">
 <li><a href="https://github.com/ajt60gaibb/FastGaussQuadrature.jl" class="uri">https://github.com/ajt60gaibb/FastGaussQuadrature.jl</a></li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">Pkg.add(<span class="st">&quot;FastGaussQuadrature&quot;</span>)
@@ -231,13 +231,13 @@ weights = DataFrame([x[<span class="fl">2</span>] <span class="kw">for</span> x 
 </div>
 <div id="quadrature-in-more-dimensions-product-rule" class="slide section level1">
 <h1> Quadrature in more dimensions: Product Rule</h1>
-<ul>
+<ul class="incremental">
 <li>If we have <span class="math inline">\(N&gt;1\)</span>, we can use the product rule: this just takes the kronecker product of all univariate rules.</li>
 <li>This works well as long as <span class="math inline">\(N\)</span> is not too large. The number of required function evaluations grows exponentially. <span class="math display">\[ E[G(\epsilon)] = \int_{\mathbb{R}^N} G(\epsilon) w(\epsilon) d\epsilon \approx \sum_{j_1=1}^{J_1} \cdots \sum_{j_N=1}^{J_N} \omega_{j_1}^1 \cdots \omega_{j_N}^N G(\epsilon_{j_1}^1,\dots,\epsilon_{j_N}^N) \]</span> where <span class="math inline">\(\omega_{j_1}^1\)</span> stands for weight index <span class="math inline">\(j_1\)</span> in dimension 1, same for <span class="math inline">\(\epsilon\)</span>.</li>
 <li>Total number of nodes: <span class="math inline">\(J=J_1 J_2 \cdots J_N\)</span>, and <span class="math inline">\(J_i\)</span> can differ from <span class="math inline">\(J_k\)</span>.</li>
 </ul>
 <h2 id="example-for-n3">Example for <span class="math inline">\(N=3\)</span></h2>
-<ul>
+<ul class="incremental">
 <li>Suppose we have <span class="math inline">\(\epsilon^i \sim N(0,1),i=1,2,3\)</span> as three uncorrelated random variables.</li>
 <li>Let's take <span class="math inline">\(J=3\)</span> points in all dimensions, so that in total we have <span class="math inline">\(J^N=27\)</span> points.</li>
 <li>We have the nodes and weights from before in <code>rules[&quot;hermite&quot;]</code>.</li>
@@ -248,27 +248,27 @@ push!(nodes,repeat(rules[<span class="st">&quot;hermite&quot;</span>][<span clas
 push!(nodes,repeat(rules[<span class="st">&quot;hermite&quot;</span>][<span class="fl">1</span>],inner=[<span class="fl">9</span>],outer=[<span class="fl">1</span>]))
 weights = kron(rules[<span class="st">&quot;hermite&quot;</span>][<span class="fl">2</span>],kron(rules[<span class="st">&quot;hermite&quot;</span>][<span class="fl">2</span>],rules[<span class="st">&quot;hermite&quot;</span>][<span class="fl">2</span>]))
 df = hcat(DataFrame(weights=weights),DataFrame(nodes,[:dim1,:dim2,:dim3]))</code></pre></div>
-<ul>
+<ul class="incremental">
 <li>Imagine you had a function <span class="math inline">\(g\)</span> defined on those 3 dims: in order to approximate the integral, you would have to evaluate <span class="math inline">\(g\)</span> at all combinations of <code>dimx</code>, multiply with the corresponding weight, and sum.</li>
 </ul>
 </div>
 <div id="alternatives-to-the-product-rule" class="slide section level1">
 <h1>Alternatives to the Product Rule</h1>
-<ul>
+<ul class="incremental">
 <li>Monomial Rules: They grow only linearly.</li>
 <li>Please refer to <span class="citation">(Judd 1998)</span> for more details.</li>
 </ul>
 </div>
 <div id="monte-carlo-integration" class="slide section level1">
 <h1>Monte Carlo Integration</h1>
-<ul>
+<ul class="incremental">
 <li>A widely used method is to just draw <span class="math inline">\(N\)</span> points randomly from the space of the shock <span class="math inline">\(\epsilon\)</span>, and to assign equal weights <span class="math inline">\(\omega_j=\frac{1}{N}\)</span> to all of them.</li>
 <li>The expectation is then <span class="math display">\[ E[G(\epsilon)] \approx \frac{1}{N} \sum_{j=1}^N  G(\epsilon_j) \]</span></li>
 <li>This in general a very inefficient method.</li>
 <li>Particularly in more than 1 dimensions, the number of points needed for good accuracy is very large.</li>
 </ul>
 <h2 id="quasi-monte-carlo-integration">Quasi Monte Carlo Integration</h2>
-<ul>
+<ul class="incremental">
 <li>Uses non-product techniques to construct a grid of uniformly spaced points.</li>
 <li>The researcher controlls the number of points.</li>
 <li>We need to construct equidistributed points.</li>
@@ -290,9 +290,9 @@ plot(p[:,<span class="fl">1</span>], p[:,<span class="fl">2</span>], <span class
 </div>
 <div id="correlated-shocks" class="slide section level1">
 <h1>Correlated Shocks</h1>
-<ul>
+<ul class="incremental">
 <li>We often face situations where the shocks are in fact correlated.
-<ul>
+<ul class="incremental">
 <li>One very typical case is an AR1 process: <span class="math display">\[ z_{t+1} = \rho z_t + \varepsilon_t, \varepsilon \sim N(0,\sigma^2) \]</span></li>
 </ul></li>
 <li>The general case is again: <span class="math display">\[ E[G(\epsilon)] = \int_{\mathbb{R}^N} G(\epsilon) w(\epsilon) d\epsilon \approx \sum_{j_1=1}^{J_1} \cdots \sum_{j_N=1}^{J_N} \omega_{j_1}^1 \cdots \omega_{j_N}^N G(\epsilon_{j_1}^1,\dots,\epsilon_{j_N}^N) \]</span></li>
@@ -307,7 +307,7 @@ plot(p[:,<span class="fl">1</span>], p[:,<span class="fl">2</span>], <span class
 </div>
 <div id="references" class="slide section level1">
 <h1>References</h1>
-<ul>
+<ul class="incremental">
 <li>The Integration part of these slides are based on <span class="citation">(L. Maliar and Maliar 2013)</span> chapter 5</li>
 </ul>
 <div id="refs" class="references">
