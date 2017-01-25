@@ -11,6 +11,11 @@ You found the Easter Egg. Well done!
 """)
 end
 
-export find_easter
+function hello()
+    println("""
+        Welcome to the ScPo-CompEcon slides repository!
+        """)
+
+export find_easter, hello
 
 end
