@@ -314,13 +314,17 @@ plot(rand(4,4))
 # Cloning the `Slides` repository
 
 * Let's try this out. We want to clone **this** repository, which lives at https://github.com/ScPo-CompEcon/slides
-* To do so, we do
+* You can get [https://desktop.github.com](https://desktop.github.com) for an easy interface to github. Open, and login with your github username.
+* To clone, go to [https://github.com/ScPo-CompEcon/slides](https://github.com/ScPo-CompEcon/slides) and click on **clone**, then *Open in Desktop*
+	* If you don't like GUI's, you can just copy the address and do in your terminal `git clone git@github.com:ScPo-CompEcon/slides.git`
+* You can now use this package. For example, navigate to where you cloned it to and do
 
-	~~~~~~~~~~~ {.julia}
-	Pkg.clone("https://github.com/ScPo-CompEcon/slides")
-	~~~~~~~~~~~ 
+~~~~~~~~~~~ {.julia}
+# you are in slides/
+include("src/slides.jl")   # this loads the package code
+hello()
+~~~~~~~~~~~ 
 
-* This places a copy into your `Pkg.dir()`.
 
 
 
