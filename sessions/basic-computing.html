@@ -47,7 +47,6 @@ code > span.in { color: #808080; font-weight: bold; font-style: italic; } /* Inf
   </style>
   <link rel="stylesheet" type="text/css" media="screen, projection, print"
     href="http://www.w3.org/Talks/Tools/Slidy2/styles/slidy.css" />
-  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
   <script src="http://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js"
     charset="utf-8" type="text/javascript"></script>
 </head>
@@ -144,7 +143,7 @@ Florian Oswald
 <h1>Julia is new</h1>
 <ul>
 <li>Julia is a very modern language, combining the best features of many other languages.</li>
-<li>For example, wow would you write that in <code>R</code>? <span class="math display">\[ \sum_{i=1}^N \sum_{j=1}^i j\]</span></li>
+<li>For example, wow would you write that in <code>R</code>? <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>i</mi></munderover><mi>j</mi></mrow><annotation encoding="application/x-tex"> \sum_{i=1}^N \sum_{j=1}^i j</annotation></semantics></math></li>
 </ul>
 <div class="incremental">
 <div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r">R&gt;<span class="st"> </span><span class="kw">sum</span>(<span class="kw">unlist</span>(<span class="kw">lapply</span>(<span class="dv">1</span>:<span class="dv">10</span>,function(x) <span class="dv">1</span>:x)))
@@ -269,8 +268,8 @@ julia&gt; @time sum(sum(j <span class="kw">for</span> j <span class="kw">in</spa
 <div id="motivational-example" class="slide section level1">
 <h1>Motivational Example</h1>
 <ul>
-<li>Suppose we want to compute <span class="math display">\[ u(c,l) = \frac{\left(c^\alpha l^{1-\alpha} \right)^{1-\gamma}}{1-\gamma} \]</span></li>
-<li>Let's take <span class="math inline">\(c=1.1,l=0.8\)</span> and compute this.</li>
+<li>Suppose we want to compute <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo stretchy="false" form="prefix">(</mo><mi>c</mi><mo>,</mo><mi>l</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>c</mi><mi>α</mi></msup><msup><mi>l</mi><mrow><mn>1</mn><mo>−</mo><mi>α</mi></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mn>1</mn><mo>−</mo><mi>γ</mi></mrow></msup><mrow><mn>1</mn><mo>−</mo><mi>γ</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex"> u(c,l) = \frac{\left(c^\alpha l^{1-\alpha} \right)^{1-\gamma}}{1-\gamma} </annotation></semantics></math></li>
+<li>Let's take <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>=</mo><mn>1.1</mn><mo>,</mo><mi>l</mi><mo>=</mo><mn>0.8</mn></mrow><annotation encoding="application/x-tex">c=1.1,l=0.8</annotation></semantics></math> and compute this.</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">alpha = <span class="fl">0.7</span>
 gamma = <span class="fl">2.1</span>
@@ -279,7 +278,7 @@ u(c,l) = ((c^alpha * l^(<span class="fl">1</span>-alpha))^(<span class="fl">1</s
 <div class="incremental">
 <h2 id="more-sophisticated-approach">more sophisticated approach</h2>
 <ul>
-<li>Note that <span class="math inline">\(x^\alpha = \exp(\alpha \log(x))\)</span>.</li>
+<li>Note that <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mi>α</mi></msup><mo>=</mo><mo>exp</mo><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>log</mo><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">x^\alpha = \exp(\alpha \log(x))</annotation></semantics></math>.</li>
 <li>(particularly non-integer) exponentiation is expensive. let's see if we can do better:</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">u2(c,l)      = exp( alpha*(<span class="fl">1</span>-gamma) * log(c) + (<span class="fl">1</span>-alpha)*(<span class="fl">1</span>-gamma) * log(l) )/(<span class="fl">1</span>-gamma)
