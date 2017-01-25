@@ -16,6 +16,7 @@ function hello()
     println("""
         Welcome to the ScPo-CompEcon slides repository!
         """)
+end
 
 export find_easter, hello
 
