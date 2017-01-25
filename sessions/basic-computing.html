@@ -393,8 +393,8 @@ slides.find_easter()  <span class="co"># the slides. is important!</span></code>
 <li><code>slides</code> also contains a folder <em>Notebooks</em>.</li>
 <li>We will use one of those now in your browser to continue this session.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">Pkg.add(<span class="st">&quot;IJulia&quot;</span>) <span class="co"># This will install IJulia</span>
-<span class="co"># Next commands you run each time you open the REPL</span>
+<div class="sourceCode"><pre class="sourceCode julia"><code class="sourceCode julia">Pkg.checkout(<span class="st">&quot;slides&quot;</span>,<span class="st">&quot;gh-pages&quot;</span>)  <span class="co"># go back to main branch</span>
+Pkg.add(<span class="st">&quot;IJulia&quot;</span>) <span class="co"># This will install IJulia</span>
 using IJulia
 notebook(detached=true,dir=Pkg.dir(<span class="st">&quot;slides/Notebooks&quot;</span>))</code></pre></div>
 </div>

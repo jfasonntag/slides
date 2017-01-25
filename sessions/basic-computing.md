@@ -351,8 +351,8 @@ slides.find_easter()  # the slides. is important!
 * We will use one of those now in your browser to continue this session.
 
 ~~~~~~~~~~~ {.julia}
+Pkg.checkout("slides","gh-pages")  # go back to main branch
 Pkg.add("IJulia") # This will install IJulia
-# Next commands you run each time you open the REPL
 using IJulia
 notebook(detached=true,dir=Pkg.dir("slides/Notebooks"))
 ~~~~~~~~~~~ 
