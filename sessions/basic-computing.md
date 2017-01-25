@@ -5,9 +5,9 @@
 
 # Introduction
 
-* These slides are visible as long as you are online. It's a website ;-) 
-* You can hit `c` on your keyboard to see a table of contents. clickable.
+* You can hit `c` on your keyboard to see a table of contents. It's clickable.
 * There will be working code on those slides. I invite you to copy and paste this into a julia session and try it out.
+* You need to be online to get properly rendered math (and your browser needs to support the `MathJax` plugin)
 
 ---------------
 
@@ -31,22 +31,22 @@
 
 # Julia? Why Julia?
 
->* The *best* software doesn't exist. All of the following statements depend on:
+* The *best* software doesn't exist. All of the following statements depend on:
 	1. The problem at hand. 
 		* You are fine with Stata if you need to run a probit.
 		* Languages have different comparative advantages with regards to different tasks.
 	1. Preferences of the analyst. Some people just *love* their software.
 * That said, there are some general themes we should keep in mind when choosing a software.
->* [Stephen Johnson at MIT has a good pitch.](https://github.com/stevengj/julia-mit)
->* High-level languages for technical computing: Matlab, Python, R, ...
+* [Stephen Johnson at MIT has a good pitch.](https://github.com/stevengj/julia-mit)
+* High-level languages for technical computing: Matlab, Python, R, ...
 	* you get going immediately
 	* very important for exploratory coding or data analysis
 	* You don't want to worry about type declarations and compilers at the exploratory stage
->* High-level languages are slow.
+* High-level languages are slow.
 	* Traditional Solutions to this: Passing the high-speed threshold.
 	* Using `Rcpp` or `Cython` etc is a bit like [Stargate](https://en.wikipedia.org/wiki/Stargate_SG-1). You loose control the moment you pass the barrier to `C++` for a little bit. (Even though those are great solutions.) If the `C++` part of your code becomes large, testing this code becomes increasingly difficult.
 	* You end up spending your time coding `C++`. But that has it's own drawbacks.
->* Julia is **fast**.
+* Julia is **fast**.
 
 ---------------
 
