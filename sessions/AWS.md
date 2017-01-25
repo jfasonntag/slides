@@ -32,6 +32,19 @@
 	* now that you have python, do `easy_install starcluster` on your command line
 	* we will edit this file together in class.
 
+
+
+## CAUTION: Financial Costs!
+
+* AWS is a pay as you go system.
+* There is a free-tier arrangement under which you can use the service without having to pay for it.
+* However, this is subject to some restrictions. Once you exceed the limits, you will be charged.
+* It is **very important** that you go to your amazon AWS console and have a close eye on your Billing Status (top right, click on your name)
+* Inside Billing Status there is an *estimated cost of your free tier usage*. you can see how much of your free time and resources you have used up already in the current month.
+* **Danger**: You are charged for volumnes (i.e. hard disks) that are kept available for you. reduce the number of active volumes and snapshots in your aws console to a minimum. 
+	* *terminating* an instance instead of just *stopping* it automatically detaches a volume and therefore prevents this problem.
+
+
 ---------------------
 
 
@@ -139,12 +152,17 @@ AWS_REGION_HOST = ec2.us-east-1.amazonaws.com
 ```
 
 * define keypair to use
-* select AMI ami-48382c22
+* select AMI ami-e2c8de88
 	* Amazon Machine Image (AMI): a certain type of *computer*, i.e. OS, pre-installed software, etc. 
 	* The machines are pretty much empty, so you would have to install all of your software each time before actually starting to work
 	* AMIs prevent you from having to do that.
 
 ## Run `starcluster`
+
+* do `start starcluster myfirst` where `myfirst` is the name of the cluster you want to create
+* this will uses your default cluster template from the config
+* after it's done, you can connect to the master node with `starcluster sshmaster myfirst`
+* to stop, do `starcluster stop myfirst`
 
         
             

@@ -3,17 +3,7 @@
 % Sciences Po, 2016
 
 
-
 # Introduction
-
-* This lecture has two parts:
-
-1. An introduction to some computing basics.
-2. Numerical approximation of Integrals and Derivatives.
-
-------------------------
-
-# This set of slides
 
 * These slides are visible as long as you are online. It's a website ;-) 
 * You can hit `c` on your keyboard to see a table of contents. clickable.
@@ -37,6 +27,8 @@
 	1. Step Number 1: [install julia](http://julialang.org/downloads/)!
 	1. Step Number 2: Why Julia?
 
+---------------
+
 # Julia? Why Julia?
 
 >* The *best* software doesn't exist. All of the following statements depend on:
@@ -54,22 +46,99 @@
 	* Traditional Solutions to this: Passing the high-speed threshold.
 	* Using `Rcpp` or `Cython` etc is a bit like [Stargate](https://en.wikipedia.org/wiki/Stargate_SG-1). You loose control the moment you pass the barrier to `C++` for a little bit. (Even though those are great solutions.) If the `C++` part of your code becomes large, testing this code becomes increasingly difficult.
 	* You end up spending your time coding `C++`. But that has it's own drawbacks.
->* Julia is [fast](http://julialang.org/benchmarks/).
+>* Julia is **fast**.
+
+---------------
+
+# Julia Benchmarks
+
+* Julia is [fast](http://julialang.org/benchmarks/).
 	* But julia is also a high-level dynamic language. How come? 
 	* The JIT compiler.
 	* The [LLVM project](https://en.wikipedia.org/wiki/LLVM).
-* Julia is open source (and it's for free)
-	* It's for free. Did I say that it's for free?
-	* You will never again worry about licenses. Want to run 1000 instances of julia? Do it.
-	* The entire standard library of julia is written in julia (and not in `C`, e.g., as is the case in R, matlab or python). It's easy to look and understand at how things work.
->* Julia is a very modern language, combining the best features of many other languages.
 
-. . .
+
+---------------
+
+# Julia is open source (and it's for free)
+
+* It's for free. 
+* Did I say that it's for free?
+* You will never again worry about licenses. Want to run 1000 instances of julia on your HPC? Do it.
+* The entire standard library of julia is written in julia (and not in `C`, e.g., as is the case in R, matlab or python). It's easy to look and understand at how things work.
+* Suppose you want to know how `searchsortedlast` is implemented in `julia`.
+
+~~~~~~~~~~~ {.julia}
+x = rand(10)
+@edit searchsortedlast(x,0.5)
+~~~~~~~~~~~ 
+
+
+---------------
+
+# Julia is new
+
+* Julia is a very modern language, combining the best features of many other languages.
+* For example, wow would you write that in `R`?
+	$$ \sum_{i=1}^N \sum_{j=1}^i j$$
+
+. . .  
+
+  
+~~~~~~~~~~~ {.R}
+R> sum(unlist(lapply(1:10,function(x) 1:x)))
+[1] 220
+~~~~~~~~~~~ 
+
+* and in julia? You could use a *Generator* expression, which does not allocate two arrays of values to sum over (which is what R has to do here). 
+
+	~~~~~~~~~~~ {.julia}
+	julia> sum(sum(j for j in 1:i) for i in 1:10)
+	220
+	~~~~~~~~~~~ 
+
+* To have a peek at performance, consider this:
+
+~~~~~~~~~~~ {.R}
+R> n
+[1] 25000
+> system.time(sum(as.numeric(unlist(lapply(1:n,function(x) 1:x)))))
+   user  system elapsed 
+  1.710   0.830   2.545 
+~~~~~~~~~~~ 
+
+~~~~~~~~~~~ {.julia}
+N = 25_000
+julia> @time sum([sum([j for j in 1:i]) for i in 1:N])  # R-equivalent
+  0.965853 seconds (97.73 k allocations: 2.333 GB, 21.25% gc time)
+
+julia> @time sum(sum(j for j in 1:i) for i in 1:N)
+  0.041750 seconds (113.21 k allocations: 3.107 MB)
+~~~~~~~~~~~ 
+
+
+------------------
+
+# Community
+
+* The `julia` community is a very active and thriving place, comparable to `R`.
+* You should get used to asking questions in the different forums if you have problems. 
+* You will find it much harder to learn any language if you are afraid to ask questions.
+  
+	* Your main forum is [https://discourse.julialang.org](https://discourse.julialang.org)
+* You can get help on [stackoverflow](http://stackoverflow.com/questions/tagged/julia-lang) under tag `julia-lang`
+* Many package maintainers are very active on their respective github repositories - some offer a gitter chat for questions.
+
+------------------
 
 ## Why not julia?
 
-* Julia is still in version `0.4.0`. There may be language changes in future releases.
-* There are way fewer packages for certain tasks than for, say, R.
+* Julia is in version `0.5.0`. There may be language changes in future releases.
+	* People were worried whether *julia is here to stay*. 
+	* The developers are very cautious before releasing version `1.0` because of that.
+	* There are examples of other languages which ran out of steam (Perl).
+	* The next version `0.6` is being released early feb 2017.
+* There are fewer packages for certain tasks than you have in R.
 * Relatively few people know it. Your supervisor almost surely doesn't know it.
 
 ---------------
@@ -187,12 +256,63 @@ t3 = @elapsed for i in 1:n u3(1.1,0.8) end
 println("u1 takes $(round(t1/t3,2)) times longer than u3")
 ~~~~~~~~~~~
 
+
+----------------
+
+# Time to get your hands dirty (with some code)!
+
+## First Things First: `Git`
+
+* It is useful to first talk about `Git`, a widely used version control system.
+* This is because the julia package system is built using git.
+* In fact, a julia package is a `Git` *repository*.
+- After one makes changes to a project, they **commit** the changes
+- Changes are **pushed** to the main repository hosted online
+- To download the code, you **clone** the repository
+- Instead of editing the main repository, one edits a **branch**
+- To get the changes of the main branch in yours, you **fetch**, **pull**, or **rebase**
+- One asks the owner of the repository to add their changes via a **pull request**
+- Stable versions are called **releases**
+- The packages can be found / investigated at Github.com
+
+----------------
+
+# First Things First: `Github.com`
+
+- The major online service for git repositories is Github
+- Github is a free service
+- The code is hosted online, free for everyone to view
+- Users can open **Issues** to ask for features and give bug reports to developers
+- Many projects are brought together into **organizations** (JuliaMath, JuliaDiffEq, JuliaStats, etc.) 
+
+An example Github repository for a Julia package is [https://github.com/JuliaOpt/JuMP.jl](https://github.com/JuliaOpt/JuMP.jl)
+
+
+----------------
+
+# Julia's Package Manager
+
+* Officially registered packages are available on github via the function `Pkg.add()`.
+	* Let's install the `Plots.jl` package: `Pkg.add("Plots")`
+* Non-registered ones are available via `Pkg.clone()`
+	* For example, `Pkg.clone("https://github.com/JuliaDiffEq/ParameterizedFunctions.jl")`
+
+## Using a Package
+
+* To use a package, we need to import it's code into our julia session.
+
+~~~~~~~~~~~ {.julia}
+using Plots
+plot(rand(4,4))
+~~~~~~~~~~~ 
+
+----------------
 ----------------
 
 # Some Numerical Concepts and `Julia`
 
 * Machine epsilon: The smallest number that your computer can represent, type `eps()`.
-* Infinity: A number greater than all representable numbers on your computer. [Obeys some arithmethmic rules](http://docs.julialang.org/en/release-0.4/manual/integers-and-floating-point-numbers/?highlight=infinity#special-floating-point-values)
+* Infinity: A number greater than all representable numbers on your computer. [Obeys some arithmethmic rules](http://docs.julialang.org/en/release-0.5/manual/integers-and-floating-point-numbers/?highlight=infinity#special-floating-point-values)
 	* Overflow: If you perform an operation where the result is greater than the largest representable number.
 	* Underflow: You take two (very small) representable numbers, but the result is smaller than `eps()`. 
 	* In Julia, you are wrapped around the end of your representable space:
@@ -202,7 +322,7 @@ println("u1 takes $(round(t1/t3,2)) times longer than u3")
 	```
 * Integers and Floating Point Numbers.
 * Single and Double Precision.
-* In Julia, all of these are different [*numeric primitive types (head over to julia manual for a second)*](http://docs.julialang.org/en/release-0.4/manual/integers-and-floating-point-numbers/).
+* In Julia, all of these are different [*numeric primitive types (head over to julia manual for a second)*](http://docs.julialang.org/en/release-0.5/manual/integers-and-floating-point-numbers/).
 * Julia also supports *Arbitrary Precision Arithmetic*. Thus, overflow shouldn't become an issue anymore.
 * See min and max for different types:
 
@@ -217,10 +337,36 @@ end
 
 # Interacting with the `Julia REPL`
 
-* REPL?
-* different modes.
-* incremental search with `CTRL r`
-* documented in the [manual](http://docs.julialang.org/en/release-0.4/manual/interacting-with-julia)
+* What is a REPL?
+* different modes:
+	* julian
+	* help: `?`
+	* shell: `;`
+	* search history file: 
+		* incremental search with `CTRL r`
+	* documented in the [manual](http://docs.julialang.org/en/release-0.5/manual/interacting-with-julia)
+
+----------------
+
+
+
+----------------
+# Julia Primer
+
+We'll introduce the following fundamental concepts:
+
+* Workflow
+* DataStructures
+* Working with Data
+* Statistics
+* Plotting
+* Performance
+
+----------------
+
+# Workflow
+
+
 
 
 
@@ -566,7 +712,7 @@ end
 
 ----------------
 
-# Debugging with Julia
+# Debugging Julia
 
 * The [Debug.jl package](https://github.com/toivoh/Debug.jl).
 
@@ -579,294 +725,6 @@ end
 * See [quant-econ.net website](http://quant-econ.net/jl/julia_libraries.html#plotting) for good intro to PyPlot plotting.
 
 
-----------------
-
-# Numerical Differentiation and Integration
-
-## Derivatives
-
-1. Finite Differencing: a numerical approximation
-	* Based on Taylor's Theorem
-	* Observe variation in function values from evaluating it at "close" points.
-	* Forward Differencing and Central Differencing
-2. Automatic Differentiation
-	* Breaks down the actual `code` that defines a function and performs elementary differentiation rules, after disecting expressions via the chain rule.
-	* This produces **analytic** derivatives, i.e. there is **no** approximation error.
-	* This is the future.
-3. Symbolic Differentiation
-	* Some languages (most notably Mathematica) support symbolic algebra. Very useful sometimes if one needs to work through complicated expressions.
-	* Not very useful for high computational demands, i.e. repeated computation of derivatives in an optimization routine.
-
--------------
-
-# Finite Differences
-
-* Consider the definition of the derivative of $f$ at point $x$:
-	$$ f'(x) = \lim_{h\to0}\frac{f(x+h)-f(x)}{h} $$
-* The simplest way to calculate a numerical derivative is to replicate this computation for small $h$ with:
-	$$ f'(x) \approx \frac{f(x+h)-f(x)}{h},\quad h\text{ small.} $$
-* This is known as the Forward Difference approach.
-* There are different approaches, e.g. the central difference approach does
-	$$ f'(x) \approx \frac{f(x+h)-f(x-h)}{2h},\quad h\text{ small.} $$
-* How does this perform?
-
-```julia
-using Gadfly
-f(x) = 2 - x^2
-c = -0.75
-sec_line(h) = x -> f(c) + (f(c + h) - f(c))/h * (x - c)
-plot([f, sec_line(1), sec_line(.5), sec_line(.25), sec_line(.05)], -1, 1)
-```
-
-* What's the problem? Well, what is *small*?
-
-
--------------
-
-# Finite Differences: what's the right step size $h$?
-
-* Theoretically, we would like to have $h$ as small as possible, since we want to approximate the limit at zero.
-* In practice, on a computer, there is a limit to this. There is a smallest representable number, as we know.
-* `eps()`.
-* One can show that the optimal step size is $h=\sqrt{\texttt{eps()}}$
-
-	
-------------
-
-# Automatic Differentiation (AD)
-
-* 2 modes: Forward and Reverse Mode.
-* The basic idea is that the derivative of any function can be decomposed into some basic algebraic operations.
-* The [wikipedia page is informative](https://en.wikipedia.org/wiki/Automatic_differentiation)
-
-	![[By Berland at en.wikipedia [Public domain], from Wikimedia Commons](https://commons.wikimedia.org/wiki/File%3AAutomaticDifferentiation.png)](figs/wikipedia-AD.png)
-
-## Example
-
-* Suppose we want to differentiate $f(x_1,x_2) = x_1 x_2 + \sin x_1$
-* We label subexpressions by $w_i$ as follows:
-	$$ \begin{array}{cl}
-	f(x_1,x_2) &= x_1 x_2 + \sin x_1 \\
-	&= w_1 w_2 + sin w_1 \\
-	&= w_3  + w_4 \\
-	&= w_5 
-	\end{array} 
-	$$
-* Computation of the partial derivative starts with the seed value, i.e. $\dot{w}_1 = \frac{\partial x_1}{\partial x_1} = 1$.
-* We store for each subexpression both the value and the derivative, i.e. $(w_i,\dot{w}_i)$
-* We then sweep through the expression tree as in this picture:
-
-	![[By Berland at en.wikipedia [Public domain], from Wikimedia Commons](https://commons.wikimedia.org/wiki/File%3AForwardAccumulationAutomaticDifferentiation.png)](figs/wikipedia-AD-example.png)
-
-
------------------
-
-# AD in Julia
-
-* The organisation here is [http://www.juliadiff.org](http://www.juliadiff.org)
-* There are many packages to perform differentiation with Julia here.
-* Many packages rely on the machinery here. 
-* Let's quickly look at [https://github.com/JuliaDiff/ForwardDiff.jl](https://github.com/JuliaDiff/ForwardDiff.jl)
-
-```julia
-# from ForwardDiff's readme:
-using ForwardDiff
-f(x::Vector) = sum(sin, x) + prod(tan, x) * sum(sqrt, x)
-x = rand(5); # get 5 random points
-g = ForwardDiff.gradient(f); # g = ∇f
-j = ForwardDiff.jacobian(g); # j = J(∇f)
-ForwardDiff.hessian(f, x) # H(f)(x) == J(∇f)(x), as expected
-```
-
-* The authors provide some benchmarks. Let's run those:
-
-```julia
-include(joinpath(Pkg.dir("ForwardDiff"),"benchmarks","run_all_benchmarks(ForwardDiffBenchmarks.Rosenbrock)"))
-```
-
-
-----------------
-
-
-# Numerical Approximation of Integrals
-
-* We will focus on methods that represent integrals as weighted sums.
-* The typical representation will look like:
-	$$ E[G(\epsilon)] = \int_{\mathbb{R}^N} G(\epsilon) w(\epsilon) d\epsilon \approx \sum_{j=1}^J \omega_j G(\epsilon_j) $$
-	* $N$ is the dimensionality of the integration problem.
-	* $G:\mathbb{R}^N \mapsto \mathbb{R}$ is the function we want to integrate wrt $\epsilon \in \mathbb{R}^N$.
-	* $w$ is a density function s.t. $\int_{\mathbb{R}^n} w(\epsilon) d\epsilon = 1$.
-	* $\omega$ are weights such that (most of the time) $\sum_{j=1}^J \omega_j = 1$.
-<!-- * We will look at normal shocks $\epsilon \sim N(0_N,I_N)$
-	* in that case, $w(\epsilon) = (2\pi)^{-N/2} \exp \left(-\frac{1}{2}\epsilon^T \epsilon \right)$
-	* $I_N$ is the n by n identity matrix, i.e. there is no correlation among the shocks for now.
-	* Other random processes will require different weighting functions, but the principle is identical.
- -->
- * For now, let's say that $N=1$
-
------------------
-
-
-# Quadrature Rules
-
-* We focus exclusively on those and leave Simpson and Newton Cowtes formulas out.
-	* This is because Quadrature is the method that in many situations gives highes accuracy with lowest computational cost.
-* Quadrature provides a rule to compute weights $w_j$ and nodes $\epsilon_j$.
-* There are many different quadrature rules.
-* They differ in their domain and weighting function.
-* [https://en.wikipedia.org/wiki/Gaussian_quadrature](https://en.wikipedia.org/wiki/Gaussian_quadrature)
-* In general, we can convert our function domain to a rule-specific domain with change of variables.
-
-
------------------
-
-# Gauss-Hermite: Expectation of a Normally Distributed Variable
-
-* There are many different rules, all specific to a certain random process.
-* Gauss-Hermite is designed for an integral of the form
-	$$ \int_{-\infty}^{+\infty} e^{-x^2} G(x) dx $$
-	and where we would approximate 
-	$$ \int_{-\infty}^{+\infty} e^{-x^2} f(x) dx \approx \sum_{i=1}^n \omega_i G(x_i) $$
-* Now, let's say we want to approximate the expected value of function $f$ when it's argument $z\sim N(\mu,\sigma^2)$:
-	$$ E[f(z)] = \int_{-\infty}^{+\infty} \frac{1}{\sigma \sqrt{2\pi}} \exp \left( -\frac{(z-\mu)^2}{2\sigma^2} \right) f(z) dz $$
-
---------------
-
-# Gauss-Hermite: Expectation of a Normally Distributed Variable
-
-* The rule is defined for $x$ however. We need to transform $z$:
-	$$ x = \frac{(z-\mu)^2}{2\sigma^2} \Rightarrow z = \sqrt{2} \sigma x + \mu $$
-* This gives us now (just plug in for $z$)
-	$$ E[f(z)] = \int_{-\infty}^{+\infty} \frac{1}{ \sqrt{\pi}} \exp \left( -x^2 \right) f(\sqrt{2} \sigma x + \mu) dx $$
-* And thus, our approximation to this, using weights $\omega_i$ and nodes $x_i$ is
-	$$ E[f(z)] \approx \sum_{j=1}^J \frac{1}{\sqrt{\pi}} \omega_j f(\sqrt{2} \sigma x_j + \mu)$$
-
-------------
-
-# Using Quadrature in Julia
-
-* [https://github.com/ajt60gaibb/FastGaussQuadrature.jl](https://github.com/ajt60gaibb/FastGaussQuadrature.jl)
-
-```julia
-Pkg.add("FastGaussQuadrature")
-
-using FastGaussQuadrature
-
-np = 3
-
-rules = Dict("hermite" => gausshermite(np),
-             "chebyshev" => gausschebyshev(np),
-             "legendre" => gausslegendre(np),
-             "lobatto" => gausslobatto(np))
-
-
-using DataFrames
-
-nodes = DataFrame([x[1] for x in values(rules)],Symbol[symbol(x) for x in keys(rules)])
-weights = DataFrame([x[2] for x in values(rules)],Symbol[symbol(x) for x in keys(rules)])
-```
-
-------------
-
-
-
-# Quadrature in more dimensions: Product Rule
-
-* If we have $N>1$, we can use the product rule: this just takes the kronecker product of all univariate rules.
-* This works well as long as $N$ is not too large. The number of required function evaluations grows exponentially.
-	$$ E[G(\epsilon)] = \int_{\mathbb{R}^N} G(\epsilon) w(\epsilon) d\epsilon \approx \sum_{j_1=1}^{J_1} \cdots \sum_{j_N=1}^{J_N} \omega_{j_1}^1 \cdots \omega_{j_N}^N G(\epsilon_{j_1}^1,\dots,\epsilon_{j_N}^N) $$
-	where $\omega_{j_1}^1$ stands for weight index $j_1$ in dimension 1, same for $\epsilon$.
-* Total number of nodes: $J=J_1 J_2 \cdots J_N$, and $J_i$ can differ from $J_k$.
-
-## Example for $N=3$
-
-* Suppose we have $\epsilon^i \sim N(0,1),i=1,2,3$ as three uncorrelated random variables.
-* Let's take $J=3$ points in all dimensions, so that in total we have $J^N=27$ points.
-* We have the nodes and weights from before in `rules["hermite"]`.
-
-```julia
-nodes = Any[]
-push!(nodes,repeat(rules["hermite"][1],inner=[1],outer=[9]))
-push!(nodes,repeat(rules["hermite"][1],inner=[3],outer=[3]))
-push!(nodes,repeat(rules["hermite"][1],inner=[9],outer=[1]))
-weights = kron(rules["hermite"][2],kron(rules["hermite"][2],rules["hermite"][2]))
-df = hcat(DataFrame(weights=weights),DataFrame(nodes,[:dim1,:dim2,:dim3]))
-```
-
-* Imagine you had a function $g$ defined on those 3 dims: in order to approximate the integral, you would have to evaluate $g$ at all combinations of `dimx`, multiply with the corresponding weight, and sum.
-
-
-----------------
-
-# Alternatives to the Product Rule
-
-* Monomial Rules: They grow only linearly.
-* Please refer to [@judd-book] for more details.
-
-
------------------
-
-# Monte Carlo Integration
-
-* A widely used method is to just draw $N$ points randomly from the space of the shock $\epsilon$, and to assign equal weights $\omega_j=\frac{1}{N}$ to all of them.
-* The expectation is then
-	$$ E[G(\epsilon)] \approx \frac{1}{N} \sum_{j=1}^N  G(\epsilon_j) $$
-* This in general a very inefficient method.
-* Particularly in more than 1 dimensions, the number of points needed for good accuracy is very large.
-
-## Quasi Monte Carlo Integration
-
-* Uses non-product techniques to construct a grid of uniformly spaced points.
-* The researcher controlls the number of points. 
-* We need to construct equidistributed points.
-* Typically one uses a low-discrepancy sequence of points, e.g. the Weyl sequence:
-* $x_n = {n v}$ where $v$ is an irrational number and `{}` stands for the fractional part of a number. for $v=\sqrt{2}$,
-	$$ x_1 = \{1 \sqrt{2}\} = \{1.4142\} = 0.4142, x_2 = \{2 \sqrt{2}\} = \{2.8242\} = 0.8242,... $$
-* Other low-discrepancy sequences are Niederreiter, Haber, Baker or Sobol.
-
-```julia
-Pkg.add("Sobol")
-using Sobol
-using PyPlot
-s = SobolSeq(2)
-p = hcat([next(s) for i = 1:1024]...)'
-subplot(111, aspect="equal")
-plot(p[:,1], p[:,2], "r.")
-```
-
-
-![Sobol Sequences in [0,1]^2](figs/Sobol.png) 
-
-----------------
-
-# Correlated Shocks
-
-* We often face situations where the shocks are in fact correlated.
-	* One very typical case is an AR1 process:
-	$$ z_{t+1} = \rho z_t + \varepsilon_t, \varepsilon \sim N(0,\sigma^2) $$
-* The general case is again:
-	$$ E[G(\epsilon)] = \int_{\mathbb{R}^N} G(\epsilon) w(\epsilon) d\epsilon \approx \sum_{j_1=1}^{J_1} \cdots \sum_{j_N=1}^{J_N} \omega_{j_1}^1 \cdots \omega_{j_N}^N G(\epsilon_{j_1}^1,\dots,\epsilon_{j_N}^N) $$
-* Now $\epsilon \sim N(\mu,\Sigma)$ where $\Sigma$ is an N by N variance-covariance matrix.
-* The multivariate density is
-	$$w(\epsilon) = (2\pi)^{-N/2} det(\Sigma)^{-1/2} \exp \left(-\frac{1}{2}(\epsilon - \mu)^T (\epsilon - \mu) \right)$$
-* We need to perform a change of variables before we can integrate this.
-* Given $\Sigma$ is symmetric and positive semi-definite, it has a Cholesky decomposition, 
-	$$ \Sigma = \Omega \Omega^T $$
-	where $\Omega$ is a lower-triangular with strictly positive entries.
-* The linear change of variables is then
-	$$ v = \Omega^{-1} (\epsilon - \mu)  $$
-* Plugging this in gives
-	$$ \sum_{j=1}^J \omega_j  G(\Omega v_j + \mu) \equiv \sum_{j=1}^J \omega_j  G(\epsilon_j) $$
-	where $v\sim N(0,I_N)$.
-* So, we can follow the exact same steps as with the uncorrelated shocks, but need to adapt the nodes.
-
-
-
-
-
-# References
-
-* The Integration part of these slides are based on [@maliar-maliar] chapter 5
 
 
 

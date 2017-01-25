@@ -10,3 +10,4 @@ Slides
 2. [Function Approximation](sessions/funcapprox.html)
 2. [Unconstrained Optimization](sessions/optimization.html)
 2. [Constrained Optimization](sessions/constraind-optimization.html)
+2. [Numerical Dynamic Programming](sessions/dp.html)

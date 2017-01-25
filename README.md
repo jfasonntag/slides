@@ -1,7 +1,9 @@
-# Slides for Computational Economics course
+# Package for Computational Economics course
+
+This repository contains the course material for students. You should clone or download this to your computer.
 
 
-## View Slides
+## Viewing Slides Online
 
 The presentation is online at [ScPo-CompEcon.github.io/slides](https://ScPo-CompEcon.github.io/slides).
 
