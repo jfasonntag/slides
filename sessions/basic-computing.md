@@ -1,13 +1,13 @@
 % Computational Economics: Computer Basics
 % Florian Oswald
-% Sciences Po, 2016
+% Sciences Po, 2017
 
 
 # Introduction
 
 * You can hit `c` on your keyboard to see a table of contents. It's clickable.
 * There will be working code on those slides. I invite you to copy and paste this into a julia session and try it out.
-* You need to be online to get properly rendered math (and your browser needs to support the `MathJax` plugin)
+* Your browser needs MathML support so see the math (not the case for Chrome.)
 
 ---------------
 

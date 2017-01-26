@@ -1,0 +1,2 @@
+	# pandoc --standalone --mathjax -t revealjs -V revealjs-url=../reveal.js -c ../styles/pandoc-style.css --highlight-style pygments $< -o $@
+	# pandoc --standalone --mathjax -t slidy --highlight-style pygments $< -o $@
